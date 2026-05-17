@@ -125,6 +125,40 @@
     .theme-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
     .ql-card { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
     .ql-card-header { font-family: Arial,sans-serif; font-size: 11px; font-weight: 700; color: #a8c4e0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+    /* ── NEW FEATURE STYLES ── */
+    /* Fullscreen preview */
+    #preview-panel.fullscreen { position:fixed; top:0; left:0; right:0; bottom:0; z-index:1000; padding:24px; overflow-y:auto; }
+    #fullscreen-btn { background:rgba(255,255,255,0.09); color:#a8c4e0; border:1px solid rgba(255,255,255,0.15); border-radius:7px; padding:9px 14px; font-size:13px; font-weight:700; font-family:Arial,sans-serif; cursor:pointer; white-space:nowrap; }
+    #fullscreen-btn:hover { background:rgba(255,255,255,0.16); }
+
+    /* Autosave indicator */
+    #save-indicator { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.35); align-self:center; white-space:nowrap; transition:color 0.3s; }
+    #save-indicator.saved { color:#4caf50; }
+
+    /* Preset buttons */
+    .preset-row { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+    .preset-btn { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:5px; color:#a8c4e0; font-family:Arial,sans-serif; font-size:10px; font-weight:700; padding:5px 10px; cursor:pointer; white-space:nowrap; }
+    .preset-btn:hover { background:rgba(255,255,255,0.14); color:#fff; }
+
+    /* Template manager */
+    .template-list { margin-top:8px; }
+    .template-item { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.05); border-radius:6px; padding:8px 10px; margin-bottom:6px; }
+    .template-name { font-family:Arial,sans-serif; font-size:12px; color:#d8e2ee; flex:1; }
+    .template-actions { display:flex; gap:5px; }
+
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); z-index:2000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#0f3460; border-radius:14px; padding:28px; max-width:480px; width:90%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.12); }
+    .modal h2 { font-family:Georgia,serif; color:#fff; font-size:20px; font-weight:400; margin-bottom:6px; }
+    .modal-sub { font-family:Arial,sans-serif; font-size:12px; color:#a8c4e0; margin-bottom:20px; }
+    .checklist-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .checklist-item:last-child { border-bottom:none; }
+    .check-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    .check-label { font-family:Arial,sans-serif; font-size:13px; color:#d8e2ee; line-height:1.4; }
+    .check-label small { display:block; color:#7f8ea3; font-size:11px; margin-top:2px; }
+    .modal-actions { display:flex; gap:8px; margin-top:20px; justify-content:flex-end; }
   </style>
 </head>
 <body>
@@ -135,8 +169,10 @@
       <div class="brand-title">Newsletter Builder</div>
     </div>
     <div class="topbar-right">
+      <span id="save-indicator">&#9679; Auto-saved</span>
+      <button id="fullscreen-btn" onclick="toggleFullscreen()">&#9974; Full Preview</button>
       <button id="download-btn" onclick="downloadHTML()">&#11015; Download .html</button>
-      <button id="copy-btn" onclick="copyHTML()">Copy HTML for Brevo</button>
+      <button id="copy-btn" onclick="checklistThenCopy()">Copy HTML for Brevo</button>
     </div>
   </div>
   <div id="main">
@@ -148,6 +184,7 @@
         <button class="tab-btn" onclick="switchTab('links',this)">Quick Links</button>
         <button class="tab-btn" onclick="switchTab('design',this)">Design</button>
         <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
+        <button class="tab-btn" onclick="switchTab('templates',this)">Templates</button>
       </div>
       <div id="tab-events" class="tab-panel active">
         <div class="row">
@@ -219,12 +256,25 @@
       </div>
       <div id="tab-settings" class="tab-panel">
         <div class="editor-card">
+          <div class="field"><label>Email Subject Line</label><input id="s-subject" placeholder="ASME OSU Newsletter — May 2026" oninput="autoSave()"/></div>
+          <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:0.6;">(preview line in inbox)</span></label><input id="s-preheader" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/></div>
+          <div class="section-divider"></div>
           <div class="field"><label>Logo Image URL</label><input id="s-logo" oninput="render()"/></div>
           <div class="field"><label>Website URL</label><input id="s-website" oninput="render()"/></div>
           <div class="field"><label>Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
           <div class="field"><label>Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
           <div class="field"><label>Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
         </div>
+      </div>
+      <div id="tab-templates" class="tab-panel">
+        <div class="editor-card">
+          <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:12px;line-height:1.5;">Save the current issue as a named template to reuse next time. Great for recurring formats like GBM issues.</div>
+          <div class="field-row" style="margin-bottom:0;">
+            <div class="field" style="margin-bottom:0;"><label>Template Name</label><input id="template-name-input" placeholder="e.g. Standard GBM Issue"/></div>
+            <div style="display:flex;align-items:flex-end;padding-bottom:0;"><button class="btn btn-blue" style="white-space:nowrap;" onclick="saveTemplate()">Save</button></div>
+          </div>
+        </div>
+        <div class="template-list" id="template-list"></div>
       </div>
     </div>
     <div id="preview-panel">
@@ -274,7 +324,10 @@ window.onload=function(){
   document.getElementById("s-ig-url").value="https://www.instagram.com/asmeohiostate/";
   document.getElementById("s-ig-handle").value="@asmeohiostate";
   document.getElementById("s-unsub").value="{{ unsubscribe }}";
-  buildThemeChips(); renderEventList(); render();
+  buildThemeChips();
+  var restored=restoreDraft();
+  if(!restored){renderEventList(); render();}
+  renderTemplateList();
 };
 
 function buildThemeChips(){
@@ -342,7 +395,10 @@ function renderEventList(){
           '<button class="btn btn-ghost btn-sm" onclick="moveEvent('+ev.id+',\'up\')"'+(i===0?' disabled':'')+'>&#8593;</button>'+
           '<button class="btn btn-ghost btn-sm" onclick="moveEvent('+ev.id+',\'down\')"'+(i===events.length-1?' disabled':'')+'>&#8595;</button>'+
         '</div>'+
-        '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
+        '<div class="row-gap">'+
+          '<button class="btn btn-ghost btn-sm" onclick="duplicateEvent('+ev.id+')" title="Duplicate">&#10064;</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
+        '</div>'+
       '</div>'+
       '<div class="field-row">'+
         '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" placeholder="MAY 28"/></div>'+
@@ -425,6 +481,7 @@ function render(){
         '<span class="pv-ql-btn" style="background:'+T.headerBg+';color:'+T.title+';border-color:'+T.border+';">'+escHtml(g("ql"+n+"-btn"))+'</span></div>';
     }).join("")+'</div>':"";
 
+  autoSave();
   document.getElementById("preview-inner").innerHTML=
     '<div class="pv-header" style="background:'+T.headerBg+';"><div class="pv-topbar" style="background:'+T.accent+';"></div>'+
     '<div class="pv-logo-wrap">'+(logoUrl?'<img src="'+escHtml(logoUrl)+'" alt="ASME OSU" onerror="this.style.display=\'none\'"/>'
@@ -449,6 +506,7 @@ function generateHTML(){
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location"),featDesc=g("feat-desc"),featBtnText=g("feat-btn-text"),featBtnUrl=g("feat-btn-url");
   var featImgUrl=g("feat-img-url"),featImgAlt=g("feat-img-alt");
 
+  var preheader=g("s-preheader")||"Your biweekly update from ASME at The Ohio State University.";
   var featImgBlock=(showFeatured&&showFeatImg&&featImgUrl)?'<tr><td style="padding:0 26px 16px;"><img src="'+featImgUrl+'" alt="'+featImgAlt+'" width="100%" style="width:100%;height:auto;border-radius:6px;display:block;"></td></tr>':"";
 
   var featuredBlock=showFeatured?
@@ -506,7 +564,216 @@ function generateHTML(){
         '</td></tr></table></td>';
     }).join("")+'</tr></table>':"";
 
-  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">Your biweekly update from ASME at The Ohio State University.</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+logo+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          <p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">Instagram: <a href="'+igUrl+'" style="color:'+T.title+';text-decoration:underline;">'+igHandle+'</a> &nbsp;|&nbsp; <a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a></p>\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+unsub+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
+  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+logo+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          <p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">Instagram: <a href="'+igUrl+'" style="color:'+T.title+';text-decoration:underline;">'+igHandle+'</a> &nbsp;|&nbsp; <a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a></p>\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+unsub+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
+}
+
+
+/* ── AUTO-SAVE ── */
+var autoSaveTimer=null;
+function autoSave(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(function(){
+    try{
+      var state=collectState();
+      localStorage.setItem("asme_nl_draft",JSON.stringify(state));
+      var ind=document.getElementById("save-indicator");
+      ind.textContent="\u2713 Saved";ind.classList.add("saved");
+      setTimeout(function(){ind.textContent="\u25cf Auto-saved";ind.classList.remove("saved");},1800);
+    }catch(e){}
+  },800);
+}
+
+function collectState(){
+  return{
+    events:events,showFeatured:showFeatured,showAnnounce:showAnnounce,
+    showLinks:showLinks,showFeatImg:showFeatImg,activeTheme:activeTheme,
+    fields:{
+      "feat-title":g("feat-title"),"feat-date":g("feat-date"),"feat-location":g("feat-location"),
+      "feat-desc":g("feat-desc"),"feat-btn-text":g("feat-btn-text"),"feat-btn-url":g("feat-btn-url"),
+      "feat-img-url":g("feat-img-url"),"feat-img-alt":g("feat-img-alt"),
+      "ann-title":g("ann-title"),"ann-quote":g("ann-quote"),"ann-author":g("ann-author"),
+      "ql1-title":g("ql1-title"),"ql1-sub":g("ql1-sub"),"ql1-btn":g("ql1-btn"),"ql1-url":g("ql1-url"),
+      "ql2-title":g("ql2-title"),"ql2-sub":g("ql2-sub"),"ql2-btn":g("ql2-btn"),"ql2-url":g("ql2-url"),
+      "ql3-title":g("ql3-title"),"ql3-sub":g("ql3-sub"),"ql3-btn":g("ql3-btn"),"ql3-url":g("ql3-url"),
+      "issue-bar-text":g("issue-bar-text"),"footer-name":g("footer-name"),"footer-addr":g("footer-addr"),
+      "s-logo":g("s-logo"),"s-website":g("s-website"),"s-ig-url":g("s-ig-url"),
+      "s-ig-handle":g("s-ig-handle"),"s-unsub":g("s-unsub"),
+      "s-subject":g("s-subject"),"s-preheader":g("s-preheader")
+    }
+  };
+}
+
+function applyState(state){
+  if(!state) return;
+  events=state.events||events; showFeatured=state.showFeatured!==undefined?state.showFeatured:true;
+  showAnnounce=state.showAnnounce!==undefined?state.showAnnounce:true;
+  showLinks=state.showLinks!==undefined?state.showLinks:true;
+  showFeatImg=state.showFeatImg||false; activeTheme=state.activeTheme||"navy";
+  if(state.fields) Object.keys(state.fields).forEach(function(k){
+    var el=document.getElementById(k); if(el) el.value=state.fields[k];
+  });
+  // Sync toggle buttons
+  ["featured","announce","links"].forEach(function(w){
+    var on=(w==="featured"?showFeatured:w==="announce"?showAnnounce:showLinks);
+    var btn=document.getElementById("toggle-"+w);
+    if(btn){btn.textContent=on?"On":"Off";btn.className="btn btn-toggle "+(on?"on":"off");}
+  });
+  var fi=document.getElementById("toggle-feat-img");
+  if(fi){fi.textContent=showFeatImg?"On":"Off";fi.className="btn btn-sm btn-toggle "+(showFeatImg?"on":"off");}
+  document.getElementById("feat-img-fields").style.display=showFeatImg?"block":"none";
+  buildThemeChips(); renderEventList(); render();
+}
+
+function restoreDraft(){
+  try{
+    var raw=localStorage.getItem("asme_nl_draft");
+    if(raw){applyState(JSON.parse(raw)); return true;}
+  }catch(e){}
+  return false;
+}
+
+/* ── TEMPLATES ── */
+function getTemplates(){try{return JSON.parse(localStorage.getItem("asme_nl_templates")||"[]");}catch(e){return[];}}
+function setTemplates(t){localStorage.setItem("asme_nl_templates",JSON.stringify(t));}
+
+function saveTemplate(){
+  var name=document.getElementById("template-name-input").value.trim();
+  if(!name){alert("Please enter a template name.");return;}
+  var tpls=getTemplates();
+  tpls=tpls.filter(function(t){return t.name!==name;});
+  tpls.unshift({name:name,state:collectState(),saved:new Date().toLocaleDateString()});
+  setTemplates(tpls);
+  document.getElementById("template-name-input").value="";
+  renderTemplateList();
+}
+
+function loadTemplate(name){
+  var tpls=getTemplates();
+  var t=tpls.find(function(t){return t.name===name;});
+  if(t) applyState(t.state);
+}
+
+function deleteTemplate(name){
+  var tpls=getTemplates().filter(function(t){return t.name!==name;});
+  setTemplates(tpls); renderTemplateList();
+}
+
+function renderTemplateList(){
+  var tpls=getTemplates();
+  var list=document.getElementById("template-list");
+  if(!list) return;
+  if(tpls.length===0){
+    list.innerHTML='<div style="font-family:Arial,sans-serif;font-size:12px;color:#7f8ea3;text-align:center;padding:16px 0;">No templates saved yet.</div>';
+    return;
+  }
+  list.innerHTML=tpls.map(function(t){
+    return '<div class="template-item">'+
+      '<div><div class="template-name">'+escHtml(t.name)+'</div>'+
+      '<div style="font-family:Arial,sans-serif;font-size:10px;color:#7f8ea3;">Saved '+escHtml(t.saved)+'</div></div>'+
+      '<div class="template-actions">'+
+        '<button class="btn btn-ghost btn-sm" onclick="loadTemplate(''+escHtml(t.name)+'')">Load</button>'+
+        '<button class="btn btn-danger btn-sm" onclick="deleteTemplate(''+escHtml(t.name)+'')">&#10005;</button>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+}
+
+/* ── DUPLICATE EVENT ── */
+function duplicateEvent(id){
+  var ev=events.find(function(e){return e.id===id;});
+  if(!ev) return;
+  var clone=JSON.parse(JSON.stringify(ev));
+  clone.id=nextId++;
+  clone.title=clone.title+" (Copy)";
+  var idx=events.findIndex(function(e){return e.id===id;});
+  events.splice(idx+1,0,clone);
+  renderEventList(); render(); autoSave();
+}
+
+/* ── EVENT PRESETS ── */
+var PRESETS={
+  gbm:{title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock Hall 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red"},
+  workshop:{title:"Workshop: [Topic]",time:"5:00 PM",location:"Hitchcock Hall 131",description:"Hands-on workshop. Bring your laptop. Open to all skill levels.",accent:"blue"},
+  social:{title:"Social Event: [Name]",time:"7:00 PM",location:"[Location TBD]",description:"Come hang out with fellow ASME members. Food and fun provided!",accent:"green"},
+  info:{title:"Info Session: [Topic/Company]",time:"5:30 PM",location:"Hitchcock Hall 131",description:"Learn more about [topic/company]. Q&A to follow.",accent:"gold"},
+  tour:{title:"Tour: [Facility Name]",time:"[Time TBD]",location:"[Facility Address]",description:"Join us for a tour of [facility]. Space is limited — sign up early!",accent:"blue"}
+};
+
+function applyPreset(id,key){
+  var p=PRESETS[key]; if(!p) return;
+  var ev=events.find(function(e){return e.id===id;});
+  if(!ev) return;
+  ev.title=p.title; ev.time=p.time; ev.location=p.location;
+  ev.description=p.description; ev.accent=p.accent;
+  renderEventList(); render(); autoSave();
+}
+
+/* ── FULLSCREEN PREVIEW ── */
+var isFullscreen=false;
+function toggleFullscreen(){
+  isFullscreen=!isFullscreen;
+  var panel=document.getElementById("preview-panel");
+  var btn=document.getElementById("fullscreen-btn");
+  if(isFullscreen){panel.classList.add("fullscreen");btn.textContent="\u2715 Exit Full";}
+  else{panel.classList.remove("fullscreen");btn.textContent="\u25a2 Full Preview";}
+}
+
+/* ── PRE-SEND CHECKLIST ── */
+function checklistThenCopy(){
+  var issues=[];
+  if(!g("s-logo")) issues.push({ok:false,label:"Logo URL is empty",detail:"Set it in the Settings tab."});
+  else issues.push({ok:true,label:"Logo URL set",detail:""});
+  if(!g("s-subject")) issues.push({ok:false,label:"No email subject line",detail:"Add one in Settings > Email Subject Line."});
+  else issues.push({ok:true,label:"Subject line: "+g("s-subject").substring(0,40)+(g("s-subject").length>40?"...":""),detail:""});
+  if(events.length===0) issues.push({ok:false,label:"No events added",detail:"Add at least one event in the Events tab."});
+  else issues.push({ok:true,label:events.length+" event"+(events.length!==1?"s":"")+" added",detail:""});
+  var emptyEvents=events.filter(function(e){return e.title==="New Event"||e.date==="MON DD";});
+  if(emptyEvents.length) issues.push({ok:false,label:emptyEvents.length+" event(s) still have placeholder text",detail:"Update date and title for each event."});
+  if(g("s-ig-url").indexOf("instagram.com")>-1) issues.push({ok:true,label:"Instagram link looks good",detail:""});
+  else issues.push({ok:false,label:"Instagram URL may be wrong",detail:"Check Settings > Instagram URL."});
+  issues.push({ok:true,label:'Unsubscribe variable: '+g("s-unsub"),detail:"Brevo will auto-fill this."});
+
+  var hasIssues=issues.some(function(i){return!i.ok;});
+  if(!hasIssues){doCopy();return;}
+
+  var el=document.getElementById("checklist-items");
+  el.innerHTML=issues.map(function(i){
+    return '<div class="checklist-item">'+
+      '<span class="check-icon">'+(i.ok?"\u2705":"\u26a0\ufe0f")+'</span>'+
+      '<div class="check-label">'+escHtml(i.label)+(i.detail?'<small>'+escHtml(i.detail)+'</small>':'')+'</div>'+
+    '</div>';
+  }).join("");
+  document.getElementById("checklist-modal").classList.add("open");
+}
+
+function closeChecklist(){document.getElementById("checklist-modal").classList.remove("open");}
+function proceedCopy(){closeChecklist();doCopy();}
+
+function showSubjectToast(){
+  var subj=g("s-subject");
+  if(!subj) return;
+  document.getElementById("subject-toast-text").textContent=subj;
+  document.getElementById("subject-toast").style.display="block";
+  setTimeout(function(){document.getElementById("subject-toast").style.display="none";},8000);
+}
+
+function copySubject(){
+  var subj=g("s-subject");
+  if(navigator.clipboard) navigator.clipboard.writeText(subj);
+  else{var ta=document.createElement("textarea");ta.value=subj;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);}
+  document.getElementById("subject-toast").style.display="none";
+}
+
+function doCopy(){
+  var html=generateHTML();
+  var btn=document.getElementById("copy-btn");
+  var done=function(){
+    btn.textContent="\u2713 Copied!";btn.classList.add("success");
+    setTimeout(function(){btn.textContent="Copy HTML for Brevo";btn.classList.remove("success");},2200);
+    showSubjectToast();
+  };
+  if(navigator.clipboard){navigator.clipboard.writeText(html).then(done).catch(function(){fallbackCopy(html,done);});}
+  else{fallbackCopy(html,done);}
 }
 
 function copyHTML(){
@@ -521,5 +788,27 @@ function downloadHTML(){
   a.href=URL.createObjectURL(blob);a.download="asme-osu-newsletter.html";a.click();
 }
 </script>
+<!-- CHECKLIST MODAL -->
+<div class="modal-overlay" id="checklist-modal">
+  <div class="modal">
+    <h2>Ready to Send?</h2>
+    <p class="modal-sub">Quick check before copying your HTML to Brevo.</p>
+    <div id="checklist-items"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeChecklist()">Go Back &amp; Fix</button>
+      <button class="btn btn-red" onclick="proceedCopy()">Copy Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBJECT LINE TOAST -->
+<div id="subject-toast" style="display:none;position:fixed;bottom:24px;right:24px;background:#0f3460;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:14px 18px;font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;z-index:3000;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+  <strong style="color:#fff;display:block;margin-bottom:4px;">📋 Also copy your subject line:</strong>
+  <div id="subject-toast-text" style="color:#a8c4e0;font-size:12px;margin-bottom:10px;"></div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-blue btn-sm" onclick="copySubject()">Copy Subject</button>
+    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('subject-toast').style.display='none'">Dismiss</button>
+  </div>
+</div>
 </body>
 </html>
