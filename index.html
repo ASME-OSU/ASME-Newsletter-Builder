@@ -658,6 +658,19 @@ function deleteTemplate(name){
   setTemplates(tpls); renderTemplateList();
 }
 
+function loadTemplateByIndex(index){
+  var t=getTemplates()[index];
+  if(t) applyState(t.state);
+}
+
+function deleteTemplateByIndex(index){
+  var tpls=getTemplates();
+  if(index<0||index>=tpls.length) return;
+  tpls.splice(index,1);
+  setTemplates(tpls);
+  renderTemplateList();
+}
+
 function renderTemplateList(){
   var tpls=getTemplates();
   var list=document.getElementById("template-list");
@@ -666,13 +679,13 @@ function renderTemplateList(){
     list.innerHTML='<div style="font-family:Arial,sans-serif;font-size:12px;color:#7f8ea3;text-align:center;padding:16px 0;">No templates saved yet.</div>';
     return;
   }
-  list.innerHTML=tpls.map(function(t){
+  list.innerHTML=tpls.map(function(t,i){
     return '<div class="template-item">'+
       '<div><div class="template-name">'+escHtml(t.name)+'</div>'+
       '<div style="font-family:Arial,sans-serif;font-size:10px;color:#7f8ea3;">Saved '+escHtml(t.saved)+'</div></div>'+
       '<div class="template-actions">'+
-        '<button class="btn btn-ghost btn-sm" onclick="loadTemplate(''+escHtml(t.name)+'')">Load</button>'+
-        '<button class="btn btn-danger btn-sm" onclick="deleteTemplate(''+escHtml(t.name)+'')">&#10005;</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="loadTemplateByIndex('+i+')">Load</button>'+
+        '<button class="btn btn-danger btn-sm" onclick="deleteTemplateByIndex('+i+')">&#10005;</button>'+
       '</div>'+
     '</div>';
   }).join("");
