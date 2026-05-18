@@ -1042,9 +1042,6 @@ function checklistThenCopy(){
   else issues.push({ok:false,label:"Instagram URL may be wrong",detail:"Check Settings > Instagram URL."});
   issues.push({ok:true,label:'Unsubscribe variable: '+g("s-unsub"),detail:"Brevo will auto-fill this."});
 
-  var hasIssues=issues.some(function(i){return!i.ok;});
-  if(!hasIssues){doCopy();return;}
-
   var el=document.getElementById("checklist-items");
   el.innerHTML=issues.map(function(i){
     return '<div class="checklist-item">'+
@@ -1052,6 +1049,13 @@ function checklistThenCopy(){
       '<div class="check-label">'+escHtml(i.label)+(i.detail?'<small>'+escHtml(i.detail)+'</small>':'')+'</div>'+
     '</div>';
   }).join("");
+
+  var hasIssues=issues.some(function(i){return!i.ok;});
+  document.getElementById("checklist-title").textContent=hasIssues?"Check Before Copying":"Checks Passed";
+  document.getElementById("checklist-subtitle").textContent=hasIssues?
+    "A few things may need attention before copying your HTML to Brevo.":
+    "Everything looks ready. Copy your HTML when you are ready to paste it into Brevo.";
+  document.getElementById("checklist-primary").textContent=hasIssues?"Copy Anyway":"Copy HTML";
   document.getElementById("checklist-modal").classList.add("open");
 }
 
@@ -1168,12 +1172,12 @@ function downloadHTML(){
 <!-- CHECKLIST MODAL -->
 <div class="modal-overlay" id="checklist-modal">
   <div class="modal">
-    <h2>Ready to Send?</h2>
-    <p class="modal-sub">Quick check before copying your HTML to Brevo.</p>
+    <h2 id="checklist-title">Ready to Send?</h2>
+    <p class="modal-sub" id="checklist-subtitle">Quick check before copying your HTML to Brevo.</p>
     <div id="checklist-items"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeChecklist()">Go Back &amp; Fix</button>
-      <button class="btn btn-red" onclick="proceedCopy()">Copy Anyway</button>
+      <button class="btn btn-red" id="checklist-primary" onclick="proceedCopy()">Copy Anyway</button>
     </div>
   </div>
 </div>
