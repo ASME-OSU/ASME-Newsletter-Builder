@@ -184,22 +184,22 @@
   <div id="main">
     <div id="editor">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('events',this)">Events</button>
-        <button class="tab-btn" onclick="switchTab('featured',this)">Featured</button>
+        <button class="tab-btn active" onclick="switchTab('featured',this)">Featured</button>
+        <button class="tab-btn" onclick="switchTab('events',this)">Events</button>
         <button class="tab-btn" onclick="switchTab('announce',this)">Announcement</button>
         <button class="tab-btn" onclick="switchTab('links',this)">Quick Links</button>
         <button class="tab-btn" onclick="switchTab('design',this)">Design</button>
         <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
         <button class="tab-btn" onclick="switchTab('templates',this)">Templates</button>
       </div>
-      <div id="tab-events" class="tab-panel active">
+      <div id="tab-events" class="tab-panel">
         <div class="row">
           <span id="event-count" style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;"></span>
           <button class="btn btn-blue" onclick="addEvent()">+ Add Event</button>
         </div>
         <div id="event-list"></div>
       </div>
-      <div id="tab-featured" class="tab-panel">
+      <div id="tab-featured" class="tab-panel active">
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Featured Event</span>
@@ -280,6 +280,7 @@
         <div class="editor-card">
           <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:12px;line-height:1.5;">Start from a built-in issue type, then customize the events and text.</div>
           <div class="template-grid">
+            <div class="starter-template"><div><h3>Default Bi Weekly Newsletter</h3><p>The standard ASME biweekly format currently used by the builder.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('default')">Load</button></div>
             <div class="starter-template"><div><h3>Sponsor Spotlight</h3><p>Highlights sponsors, recruiting, and partnership links.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('sponsor')">Load</button></div>
             <div class="starter-template"><div><h3>General Body Meeting</h3><p>Clean GBM issue with agenda, reminders, and join links.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('gbm')">Load</button></div>
             <div class="starter-template"><div><h3>Workshop Week</h3><p>Good for CAD, resume, interview, or technical sessions.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('workshop')">Load</button></div>
@@ -427,6 +428,13 @@ function renderEventList(){
           '<button class="btn btn-ghost btn-sm" onclick="duplicateEvent('+ev.id+')" title="Duplicate">&#10064;</button>'+
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
+      '</div>'+
+      '<div class="preset-row">'+
+        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'gbm\')">GBM</button>'+
+        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'workshop\')">Workshop</button>'+
+        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'social\')">Social</button>'+
+        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'info\')">Info Session</button>'+
+        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'tour\')">Tour</button>'+
       '</div>'+
       '<div class="field-row">'+
         '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" placeholder="MAY 28"/></div>'+
@@ -751,6 +759,31 @@ function applyTemplateState(state){
 
 function loadBuiltInTemplate(key){
   var templates={
+    default:{
+      activeTheme:"navy",
+      showFeatured:true,showAnnounce:true,showLinks:true,showFeatImg:false,showFeatButton:true,
+      fields:{
+        "s-subject":"ASME OSU Biweekly Newsletter",
+        "s-preheader":"Your biweekly update from ASME at The Ohio State University.",
+        "issue-bar-text":"Biweekly Newsletter · May 2026",
+        "feat-title":"Industry Night: Meet Top Engineering Employers",
+        "feat-date":"Thursday, May 29th · 6:00–8:30 PM",
+        "feat-location":"Hitchcock Hall, Room 131",
+        "feat-desc":"Network with recruiters and engineers from Honda, Rolls-Royce, P&G, and more. Bring your resume and dress business casual. Pizza provided.",
+        "feat-btn-text":"RSVP Now",
+        "feat-btn-url":"https://org.osu.edu/asme/calendar/",
+        "ann-title":"From the Board",
+        "ann-quote":"“We’re thrilled to kick off the year with our biggest lineup of events yet. Whether you’re here to build skills, network with industry, or meet fellow engineers, there’s something for everyone this semester.”",
+        "ann-author":"Matthew Allen, ASME OSU President 2026–2027",
+        "ql1-title":"Join ASME","ql1-sub":"Access events and opportunities.","ql1-btn":"Join Now","ql1-url":"https://org.osu.edu/asme/join/",
+        "ql2-title":"Calendar","ql2-sub":"See all upcoming events.","ql2-btn":"See Events","ql2-url":"https://org.osu.edu/asme/calendar/",
+        "ql3-title":"Sponsor Us","ql3-sub":"Reach ME students at OSU.","ql3-btn":"Partner","ql3-url":"https://org.osu.edu/asme/sponsor-asme/"
+      },
+      events:[
+        {date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
+        {date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:""}
+      ]
+    },
     sponsor:{
       activeTheme:"light",
       showFeatured:true,showAnnounce:true,showLinks:true,showFeatImg:false,showFeatButton:true,
