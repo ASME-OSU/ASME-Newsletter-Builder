@@ -21,8 +21,6 @@
     #copy-btn.success { background: #1a7a1a; }
     #download-btn { background: rgba(255,255,255,0.1); color: #d8e2ee; border: 1px solid rgba(255,255,255,0.2); border-radius: 7px; padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: Arial,sans-serif; cursor: pointer; white-space: nowrap; }
     #download-btn:hover { background: rgba(255,255,255,0.16); }
-    #new-issue-btn { background: rgba(255,255,255,0.06); color: #a8c4e0; border: 1px solid rgba(255,255,255,0.14); border-radius: 7px; padding: 9px 14px; font-size: 12px; font-weight: 700; font-family: Arial,sans-serif; cursor: pointer; white-space: nowrap; }
-    #new-issue-btn:hover { background: rgba(255,255,255,0.12); color:#fff; }
     #main { display: flex; flex: 1; overflow: hidden; }
     #editor { width: 380px; min-width: 320px; flex-shrink: 0; background: #071426; border-right: 1px solid rgba(255,255,255,0.08); overflow-y: auto; padding: 14px 13px; }
     .tabs { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -155,10 +153,6 @@
     .starter-template h3 { font-family:Arial,sans-serif; color:#fff; font-size:13px; margin-bottom:3px; }
     .starter-template p { font-family:Arial,sans-serif; color:#a8c4e0; font-size:11px; line-height:1.4; }
 
-    /* Starter template grid */
-    .starter-template { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
-    .starter-template h3 { font-family:Arial,sans-serif; color:#fff; font-size:12px; font-weight:700; margin-bottom:3px; }
-    .starter-template p { font-family:Arial,sans-serif; color:#7f8ea3; font-size:11px; line-height:1.4; }
     /* Modal */
     .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); z-index:2000; align-items:center; justify-content:center; }
     .modal-overlay.open { display:flex; }
@@ -182,31 +176,30 @@
     </div>
     <div class="topbar-right">
       <span id="save-indicator">&#9679; Auto-saved</span>
-      <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
-      <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
-      <button id="download-btn" onclick="downloadHTML()">Download .html</button>
+      <button id="fullscreen-btn" onclick="toggleFullscreen()">&#9974; Full Preview</button>
+      <button id="download-btn" onclick="downloadHTML()">&#11015; Download .html</button>
       <button id="copy-btn" onclick="checklistThenCopy()">Copy HTML for Brevo</button>
     </div>
   </div>
   <div id="main">
     <div id="editor">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('events',this)">Events</button>
-        <button class="tab-btn" onclick="switchTab('featured',this)">Featured</button>
-        <button class="tab-btn" onclick="switchTab('announce',this)">Announce</button>
-        <button class="tab-btn" onclick="switchTab('links',this)">Links</button>
+        <button class="tab-btn active" onclick="switchTab('featured',this)">Featured</button>
+        <button class="tab-btn" onclick="switchTab('events',this)">Events</button>
+        <button class="tab-btn" onclick="switchTab('announce',this)">Announcement</button>
+        <button class="tab-btn" onclick="switchTab('links',this)">Quick Links</button>
         <button class="tab-btn" onclick="switchTab('design',this)">Design</button>
         <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
         <button class="tab-btn" onclick="switchTab('templates',this)">Templates</button>
       </div>
-      <div id="tab-events" class="tab-panel active">
+      <div id="tab-events" class="tab-panel">
         <div class="row">
           <span id="event-count" style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;"></span>
           <button class="btn btn-blue" onclick="addEvent()">+ Add Event</button>
         </div>
         <div id="event-list"></div>
       </div>
-      <div id="tab-featured" class="tab-panel">
+      <div id="tab-featured" class="tab-panel active">
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Featured Event</span>
@@ -280,11 +273,7 @@
           <div class="field"><label>Website URL</label><input id="s-website" oninput="render()"/></div>
           <div class="field"><label>Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
           <div class="field"><label>Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
-          <div class="field"><label>LinkedIn URL</label><input id="s-li-url" oninput="render()" placeholder="https://linkedin.com/company/..."/></div>
-          <div class="field"><label>GroupMe Invite URL</label><input id="s-gm-url" oninput="render()" placeholder="https://groupme.com/join_group/..."/></div>
           <div class="field"><label>Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
-          <div class="section-divider"></div>
-          <button class="btn btn-danger" style="width:100%;" onclick="if(confirm('Clear saved draft from this browser?')){localStorage.removeItem('asme_nl_draft');alert('Draft cleared. Refresh to reset to defaults.');}">Clear Saved Draft</button>
         </div>
       </div>
       <div id="tab-templates" class="tab-panel">
@@ -298,19 +287,11 @@
             <div class="starter-template"><div><h3>Social + Recruitment</h3><p>Friendly issue for mixers, elections, and new members.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('social')">Load</button></div>
           </div>
         </div>
-        <!-- End of semester starter -->
-        <div class="starter-template" style="margin-bottom:8px;"><div><h3>End of Semester</h3><p>Recap + social focus. No featured event, celebration tone.</p></div><button class="btn btn-blue btn-sm" onclick="loadBuiltInTemplate('endofterm')">Load</button></div>
-        <div class="section-divider"></div>
-        <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a8c4e0;margin-bottom:8px;">My Saved Templates</div>
         <div class="editor-card">
-          <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:10px;line-height:1.5;">Save the current issue as a reusable template. Stored in your browser.</div>
-          <div class="field-row" style="margin-bottom:8px;">
-            <div class="field" style="margin-bottom:0;"><label>Template Name</label><input id="template-name-input" placeholder="e.g. Spring GBM Format"/></div>
-            <div style="display:flex;align-items:flex-end;"><button class="btn btn-blue" style="white-space:nowrap;" onclick="saveTemplate()">Save</button></div>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-ghost btn-sm" onclick="exportTemplates()" style="flex:1;">Export .json</button>
-            <label class="btn btn-ghost btn-sm" style="flex:1;cursor:pointer;text-align:center;">Import .json<input type="file" accept=".json" onchange="importTemplates(event)" style="display:none;"/></label>
+          <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:12px;line-height:1.5;">Save the current issue as a named template to reuse next time. Great for recurring formats like GBM issues.</div>
+          <div class="field-row" style="margin-bottom:0;">
+            <div class="field" style="margin-bottom:0;"><label>Template Name</label><input id="template-name-input" placeholder="e.g. Standard GBM Issue"/></div>
+            <div style="display:flex;align-items:flex-end;padding-bottom:0;"><button class="btn btn-blue" style="white-space:nowrap;" onclick="saveTemplate()">Save</button></div>
           </div>
         </div>
         <div class="template-list" id="template-list"></div>
@@ -330,8 +311,8 @@
 <script>
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="navy";
 var events=[
-  {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"},
-  {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
+  {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
+  {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:""}
 ];
 var THEMES={
   navy:{name:"Navy",bg:"#071426",headerBg:"#0f3460",bodyBg:"#0d1f38",cardBg:"#162d52",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#7f8ea3",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
@@ -363,15 +344,15 @@ window.onload=function(){
   document.getElementById("s-website").value="https://org.osu.edu/asme/";
   document.getElementById("s-ig-url").value="https://www.instagram.com/asmeohiostate/";
   document.getElementById("s-ig-handle").value="@asmeohiostate";
-  document.getElementById("s-li-url").value="https://www.linkedin.com/company/asme-ohio-state-university/";
-  document.getElementById("s-gm-url").value="";
   document.getElementById("s-unsub").value="{{ unsubscribe }}";
   buildThemeChips();
-  restoreDraft(); // always populates; falls back to defaults if nothing saved
+  var restored=restoreDraft();
+  if(!restored){renderEventList(); render();}
   renderTemplateList();
 };
 
 function buildThemeChips(){
+  ensureTheme();
   var r=document.getElementById("theme-row");
   r.innerHTML=Object.keys(THEMES).map(function(k){var t=THEMES[k];return'<div class="theme-chip '+(k===activeTheme?'selected':'')+'" onclick="setTheme(\''+k+'\')" style="background:'+t.headerBg+';color:'+t.title+';"><span class="theme-dot" style="background:'+t.accent+';"></span>'+t.name+'</div>';}).join("");
 }
@@ -413,7 +394,7 @@ function toggleFeatButton(){
 }
 
 function addEvent(){
-  events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
+  events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",accent:"blue",showImg:false,imgUrl:"",imgAlt:""});
   renderEventList(); render();
 }
 function removeEvent(id){events=events.filter(function(e){return e.id!==id;});renderEventList();render();}
@@ -429,10 +410,6 @@ function updateEvent(id,field,value){
   if(field==="accent") renderEventList();
   render();
 }
-function toggleEventLink(id){
-  var ev=events.find(function(e){return e.id===id;});
-  if(!ev) return; ev.showLink=!ev.showLink; renderEventList(); render();
-}
 function toggleEventImg(id){
   var ev=events.find(function(e){return e.id===id;});
   if(!ev) return; ev.showImg=!ev.showImg; renderEventList(); render();
@@ -440,6 +417,7 @@ function toggleEventImg(id){
 
 function renderEventList(){
   var list=document.getElementById("event-list");
+  events=cleanEvents(events);
   document.getElementById("event-count").textContent=events.length+" event"+(events.length!==1?"s":"");
   list.innerHTML=events.map(function(ev,i){
     return '<div class="editor-card accent-'+ev.accent+'" style="margin-bottom:10px;">'+
@@ -492,25 +470,34 @@ function g(id){var el=document.getElementById(id);return el?el.value:"";}
 function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function getAccentColor(a){return{blue:"#0f70a8",red:"#bb0000",green:"#1a7a1a",gold:"#c8a000"}[a]||"#0f70a8";}
 function getDateColor(a){return{blue:"#a8c4e0",red:"#ff9999",green:"#7dd87d",gold:"#ffd966"}[a]||"#a8c4e0";}
-
-function buildSocialIconsPreview(T){
-  var igUrl=g("s-ig-url"), igHandle=g("s-ig-handle"), liUrl=g("s-li-url"), gmUrl=g("s-gm-url");
-  var icons=[];
-  if(igUrl) icons.push({url:igUrl,label:"Instagram",color:"#bb0000"});
-  if(liUrl) icons.push({url:liUrl,label:"LinkedIn",color:"#0077b5"});
-  if(gmUrl) icons.push({url:gmUrl,label:"GroupMe",color:"#00aff0"});
-  if(!icons.length){
-    return '<div class="pv-footer-links" style="color:'+T.subtle+';">Instagram: <span style="color:'+T.title+';">'+escHtml(igHandle)+'</span> &nbsp;|&nbsp; <span style="color:'+T.title+';">Visit Website</span></div>';
-  }
-  var pills=icons.map(function(ic){
-    return '<span style="display:inline-block;background:'+ic.color+';color:#fff;font-family:Arial,sans-serif;font-size:10px;font-weight:700;padding:5px 12px;border-radius:999px;margin:2px 4px 2px 0;text-decoration:none;">'+ic.label+'</span>';
-  }).join("");
-  return '<div style="margin-bottom:10px;">'+pills+'</div>';
+function cleanEvent(ev){
+  ev=ev||{};
+  return {
+    id:Number(ev.id)||nextId++,
+    date:String(ev.date||"MON DD"),
+    title:String(ev.title||"New Event"),
+    time:String(ev.time||""),
+    location:String(ev.location||""),
+    description:String(ev.description||"Event description goes here."),
+    accent:["blue","red","green","gold"].indexOf(ev.accent)>-1?ev.accent:"blue",
+    showImg:!!ev.showImg,
+    imgUrl:String(ev.imgUrl||""),
+    imgAlt:String(ev.imgAlt||"")
+  };
+}
+function cleanEvents(list){
+  if(!Array.isArray(list)) return [];
+  return list.map(cleanEvent);
+}
+function ensureTheme(){
+  if(!THEMES[activeTheme]) activeTheme="navy";
+  return THEMES[activeTheme];
 }
 
 function render(){
-  var T=THEMES[activeTheme];
-  var logoUrl=g("s-logo"),igHandle=g("s-ig-handle"),igUrl=g("s-ig-url"),issueBar=g("issue-bar-text");
+  events=cleanEvents(events);
+  var T=ensureTheme();
+  var logoUrl=g("s-logo"),igHandle=g("s-ig-handle"),issueBar=g("issue-bar-text");
   var annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
   var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location");
@@ -541,7 +528,6 @@ function render(){
         '<div class="pv-event-title" style="color:'+T.title+';">'+escHtml(ev.title)+'</div>'+
         (meta?'<div class="pv-event-meta" style="color:'+T.muted+';">'+escHtml(meta)+'</div>':'')+
         '<div class="pv-event-desc" style="color:'+T.subtle+';">'+escHtml(ev.description)+'</div>'+
-        (ev.showLink&&ev.linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(ev.linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
         '</div></div></div>';
     }).join("");
 
@@ -575,26 +561,10 @@ function render(){
     '<div class="pv-footer-unsub" style="color:'+T.faint+';">You\'re receiving this because you signed up for ASME OSU updates. <span style="color:'+T.muted+';">Unsubscribe</span></div></div>';
 }
 
-function buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl){
-  var icons=[];
-  if(igUrl) icons.push({url:igUrl,label:"Instagram",color:"#bb0000"});
-  if(liUrl) icons.push({url:liUrl,label:"LinkedIn",color:"#0077b5"});
-  if(gmUrl) icons.push({url:gmUrl,label:"GroupMe",color:"#00aff0"});
-  if(!icons.length){
-    return '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">Instagram: <a href="'+igUrl+'" style="color:'+T.title+';text-decoration:underline;">'+igHandle+'</a> &nbsp;|&nbsp; <a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a></p>';
-  }
-  var pillsHtml=icons.map(function(ic){
-    return '<a href="'+ic.url+'" style="display:inline-block;background:'+ic.color+';color:#ffffff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;margin:0 6px 8px 0;">'+ic.label+'</a>';
-  }).join("");
-  var websiteLink='<a href="'+website+'" style="color:'+T.title+';text-decoration:underline;font-family:Arial,sans-serif;font-size:11px;">Visit Website</a>';
-  return '<p style="margin:0 0 10px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;">Follow us:</p>'+
-    '<p style="margin:0 0 10px;">'+pillsHtml+'</p>'+
-    '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;">'+websiteLink+'</p>';
-}
-
 function generateHTML(){
-  var T=THEMES[activeTheme];
-  var logo=g("s-logo"),website=g("s-website"),igUrl=g("s-ig-url"),igHandle=g("s-ig-handle"),unsub=g("s-unsub"),liUrl=g("s-li-url"),gmUrl=g("s-gm-url");
+  events=cleanEvents(events);
+  var T=ensureTheme();
+  var logo=g("s-logo"),website=g("s-website"),igUrl=g("s-ig-url"),igHandle=g("s-ig-handle"),unsub=g("s-unsub");
   var issueBar=g("issue-bar-text"),annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
   var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location"),featDesc=g("feat-desc"),featBtnText=g("feat-btn-text"),featBtnUrl=g("feat-btn-url");
@@ -631,8 +601,7 @@ function generateHTML(){
       '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+dc+';font-size:10px;font-weight:700;letter-spacing:1px;">'+ev.date+'</p>'+
       '<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.title+';font-size:15px;font-weight:700;">'+ev.title+'</p>'+
       (metaParts.length?'<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.muted+';font-size:12px;">'+metaParts.join(' \u00b7 ')+'</p>':'')+
-      '<p style="margin:0'+(ev.showLink&&ev.linkUrl?' 0 12px':'')+';font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.6;">'+ev.description+'</p>'+
-      (ev.showLink&&ev.linkUrl?'<a href="'+ev.linkUrl+'" style="display:inline-block;background:'+bar+';color:#ffffff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:8px 18px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a>':'')+
+      '<p style="margin:0;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.6;">'+ev.description+'</p>'+
       '</td></tr></table>';
   }).join("");
 
@@ -660,7 +629,7 @@ function generateHTML(){
         '</td></tr></table></td>';
     }).join("")+'</tr></table>':"";
 
-  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+logo+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          '+buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl)+'\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+unsub+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
+  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+logo+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          <p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">Instagram: <a href="'+igUrl+'" style="color:'+T.title+';text-decoration:underline;">'+igHandle+'</a> &nbsp;|&nbsp; <a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a></p>\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+unsub+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
 }
 
 
@@ -681,7 +650,7 @@ function autoSave(){
 
 function collectState(){
   return{
-    events:events,showFeatured:showFeatured,showAnnounce:showAnnounce,
+    events:cleanEvents(events),showFeatured:showFeatured,showAnnounce:showAnnounce,
     showLinks:showLinks,showFeatImg:showFeatImg,showFeatButton:showFeatButton,activeTheme:activeTheme,
     fields:{
       "feat-title":g("feat-title"),"feat-date":g("feat-date"),"feat-location":g("feat-location"),
@@ -693,7 +662,7 @@ function collectState(){
       "ql3-title":g("ql3-title"),"ql3-sub":g("ql3-sub"),"ql3-btn":g("ql3-btn"),"ql3-url":g("ql3-url"),
       "issue-bar-text":g("issue-bar-text"),"footer-name":g("footer-name"),"footer-addr":g("footer-addr"),
       "s-logo":g("s-logo"),"s-website":g("s-website"),"s-ig-url":g("s-ig-url"),
-      "s-ig-handle":g("s-ig-handle"),"s-li-url":g("s-li-url"),"s-gm-url":g("s-gm-url"),"s-unsub":g("s-unsub"),
+      "s-ig-handle":g("s-ig-handle"),"s-unsub":g("s-unsub"),
       "s-subject":g("s-subject"),"s-preheader":g("s-preheader")
     }
   };
@@ -701,12 +670,12 @@ function collectState(){
 
 function applyState(state){
   if(!state) return;
-  events=state.events||events; showFeatured=state.showFeatured!==undefined?state.showFeatured:true;
+  events=cleanEvents(state.events||events); showFeatured=state.showFeatured!==undefined?state.showFeatured:true;
   showAnnounce=state.showAnnounce!==undefined?state.showAnnounce:true;
   showLinks=state.showLinks!==undefined?state.showLinks:true;
   showFeatImg=state.showFeatImg||false;
   showFeatButton=state.showFeatButton!==undefined?state.showFeatButton:true;
-  activeTheme=state.activeTheme||"navy";
+  activeTheme=THEMES[state.activeTheme]?state.activeTheme:"navy";
   if(state.fields) Object.keys(state.fields).forEach(function(k){
     var el=document.getElementById(k); if(el) el.value=state.fields[k];
   });
@@ -727,10 +696,11 @@ function applyState(state){
 function restoreDraft(){
   try{
     var raw=localStorage.getItem("asme_nl_draft");
-    if(raw){ applyState(JSON.parse(raw)); return; }
-  }catch(e){ console.warn("Draft restore failed:",e); }
-  // No draft — render with defaults
-  renderEventList(); render();
+    if(raw){applyState(JSON.parse(raw)); return true;}
+  }catch(e){
+    try{localStorage.removeItem("asme_nl_draft");}catch(_){}
+  }
+  return false;
 }
 
 /* ── TEMPLATES ── */
@@ -751,7 +721,7 @@ function saveTemplate(){
 function loadTemplate(name){
   var tpls=getTemplates();
   var t=tpls.find(function(t){return t.name===name;});
-  if(t) applyState(t.state);
+  if(t&&t.state) applyState(t.state);
 }
 
 function deleteTemplate(name){
@@ -761,7 +731,7 @@ function deleteTemplate(name){
 
 function loadTemplateByIndex(index){
   var t=getTemplates()[index];
-  if(t) applyState(t.state);
+  if(t&&t.state) applyState(t.state);
 }
 
 function deleteTemplateByIndex(index){
@@ -793,6 +763,7 @@ function renderTemplateList(){
 }
 
 function setFields(fields){
+  fields=fields||{};
   Object.keys(fields).forEach(function(id){
     var el=document.getElementById(id);
     if(el) el.value=fields[id];
@@ -800,7 +771,8 @@ function setFields(fields){
 }
 
 function applyTemplateState(state){
-  if(state.events) events=state.events.map(function(ev){
+  state=state||{};
+  if(state.events) events=cleanEvents(state.events).map(function(ev){
     var copy=JSON.parse(JSON.stringify(ev));
     copy.id=nextId++;
     return copy;
@@ -810,7 +782,7 @@ function applyTemplateState(state){
   showLinks=state.showLinks!==undefined?state.showLinks:true;
   showFeatImg=state.showFeatImg||false;
   showFeatButton=state.showFeatButton!==undefined?state.showFeatButton:true;
-  activeTheme=state.activeTheme||activeTheme;
+  activeTheme=THEMES[state.activeTheme]?state.activeTheme:activeTheme;
   setFields(state.fields||{});
   applyState(collectState());
   autoSave();
@@ -939,26 +911,6 @@ function loadBuiltInTemplate(key){
       ]
     }
   };
-    ,endofterm:{
-      activeTheme:"navy",
-      showFeatured:false,showAnnounce:true,showLinks:true,showFeatImg:false,showFeatButton:false,
-      fields:{
-        "s-subject":"ASME OSU — End of Semester Wrap-Up",
-        "s-preheader":"Thanks for an amazing semester. See you next year!",
-        "issue-bar-text":"End of Semester · May 2026",
-        "ann-title":"Thanks for an Amazing Semester",
-        "ann-quote":"From workshops to industry nights, it has been a fantastic semester. We are proud of everything we accomplished together and excited for what is next. Enjoy your break and we will see you in the fall!",
-        "ann-author":"ASME OSU Executive Board",
-        "ql1-title":"Follow Us","ql1-sub":"Stay connected over the summer.","ql1-btn":"Instagram","ql1-url":"https://www.instagram.com/asmeohiostate/",
-        "ql2-title":"Join Next Year","ql2-sub":"Sign up early for fall membership.","ql2-btn":"Join ASME","ql2-url":"https://org.osu.edu/asme/join/",
-        "ql3-title":"Give Feedback","ql3-sub":"Help us improve for next semester.","ql3-btn":"Survey","ql3-url":"https://org.osu.edu/asme/"
-      },
-      events:[
-        {date:"MAY 15",title:"End of Year Social",time:"6:00 PM",location:"TBD — Watch Instagram",description:"Celebrate the end of the semester with food, games, and good company. All members welcome.",accent:"green",showImg:false,imgUrl:"",imgAlt:""},
-        {date:"APR 30",title:"Final GBM of the Semester",time:"6:00 PM",location:"Hitchcock 035",description:"Year-end recap, officer transition preview, and thank-yous from the board.",accent:"red",showImg:false,imgUrl:"",imgAlt:""}
-      ]
-    }
-  };
   if(templates[key]) applyTemplateState(templates[key]);
 }
 
@@ -1059,74 +1011,6 @@ function doCopy(){
   if(navigator.clipboard){navigator.clipboard.writeText(html).then(done).catch(function(){fallbackCopy(html,done);});}
   else{fallbackCopy(html,done);}
 }
-
-
-/* ── NEW ISSUE ── */
-function confirmNewIssue(){
-  if(!confirm("Start a fresh issue? This will clear the current draft. Your saved templates will stay.")) return;
-  localStorage.removeItem("asme_nl_draft");
-  // Reset to defaults
-  events=[
-    {id:nextId++,date:"MON DD",title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
-  ];
-  showFeatured=true; showAnnounce=true; showLinks=true; showFeatImg=false; showFeatButton=true;
-  activeTheme="navy";
-  var blanks={
-    "feat-title":"","feat-date":"","feat-location":"","feat-desc":"",
-    "feat-btn-text":"RSVP Now","feat-btn-url":"https://org.osu.edu/asme/calendar/",
-    "ann-title":"From the Board","ann-quote":"","ann-author":"",
-    "issue-bar-text":"Biweekly Newsletter · "+new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'}),
-    "s-subject":"","s-preheader":""
-  };
-  Object.keys(blanks).forEach(function(k){var el=document.getElementById(k);if(el)el.value=blanks[k];});
-  ["featured","announce","links"].forEach(function(w){
-    var on=true; var btn=document.getElementById("toggle-"+w);
-    if(btn){btn.textContent="On";btn.className="btn btn-toggle on";}
-  });
-  buildThemeChips(); renderEventList(); render();
-  // Switch to events tab
-  document.querySelectorAll(".tab-panel").forEach(function(p){p.classList.remove("active");});
-  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("tab-events").classList.add("active");
-  document.querySelector('.tab-btn[onclick*="events"]').classList.add("active");
-}
-
-/* ── EXPORT / IMPORT TEMPLATES ── */
-function exportTemplates(){
-  var tpls=getTemplates();
-  if(!tpls.length){alert("No saved templates to export.");return;}
-  var blob=new Blob([JSON.stringify(tpls,null,2)],{type:"application/json"});
-  var a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="asme-newsletter-templates.json";
-  a.click();
-}
-
-function importTemplates(ev){
-  var file=ev.target.files[0]; if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      var imported=JSON.parse(e.target.result);
-      if(!Array.isArray(imported)) throw new Error("Invalid format");
-      var existing=getTemplates();
-      imported.forEach(function(t){
-        if(t.name&&t.state){
-          existing=existing.filter(function(x){return x.name!==t.name;});
-          existing.push(t);
-        }
-      });
-      setTemplates(existing);
-      renderTemplateList();
-      alert("Imported "+imported.length+" template(s).");
-    }catch(e){alert("Import failed: "+e.message);}
-  };
-  reader.readAsText(file);
-  ev.target.value=""; // reset so same file can be re-imported
-}
-
-/* ── END OF SEMESTER built-in template ── */
-// (injected into loadBuiltInTemplate via patch below)
 
 function copyHTML(){
   var html=generateHTML(),btn=document.getElementById("copy-btn");
