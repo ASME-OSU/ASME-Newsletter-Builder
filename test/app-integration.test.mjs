@@ -60,6 +60,16 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.match(window.document.querySelector("#calendar-status").textContent, /1 upcoming event/);
   assert.equal(window.document.querySelectorAll("#calendar-list .calendar-event").length, 1);
 
+  const topLinks = window.document.querySelectorAll(".top-link-btn");
+  assert.equal(topLinks.length, 2);
+  assert.equal(topLinks[0].textContent.trim(), "Brevo ↗");
+  assert.equal(topLinks[0].href, "https://app.brevo.com/campaigns/listing");
+  assert.equal(topLinks[1].href, "https://asme-osu.github.io/ASME-Newsletter-Builder/");
+  for (const link of topLinks) {
+    assert.equal(link.target, "_blank");
+    assert.match(link.rel, /noopener/);
+  }
+
   window.applyState({
     events: [{ id: 100, title: "Restored event", date: "SEP 1", accent: "red" }],
     fields: {}

@@ -2,6 +2,8 @@
 
 Use the hosted [ASME at OSU Newsletter Builder](https://asme-osu.github.io/ASME-Newsletter-Builder/) in a modern browser. Your work is saved automatically in that browser.
 
+The top toolbar includes shortcuts that open **Brevo** or a fresh **Newsletter Builder** tab.
+
 ## 1. Start an issue
 
 - Click **New Issue** for a blank newsletter, or open **Templates** and load a built-in layout.
