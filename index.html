@@ -103,6 +103,7 @@
     .pv-ann-inner { display: flex; gap: 12px; }
     .pv-ann-bar { width: 4px; border-radius: 2px; flex-shrink: 0; }
     .pv-ann-quote { font-family: Georgia,serif; color: #e8eef6; font-size: 14px; line-height: 1.75; font-style: italic; margin-bottom: 8px; }
+    .pv-feat-desc, .pv-event-desc, .pv-ann-quote { white-space: pre-line; }
     .pv-ann-author { font-family: Arial,sans-serif; color: #94a3b8; font-size: 12px; }
     .pv-ann-author strong { color: #fff; }
     .pv-quicklinks { display: flex; gap: 8px; margin-top: 14px; }
@@ -171,6 +172,27 @@
     .check-label { font-family:Arial,sans-serif; font-size:13px; color:#d8e2ee; line-height:1.4; }
     .check-label small { display:block; color:#7f8ea3; font-size:11px; margin-top:2px; }
     .modal-actions { display:flex; gap:8px; margin-top:20px; justify-content:flex-end; }
+    .calendar-toolbar { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px; }
+    .calendar-status { font-family:Arial,sans-serif; font-size:11px; line-height:1.5; color:#a8c4e0; margin-bottom:10px; }
+    .calendar-event { background:#0f3460; border:1px solid rgba(255,255,255,0.08); border-radius:9px; padding:12px; margin-bottom:8px; }
+    .calendar-event.imported { border-color:rgba(76,175,80,0.5); }
+    .calendar-event-date { color:#ff9999; font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .calendar-event-title { color:#fff; font-family:Arial,sans-serif; font-size:13px; font-weight:700; line-height:1.35; margin-bottom:4px; }
+    .calendar-event-meta { color:#a8c4e0; font-family:Arial,sans-serif; font-size:11px; line-height:1.5; margin-bottom:8px; }
+    .calendar-event-desc { color:#b8c5d4; font-family:Arial,sans-serif; font-size:11px; line-height:1.5; margin-bottom:9px; white-space:pre-line; }
+    .source-badge { display:inline-block; background:rgba(76,175,80,0.16); color:#8ee196; border-radius:999px; padding:3px 7px; font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .draft-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [role="button"]:focus-visible { outline:3px solid #ffd966; outline-offset:2px; }
+    @media (max-width:720px) {
+      #app { height:auto; min-height:100vh; }
+      #main { display:block; overflow:visible; }
+      #editor { width:100%; min-width:0; max-height:none; border-right:0; border-bottom:1px solid rgba(255,255,255,0.08); }
+      #preview-panel { overflow:visible; padding:14px 8px; }
+      #topbar { position:sticky; top:0; z-index:900; }
+      .topbar-right { width:100%; }
+      #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; }
+      .draft-actions { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -190,27 +212,36 @@
   </div>
   <div id="main">
     <div id="editor">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('events',this)">Events</button>
-        <button class="tab-btn" onclick="switchTab('featured',this)">Featured</button>
-        <button class="tab-btn" onclick="switchTab('announce',this)">Announce</button>
-        <button class="tab-btn" onclick="switchTab('links',this)">Links</button>
-        <button class="tab-btn" onclick="switchTab('design',this)">Design</button>
-        <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
-        <button class="tab-btn" onclick="switchTab('templates',this)">Templates</button>
+      <div class="tabs" role="tablist" aria-label="Newsletter sections">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-events" onclick="switchTab('events',this)">Events</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-calendar" onclick="switchTab('calendar',this)">Calendar</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-featured" onclick="switchTab('featured',this)">Featured</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-announce" onclick="switchTab('announce',this)">Announce</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-links" onclick="switchTab('links',this)">Links</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-design" onclick="switchTab('design',this)">Design</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-settings" onclick="switchTab('settings',this)">Settings</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-templates" onclick="switchTab('templates',this)">Templates</button>
       </div>
-      <div id="tab-events" class="tab-panel active">
+      <div id="tab-events" class="tab-panel active" role="tabpanel">
         <div class="row">
           <span id="event-count" style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;"></span>
           <button class="btn btn-blue" onclick="addEvent()">+ Add Event</button>
         </div>
         <div id="event-list"></div>
       </div>
+      <div id="tab-calendar" class="tab-panel" role="tabpanel">
+        <div class="calendar-toolbar">
+          <button class="btn btn-blue" onclick="loadCalendarEvents(true)">Refresh Events</button>
+          <a class="btn btn-ghost" href="https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&amp;ctz=America%2FNew_York" target="_blank" rel="noopener" style="text-decoration:none;">Open Calendar</a>
+        </div>
+        <div id="calendar-status" class="calendar-status" role="status" aria-live="polite">Loading public calendar…</div>
+        <div id="calendar-list"></div>
+      </div>
       <div id="tab-featured" class="tab-panel">
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Featured Event</span>
-            <button id="toggle-featured" class="btn btn-toggle on" onclick="toggleSection('featured')">On</button>
+            <button id="toggle-featured" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('featured')">On</button>
           </div>
         </div>
         <div id="featured-fields" class="editor-card">
@@ -220,7 +251,7 @@
           <div class="field"><label>Description</label><textarea id="feat-desc" oninput="render()"></textarea></div>
           <div class="img-toggle-row">
             <span style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#a8c4e0;">Event Image</span>
-            <button id="toggle-feat-img" class="btn btn-sm btn-toggle off" onclick="toggleFeatImg()">Off</button>
+            <button id="toggle-feat-img" class="btn btn-sm btn-toggle off" aria-pressed="false" onclick="toggleFeatImg()">Off</button>
           </div>
           <div id="feat-img-fields" class="img-fields" style="display:none;">
             <div class="field"><label>Image URL</label><input id="feat-img-url" placeholder="https://..." oninput="render()"/></div>
@@ -229,7 +260,7 @@
           <div class="section-divider"></div>
           <div class="row" style="margin-bottom:10px;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show RSVP Button</span>
-            <button id="toggle-feat-btn" class="btn btn-toggle on" onclick="toggleFeatButton()">On</button>
+            <button id="toggle-feat-btn" class="btn btn-toggle on" aria-pressed="true" onclick="toggleFeatButton()">On</button>
           </div>
           <div class="field"><label>Button Text</label><input id="feat-btn-text" oninput="render()"/></div>
           <div class="field"><label>Button URL</label><input id="feat-btn-url" oninput="render()"/></div>
@@ -239,7 +270,7 @@
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Announcement</span>
-            <button id="toggle-announce" class="btn btn-toggle on" onclick="toggleSection('announce')">On</button>
+            <button id="toggle-announce" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('announce')">On</button>
           </div>
         </div>
         <div id="announce-fields" class="editor-card">
@@ -252,7 +283,7 @@
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Quick Links</span>
-            <button id="toggle-links" class="btn btn-toggle on" onclick="toggleSection('links')">On</button>
+            <button id="toggle-links" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('links')">On</button>
           </div>
         </div>
         <div id="links-fields">
@@ -314,6 +345,16 @@
           </div>
         </div>
         <div class="template-list" id="template-list"></div>
+        <div class="section-divider"></div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a8c4e0;margin-bottom:8px;">Share Editable Draft</div>
+        <div class="editor-card">
+          <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:10px;line-height:1.5;">Export the current issue so another officer can import it and continue editing.</div>
+          <div class="draft-actions">
+            <button class="btn btn-blue" onclick="exportDraft()">Export Draft .json</button>
+            <label class="btn btn-ghost" style="cursor:pointer;text-align:center;">Import Draft .json<input type="file" accept=".json,application/json" onchange="importDraft(event)" style="display:none;"/></label>
+            <button class="btn btn-ghost" onclick="restorePreviousDraft()">Restore Previous Draft</button>
+          </div>
+        </div>
       </div>
     </div>
     <div id="preview-panel">
@@ -327,8 +368,12 @@
     </div>
   </div>
 </div>
+<script src="newsletter-core.js"></script>
 <script>
+var Core=window.NewsletterCore;
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="navy";
+var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="";
+var lastFocusedBeforeModal=null;
 var events=[
   {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"},
   {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
@@ -369,6 +414,19 @@ window.onload=function(){
   buildThemeChips();
   restoreDraft(); // always populates; falls back to defaults if nothing saved
   renderTemplateList();
+  loadCalendarEvents(false);
+  document.addEventListener("keydown",function(event){
+    var modal=document.getElementById("checklist-modal");
+    if(!modal.classList.contains("open"))return;
+    if(event.key==="Escape"){closeChecklist();return;}
+    if(event.key==="Tab"){
+      var focusable=Array.prototype.slice.call(modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex]:not([tabindex="-1"])'));
+      if(!focusable.length)return;
+      var first=focusable[0],last=focusable[focusable.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    }
+  });
 };
 
 function buildThemeChips(){
@@ -379,9 +437,13 @@ function setTheme(k){activeTheme=k;buildThemeChips();render();}
 
 function switchTab(name,btn){
   document.querySelectorAll(".tab-panel").forEach(function(p){p.classList.remove("active");});
-  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});
+  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false");});
   document.getElementById("tab-"+name).classList.add("active");
-  btn.classList.add("active");
+  btn.classList.add("active"); btn.setAttribute("aria-selected","true");
+}
+function switchTabByName(name){
+  var btn=document.querySelector('.tab-btn[aria-controls="tab-'+name+'"]');
+  if(btn) switchTab(name,btn);
 }
 
 function toggleSection(which){
@@ -392,7 +454,7 @@ function toggleSection(which){
   else if(which==="links") showLinks=!showLinks;
   var on=(which==="featured"?showFeatured:which==="announce"?showAnnounce:showLinks);
   var btn=document.getElementById(info[1]);
-  btn.textContent=on?"On":"Off"; btn.className="btn btn-toggle "+(on?"on":"off");
+  btn.textContent=on?"On":"Off"; btn.className="btn btn-toggle "+(on?"on":"off");btn.setAttribute("aria-pressed",String(on));
   render();
 }
 
@@ -400,6 +462,7 @@ function toggleFeatImg(){
   showFeatImg=!showFeatImg;
   var btn=document.getElementById("toggle-feat-img");
   btn.textContent=showFeatImg?"On":"Off"; btn.className="btn btn-sm btn-toggle "+(showFeatImg?"on":"off");
+  btn.setAttribute("aria-pressed",String(showFeatImg));
   document.getElementById("feat-img-fields").style.display=showFeatImg?"block":"none";
   render();
 }
@@ -409,6 +472,7 @@ function toggleFeatButton(){
   var btn=document.getElementById("toggle-feat-btn");
   btn.textContent=showFeatButton?"On":"Off";
   btn.className="btn btn-toggle "+(showFeatButton?"on":"off");
+  btn.setAttribute("aria-pressed",String(showFeatButton));
   render();
 }
 
@@ -416,7 +480,7 @@ function addEvent(){
   events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
   renderEventList(); render();
 }
-function removeEvent(id){events=events.filter(function(e){return e.id!==id;});renderEventList();render();}
+function removeEvent(id){events=events.filter(function(e){return e.id!==id;});renderEventList();renderCalendarList();render();}
 function moveEvent(id,dir){
   var idx=events.findIndex(function(e){return e.id===id;});
   if(dir==="up"&&idx===0) return; if(dir==="down"&&idx===events.length-1) return;
@@ -453,6 +517,7 @@ function renderEventList(){
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
       '</div>'+
+      (ev.sourceEventId?'<div style="margin:-3px 0 9px;"><span class="source-badge">Imported from Calendar</span></div>':'')+
       '<div class="preset-row">'+
         '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'gbm\')">GBM</button>'+
         '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'workshop\')">Workshop</button>'+
@@ -469,7 +534,7 @@ function renderEventList(){
       '<div class="field"><label>Description</label><textarea oninput="updateEvent('+ev.id+',\'description\',this.value)">'+escHtml(ev.description)+'</textarea></div>'+
       '<div class="img-toggle-row">'+
         '<span style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#a8c4e0;">Event Image</span>'+
-        '<button class="btn btn-sm btn-toggle '+(ev.showImg?'on':'off')+'" onclick="toggleEventImg('+ev.id+')">'+(ev.showImg?'On':'Off')+'</button>'+
+        '<button class="btn btn-sm btn-toggle '+(ev.showImg?'on':'off')+'" aria-pressed="'+String(Boolean(ev.showImg))+'" onclick="toggleEventImg('+ev.id+')">'+(ev.showImg?'On':'Off')+'</button>'+
       '</div>'+
       (ev.showImg?
         '<div class="img-fields">'+
@@ -487,7 +552,7 @@ function renderEventList(){
       '<div class="section-divider" style="margin:10px 0;"></div>'+
       '<div class="img-toggle-row">'+
         '<span style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#a8c4e0;">Link / Button</span>'+
-        '<button class="btn btn-sm btn-toggle '+(ev.showLink?'on':'off')+'" onclick="toggleEventLink('+ev.id+')">'+(ev.showLink?'On':'Off')+'</button>'+
+        '<button class="btn btn-sm btn-toggle '+(ev.showLink?'on':'off')+'" aria-pressed="'+String(Boolean(ev.showLink))+'" onclick="toggleEventLink('+ev.id+')">'+(ev.showLink?'On':'Off')+'</button>'+
       '</div>'+
       (ev.showLink?
         '<div class="img-fields">'+
@@ -499,9 +564,72 @@ function renderEventList(){
 }
 
 function g(id){var el=document.getElementById(id);return el?el.value:"";}
-function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function escHtml(s){return Core.escapeHtml(s);}
+function emailText(s){return Core.escapeMultiline(s);}
+function emailUrl(s,options){return escHtml(Core.safeUrl(s,options));}
 function getAccentColor(a){return{blue:"#0f70a8",red:"#bb0000",green:"#1a7a1a",gold:"#c8a000"}[a]||"#0f70a8";}
 function getDateColor(a){return{blue:"#a8c4e0",red:"#ff9999",green:"#7dd87d",gold:"#ffd966"}[a]||"#a8c4e0";}
+
+function calendarDateParts(event){
+  var start=new Date(event.start),zone=event.allDay?"UTC":calendarTimeZone;
+  var date=new Intl.DateTimeFormat("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric",timeZone:zone}).format(start);
+  if(event.allDay)return{date:date,time:"All day"};
+  var timeFormat=new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"2-digit",timeZone:calendarTimeZone});
+  var time=timeFormat.format(start),end=event.end?new Date(event.end):null;
+  if(end&&!Number.isNaN(end.getTime()))time+="–"+timeFormat.format(end);
+  return{date:date,time:time};
+}
+
+function loadCalendarEvents(force){
+  var status=document.getElementById("calendar-status");
+  if(!status)return Promise.resolve();
+  status.textContent="Loading public calendar…";
+  var url="calendar-events.json"+(force?"?refresh="+Date.now():"");
+  return fetch(url,{cache:"no-store"}).then(function(response){
+    if(!response.ok)throw new Error("Calendar feed returned "+response.status);
+    return response.json();
+  }).then(function(feed){
+    calendarTimeZone=feed.timeZone||"America/New_York";
+    calendarSourceUrl=Core.safeUrl(feed.sourceUrl);
+    calendarEvents=(Array.isArray(feed.events)?feed.events:[]).map(Core.sanitizeCalendarEvent).filter(Boolean).filter(function(event){
+      var end=event.end?new Date(event.end):new Date(event.start);
+      return end.getTime()>=Date.now()-24*60*60*1000;
+    });
+    var generated=feed.generatedAt?new Date(feed.generatedAt):null;
+    status.textContent=calendarEvents.length+" upcoming event"+(calendarEvents.length===1?"":"s")+" available"+(generated&&!Number.isNaN(generated.getTime())?" · synced "+generated.toLocaleString():"")+".";
+    renderCalendarList();
+  }).catch(function(error){
+    calendarEvents=[];renderCalendarList();
+    status.textContent="Calendar events could not be loaded here. The rest of the builder still works; use Open Calendar or try the hosted GitHub Pages version.";
+    console.warn("Calendar load failed:",error);
+  });
+}
+
+function renderCalendarList(){
+  var list=document.getElementById("calendar-list");if(!list)return;
+  if(!calendarEvents.length){list.innerHTML='<div class="empty-state">No upcoming calendar events are available.</div>';return;}
+  list.innerHTML=calendarEvents.map(function(event,index){
+    var parts=calendarDateParts(event);
+    var imported=events.some(function(existing){return existing.sourceEventId===event.id;});
+    var meta=[parts.time,event.location].filter(Boolean).join(" · ");
+    return '<div class="calendar-event '+(imported?'imported':'')+'">'+
+      '<div class="calendar-event-date">'+escHtml(parts.date)+'</div>'+
+      '<div class="calendar-event-title">'+escHtml(event.title)+'</div>'+
+      (meta?'<div class="calendar-event-meta">'+escHtml(meta)+'</div>':'')+
+      (event.description?'<div class="calendar-event-desc">'+escHtml(event.description.slice(0,320))+(event.description.length>320?'…':'')+'</div>':'')+
+      '<button class="btn '+(imported?'btn-ghost':'btn-blue')+'" '+(imported?'disabled':'onclick="importCalendarEvent('+index+')"')+'>'+(imported?'Imported':'Import Event')+'</button>'+
+      '</div>';
+  }).join("");
+}
+
+function importCalendarEvent(index){
+  var source=calendarEvents[index];if(!source)return;
+  if(events.some(function(event){return event.sourceEventId===source.id;}))return;
+  var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
+  events.push(Core.calendarEventToNewsletter(sourceWithUrl,nextId++,calendarTimeZone));
+  renderEventList();renderCalendarList();render();autoSave();switchTabByName("events");
+  document.getElementById("editor").scrollTop=document.getElementById("editor").scrollHeight;
+}
 
 function socialSVG(type){
   var svgs={
@@ -513,7 +641,7 @@ function socialSVG(type){
 }
 
 function buildSocialIconsPreview(T){
-  var igUrl=g("s-ig-url"), liUrl=g("s-li-url"), gmUrl=g("s-gm-url");
+  var igUrl=Core.safeUrl(g("s-ig-url")), liUrl=Core.safeUrl(g("s-li-url")), gmUrl=Core.safeUrl(g("s-gm-url"));
   var icons=[];
   if(igUrl) icons.push({url:igUrl,label:"Instagram",type:"instagram",color:"#bb0000"});
   if(liUrl) icons.push({url:liUrl,label:"LinkedIn",type:"linkedin",color:"#0077b5"});
@@ -527,12 +655,12 @@ function buildSocialIconsPreview(T){
 
 function render(){
   var T=THEMES[activeTheme];
-  var logoUrl=g("s-logo"),igHandle=g("s-ig-handle"),igUrl=g("s-ig-url"),issueBar=g("issue-bar-text");
+  var logoUrl=Core.safeUrl(g("s-logo")),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
   var annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
   var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location");
   var featDesc=g("feat-desc"),featBtnText=g("feat-btn-text");
-  var featImgUrl=g("feat-img-url"),featImgAlt=g("feat-img-alt");
+  var featImgUrl=Core.safeUrl(g("feat-img-url")),featImgAlt=g("feat-img-alt");
   var featButtonHTML=showFeatButton?'<span class="pv-feat-btn" style="background:'+T.accent+';color:'+T.buttonText+';">'+escHtml(featBtnText)+'</span>':"";
 
   var featuredHTML=showFeatured?
@@ -550,15 +678,16 @@ function render(){
     events.map(function(ev){
       var bar=getAccentColor(ev.accent),dc=getDateColor(ev.accent);
       var meta=[ev.time,ev.location].filter(Boolean).join(" \u00b7 ");
+      var imgUrl=Core.safeUrl(ev.imgUrl),linkUrl=Core.safeUrl(ev.linkUrl);
       return '<div class="pv-event" style="background:'+T.cardBg+';overflow:hidden;">'+
-        (ev.showImg&&ev.imgUrl?'<img class="pv-event-img" src="'+escHtml(ev.imgUrl)+'" alt="'+escHtml(ev.imgAlt)+'" onerror="this.style.display=\'none\'"/>':'')+
+        (ev.showImg&&imgUrl?'<img class="pv-event-img" src="'+escHtml(imgUrl)+'" alt="'+escHtml(ev.imgAlt)+'" onerror="this.style.display=\'none\'"/>':'')+
         '<div class="pv-event-top"><div class="pv-event-bar" style="background:'+bar+';"></div>'+
         '<div class="pv-event-content">'+
         '<div class="pv-event-date" style="color:'+dc+';">'+escHtml(ev.date)+'</div>'+
         '<div class="pv-event-title" style="color:'+T.title+';">'+escHtml(ev.title)+'</div>'+
         (meta?'<div class="pv-event-meta" style="color:'+T.muted+';">'+escHtml(meta)+'</div>':'')+
         '<div class="pv-event-desc" style="color:'+T.subtle+';">'+escHtml(ev.description)+'</div>'+
-        (ev.showLink&&ev.linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(ev.linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
+        (ev.showLink&&linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
         '</div></div></div>';
     }).join("");
 
@@ -599,11 +728,13 @@ function buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl){
   if(liUrl) icons.push({url:liUrl,label:"LinkedIn",color:"#0077b5",img:"https://img.icons8.com/ios-filled/16/ffffff/linkedin.png"});
   if(gmUrl) icons.push({url:gmUrl,label:"GroupMe",color:"#00aff0",img:"https://img.icons8.com/ios-filled/16/ffffff/speech-bubble.png"});
   if(!icons.length){
-    return '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">Instagram: <a href="'+igUrl+'" style="color:'+T.title+';text-decoration:underline;">'+igHandle+'</a> &nbsp;|&nbsp; <a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a></p>';
+    return '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+
+      (igUrl?'Instagram: <a href="'+escHtml(igUrl)+'" style="color:'+T.title+';text-decoration:underline;">'+emailText(igHandle)+'</a> &nbsp;|&nbsp; ':'')+
+      (website?'<a href="'+escHtml(website)+'" style="color:'+T.title+';text-decoration:underline;">Visit Website</a>':'')+'</p>';
   }
   var pillCells=icons.map(function(ic){
     return '<td style="padding:0 8px 12px 0;">'+
-      '<a href="'+ic.url+'" style="display:inline-block;background:'+ic.color+';border-radius:999px;padding:8px 16px 8px 12px;text-decoration:none;">'+
+      '<a href="'+escHtml(ic.url)+'" style="display:inline-block;background:'+ic.color+';border-radius:999px;padding:8px 16px 8px 12px;text-decoration:none;">'+
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;vertical-align:middle;">'+
           '<tr>'+
             '<td style="vertical-align:middle;padding-right:6px;"><img src="'+ic.img+'" width="14" height="14" alt="" style="display:block;border:0;"/></td>'+
@@ -615,20 +746,20 @@ function buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl){
   }).join("");
   return '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;letter-spacing:0.5px;text-transform:uppercase;">Follow Us</p>'+
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;"><tr>'+pillCells+'</tr></table>'+
-    '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;"><a href="'+website+'" style="color:'+T.title+';text-decoration:underline;">Visit our website</a></p>';
+    '<p style="margin:0 0 18px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;"><a href="'+escHtml(website)+'" style="color:'+T.title+';text-decoration:underline;">Visit our website</a></p>';
 }
 
 function generateHTML(){
   var T=THEMES[activeTheme];
-  var logo=g("s-logo"),website=g("s-website"),igUrl=g("s-ig-url"),igHandle=g("s-ig-handle"),unsub=g("s-unsub"),liUrl=g("s-li-url"),gmUrl=g("s-gm-url");
-  var issueBar=g("issue-bar-text"),annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
-  var footerName=g("footer-name"),footerAddr=g("footer-addr");
-  var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location"),featDesc=g("feat-desc"),featBtnText=g("feat-btn-text"),featBtnUrl=g("feat-btn-url");
-  var featImgUrl=g("feat-img-url"),featImgAlt=g("feat-img-alt");
+  var logo=Core.safeUrl(g("s-logo")),website=Core.safeUrl(g("s-website")),igUrl=Core.safeUrl(g("s-ig-url")),igHandle=g("s-ig-handle"),unsub=Core.safeUrl(g("s-unsub"),{allowBrevo:true}),liUrl=Core.safeUrl(g("s-li-url")),gmUrl=Core.safeUrl(g("s-gm-url"));
+  var issueBar=emailText(g("issue-bar-text")),annTitle=emailText(g("ann-title")),annQuote=emailText(g("ann-quote")),annAuthor=emailText(g("ann-author"));
+  var footerName=emailText(g("footer-name")),footerAddr=emailText(g("footer-addr"));
+  var featTitle=emailText(g("feat-title")),featDate=emailText(g("feat-date")),featLoc=emailText(g("feat-location")),featDesc=emailText(g("feat-desc")),featBtnText=emailText(g("feat-btn-text")),featBtnUrl=Core.safeUrl(g("feat-btn-url"));
+  var featImgUrl=Core.safeUrl(g("feat-img-url")),featImgAlt=escHtml(g("feat-img-alt"));
 
-  var preheader=g("s-preheader")||"Your biweekly update from ASME at The Ohio State University.";
-  var featImgBlock=(showFeatured&&showFeatImg&&featImgUrl)?'<tr><td style="padding:0 26px 16px;"><img src="'+featImgUrl+'" alt="'+featImgAlt+'" width="100%" style="width:100%;height:auto;border-radius:6px;display:block;"></td></tr>':"";
-  var featButtonBlock=showFeatButton?'<a href="'+featBtnUrl+'" style="display:inline-block;background:'+T.accent+';color:'+T.buttonText+';font-family:Arial,sans-serif;font-size:13px;font-weight:700;padding:12px 26px;border-radius:999px;">'+featBtnText+'</a>':"";
+  var preheader=emailText(g("s-preheader")||"Your biweekly update from ASME at The Ohio State University.");
+  var featImgBlock=(showFeatured&&showFeatImg&&featImgUrl)?'<tr><td style="padding:0 26px 16px;"><img src="'+escHtml(featImgUrl)+'" alt="'+featImgAlt+'" width="100%" style="width:100%;height:auto;border-radius:6px;display:block;"></td></tr>':"";
+  var featButtonBlock=(showFeatButton&&featBtnUrl&&featBtnText)?'<a href="'+escHtml(featBtnUrl)+'" style="display:inline-block;background:'+T.accent+';color:'+T.buttonText+';font-family:Arial,sans-serif;font-size:13px;font-weight:700;padding:12px 26px;border-radius:999px;text-decoration:none;">'+featBtnText+'</a>':"";
 
   var featuredBlock=showFeatured?
     '\n              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.headerBg+';border-radius:16px;overflow:hidden;">'+
@@ -648,17 +779,18 @@ function generateHTML(){
   var eventCards=events.map(function(ev){
     var bar=getAccentColor(ev.accent),dc=getDateColor(ev.accent);
     var metaParts=[ev.time,ev.location].filter(Boolean);
-    var imgRow=ev.showImg&&ev.imgUrl?'<tr><td colspan="2" style="padding:0;"><img src="'+ev.imgUrl+'" alt="'+(ev.imgAlt||'Event')+'" width="100%" style="width:100%;height:auto;display:block;max-height:220px;object-fit:cover;"></td></tr>':"";
+    var imgUrl=Core.safeUrl(ev.imgUrl),linkUrl=Core.safeUrl(ev.linkUrl);
+    var imgRow=ev.showImg&&imgUrl?'<tr><td colspan="2" style="padding:0;"><img src="'+escHtml(imgUrl)+'" alt="'+escHtml(ev.imgAlt||'Event')+'" width="100%" style="width:100%;height:auto;display:block;max-height:220px;object-fit:cover;"></td></tr>':"";
     var radius=ev.showImg&&ev.imgUrl?"0":"12px";
     return '\n              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;background:'+T.cardBg+';border-radius:12px;overflow:hidden;">'+
       imgRow+
       '<tr><td width="5" style="background:'+bar+';border-radius:'+radius+' 0 0 '+radius+';font-size:0;">&nbsp;</td>'+
       '<td style="padding:17px 18px;">'+
-      '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+dc+';font-size:10px;font-weight:700;letter-spacing:1px;">'+ev.date+'</p>'+
-      '<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.title+';font-size:15px;font-weight:700;">'+ev.title+'</p>'+
-      (metaParts.length?'<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.muted+';font-size:12px;">'+metaParts.join(' \u00b7 ')+'</p>':'')+
-      '<p style="margin:0'+(ev.showLink&&ev.linkUrl?' 0 12px':'')+';font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.6;">'+ev.description+'</p>'+
-      (ev.showLink&&ev.linkUrl?'<a href="'+ev.linkUrl+'" style="display:inline-block;background:'+bar+';color:#ffffff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:8px 18px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a>':'')+
+      '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+dc+';font-size:10px;font-weight:700;letter-spacing:1px;">'+emailText(ev.date)+'</p>'+
+      '<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.title+';font-size:15px;font-weight:700;">'+emailText(ev.title)+'</p>'+
+      (metaParts.length?'<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.muted+';font-size:12px;">'+emailText(metaParts.join(' \u00b7 '))+'</p>':'')+
+      '<p style="margin:0'+(ev.showLink&&linkUrl?' 0 12px':'')+';font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.6;">'+emailText(ev.description)+'</p>'+
+      (ev.showLink&&linkUrl?'<a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+bar+';color:#ffffff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:8px 18px;border-radius:999px;text-decoration:none;">'+emailText(ev.linkText||'Learn More')+'</a>':'')+
       '</td></tr></table>';
   }).join("");
 
@@ -680,13 +812,13 @@ function generateHTML(){
       return '<td class="stack" width="33.33%" style="'+pad+';">'+
         '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.cardBg+';border-radius:12px;">'+
         '<tr><td align="center" style="padding:20px 12px;">'+
-        '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+T.title+';font-size:13px;font-weight:700;">'+g("ql"+n+"-title")+'</p>'+
-        '<p style="margin:0 0 14px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;line-height:1.5;">'+g("ql"+n+"-sub")+'</p>'+
-        '<a href="'+g("ql"+n+"-url")+'" style="background:'+T.headerBg+';color:'+T.title+';border:1px solid '+T.border+';border-radius:999px;padding:8px 14px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;">'+g("ql"+n+"-btn")+'</a>'+
+        '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+T.title+';font-size:13px;font-weight:700;">'+emailText(g("ql"+n+"-title"))+'</p>'+
+        '<p style="margin:0 0 14px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;line-height:1.5;">'+emailText(g("ql"+n+"-sub"))+'</p>'+
+        '<a href="'+emailUrl(g("ql"+n+"-url"))+'" style="background:'+T.headerBg+';color:'+T.title+';border:1px solid '+T.border+';border-radius:999px;padding:8px 14px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;text-decoration:none;">'+emailText(g("ql"+n+"-btn"))+'</a>'+
         '</td></tr></table></td>';
     }).join("")+'</tr></table>':"";
 
-  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+logo+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          '+buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl)+'\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+unsub+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
+  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+escHtml(logo)+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          '+buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl)+'\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+escHtml(unsub)+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
 }
 
 
@@ -707,6 +839,7 @@ function autoSave(){
 
 function collectState(){
   return{
+    schemaVersion:Core.SCHEMA_VERSION,
     events:events,showFeatured:showFeatured,showAnnounce:showAnnounce,
     showLinks:showLinks,showFeatImg:showFeatImg,showFeatButton:showFeatButton,activeTheme:activeTheme,
     fields:{
@@ -727,27 +860,25 @@ function collectState(){
 
 function applyState(state){
   if(!state) return;
-  events=state.events||events; showFeatured=state.showFeatured!==undefined?state.showFeatured:true;
-  showAnnounce=state.showAnnounce!==undefined?state.showAnnounce:true;
-  showLinks=state.showLinks!==undefined?state.showLinks:true;
-  showFeatImg=state.showFeatImg||false;
-  showFeatButton=state.showFeatButton!==undefined?state.showFeatButton:true;
-  activeTheme=state.activeTheme||"navy";
-  if(state.fields) Object.keys(state.fields).forEach(function(k){
-    var el=document.getElementById(k); if(el) el.value=state.fields[k];
+  var clean=Core.sanitizeState(state);
+  events=clean.events; nextId=Core.nextEventId(events,100);
+  showFeatured=clean.showFeatured; showAnnounce=clean.showAnnounce; showLinks=clean.showLinks;
+  showFeatImg=clean.showFeatImg; showFeatButton=clean.showFeatButton; activeTheme=clean.activeTheme;
+  if(clean.fields) Object.keys(clean.fields).forEach(function(k){
+    var el=document.getElementById(k); if(el) el.value=clean.fields[k];
   });
   // Sync toggle buttons
   ["featured","announce","links"].forEach(function(w){
     var on=(w==="featured"?showFeatured:w==="announce"?showAnnounce:showLinks);
     var btn=document.getElementById("toggle-"+w);
-    if(btn){btn.textContent=on?"On":"Off";btn.className="btn btn-toggle "+(on?"on":"off");}
+    if(btn){btn.textContent=on?"On":"Off";btn.className="btn btn-toggle "+(on?"on":"off");btn.setAttribute("aria-pressed",String(on));}
   });
   var fi=document.getElementById("toggle-feat-img");
-  if(fi){fi.textContent=showFeatImg?"On":"Off";fi.className="btn btn-sm btn-toggle "+(showFeatImg?"on":"off");}
+  if(fi){fi.textContent=showFeatImg?"On":"Off";fi.className="btn btn-sm btn-toggle "+(showFeatImg?"on":"off");fi.setAttribute("aria-pressed",String(showFeatImg));}
   var fb=document.getElementById("toggle-feat-btn");
-  if(fb){fb.textContent=showFeatButton?"On":"Off";fb.className="btn btn-toggle "+(showFeatButton?"on":"off");}
+  if(fb){fb.textContent=showFeatButton?"On":"Off";fb.className="btn btn-toggle "+(showFeatButton?"on":"off");fb.setAttribute("aria-pressed",String(showFeatButton));}
   document.getElementById("feat-img-fields").style.display=showFeatImg?"block":"none";
-  buildThemeChips(); renderEventList(); render();
+  buildThemeChips(); renderEventList(); renderCalendarList(); render();
 }
 
 function restoreDraft(){
@@ -759,8 +890,54 @@ function restoreDraft(){
   renderEventList(); render();
 }
 
+function backupCurrentDraft(reason){
+  try{
+    localStorage.setItem("asme_nl_previous_draft",JSON.stringify({
+      reason:reason||"Before change",savedAt:new Date().toISOString(),state:Core.sanitizeState(collectState())
+    }));
+  }catch(error){console.warn("Draft backup failed:",error);}
+}
+
+function downloadJson(data,fileName){
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=fileName;a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+
+function exportDraft(){
+  downloadJson(Core.createDraftDocument(collectState()),"asme-newsletter-draft.json");
+}
+
+function importDraft(ev){
+  var file=ev.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(event){
+    try{
+      var state=Core.readDraftDocument(event.target.result);
+      backupCurrentDraft("Before importing draft");
+      applyState(state);autoSave();
+      alert("Draft imported. Your previous draft can be restored from the Templates tab.");
+    }catch(error){alert("Draft import failed: "+error.message);}
+  };
+  reader.readAsText(file);ev.target.value="";
+}
+
+function restorePreviousDraft(){
+  try{
+    var raw=localStorage.getItem("asme_nl_previous_draft");
+    if(!raw){alert("No previous draft backup is available yet.");return;}
+    var backup=JSON.parse(raw);
+    if(!backup.state)throw new Error("Backup is invalid");
+    var current=Core.sanitizeState(collectState());
+    applyState(backup.state);
+    localStorage.setItem("asme_nl_previous_draft",JSON.stringify({reason:"Before restore",savedAt:new Date().toISOString(),state:current}));
+    autoSave();
+  }catch(error){alert("Previous draft could not be restored: "+error.message);}
+}
+
 /* ── TEMPLATES ── */
-function getTemplates(){try{return JSON.parse(localStorage.getItem("asme_nl_templates")||"[]");}catch(e){return[];}}
+function getTemplates(){try{var value=JSON.parse(localStorage.getItem("asme_nl_templates")||"[]");return Array.isArray(value)?value:[];}catch(e){return[];}}
 function setTemplates(t){localStorage.setItem("asme_nl_templates",JSON.stringify(t));}
 
 function saveTemplate(){
@@ -777,7 +954,7 @@ function saveTemplate(){
 function loadTemplate(name){
   var tpls=getTemplates();
   var t=tpls.find(function(t){return t.name===name;});
-  if(t) applyState(t.state);
+  if(t){backupCurrentDraft("Before loading template");applyState(t.state);}
 }
 
 function deleteTemplate(name){
@@ -787,7 +964,7 @@ function deleteTemplate(name){
 
 function loadTemplateByIndex(index){
   var t=getTemplates()[index];
-  if(t) applyState(t.state);
+  if(t){backupCurrentDraft("Before loading template");applyState(t.state);}
 }
 
 function deleteTemplateByIndex(index){
@@ -984,7 +1161,7 @@ function loadBuiltInTemplate(key){
       ]
     }
   };
-  if(templates[key]) applyTemplateState(templates[key]);
+  if(templates[key]){backupCurrentDraft("Before loading built-in template");applyTemplateState(templates[key]);}
 }
 
 /* ── DUPLICATE EVENT ── */
@@ -1030,17 +1207,34 @@ function toggleFullscreen(){
 /* ── PRE-SEND CHECKLIST ── */
 function checklistThenCopy(){
   var issues=[];
-  if(!g("s-logo")) issues.push({ok:false,label:"Logo URL is empty",detail:"Set it in the Settings tab."});
-  else issues.push({ok:true,label:"Logo URL set",detail:""});
-  if(!g("s-subject")) issues.push({ok:false,label:"No email subject line",detail:"Add one in Settings > Email Subject Line."});
-  else issues.push({ok:true,label:"Subject line: "+g("s-subject").substring(0,40)+(g("s-subject").length>40?"...":""),detail:""});
+  function add(ok,label,detail){issues.push({ok:ok,label:label,detail:detail||""});}
+  add(Boolean(Core.safeUrl(g("s-logo"))),Core.safeUrl(g("s-logo"))?"Logo URL looks valid":"Logo URL is missing or invalid",Core.safeUrl(g("s-logo"))?"":"Use an https:// image URL in Settings.");
+  var subject=g("s-subject").trim();
+  add(Boolean(subject),subject?"Subject line: "+subject.substring(0,50)+(subject.length>50?"…":""):"No email subject line",subject?"":"Add one in Settings.");
+  if(subject.length>65)add(false,"Subject line may be too long","Consider shortening it so inboxes are less likely to truncate it.");
+  var preheader=g("s-preheader").trim();
+  add(Boolean(preheader),preheader?"Preheader text added":"Preheader text is empty",preheader?"":"Add a concise inbox preview line in Settings.");
   if(events.length===0) issues.push({ok:false,label:"No events added",detail:"Add at least one event in the Events tab."});
   else issues.push({ok:true,label:events.length+" event"+(events.length!==1?"s":"")+" added",detail:""});
-  var emptyEvents=events.filter(function(e){return e.title==="New Event"||e.date==="MON DD";});
-  if(emptyEvents.length) issues.push({ok:false,label:emptyEvents.length+" event(s) still have placeholder text",detail:"Update date and title for each event."});
-  if(g("s-ig-url").indexOf("instagram.com")>-1) issues.push({ok:true,label:"Instagram link looks good",detail:""});
-  else issues.push({ok:false,label:"Instagram URL may be wrong",detail:"Check Settings > Instagram URL."});
-  issues.push({ok:true,label:'Unsubscribe variable: '+g("s-unsub"),detail:"Brevo will auto-fill this."});
+  var placeholderEvents=events.filter(function(e){return !e.title.trim()||!e.date.trim()||/^(New Event|Event Name|MON DD)$/i.test(e.title.trim())||e.date.trim()==="MON DD";});
+  if(placeholderEvents.length)add(false,placeholderEvents.length+" event(s) have missing or placeholder content","Update each event title and date.");
+  events.forEach(function(event,index){
+    if(event.showLink&&!Core.safeUrl(event.linkUrl))add(false,"Event "+(index+1)+" has an invalid button URL","Use an http:// or https:// link, or turn the button off.");
+    if(event.showImg&&(!Core.safeUrl(event.imgUrl)||!event.imgAlt.trim()))add(false,"Event "+(index+1)+" image needs attention","Use a valid image URL and meaningful alt text.");
+  });
+  if(showFeatured){
+    add(Boolean(g("feat-title").trim()),"Featured event title "+(g("feat-title").trim()?"added":"is missing"),g("feat-title").trim()?"":"Complete the Featured tab or turn the section off.");
+    if(showFeatButton)add(Boolean(Core.safeUrl(g("feat-btn-url"))),"Featured button URL "+(Core.safeUrl(g("feat-btn-url"))?"looks valid":"is invalid"),Core.safeUrl(g("feat-btn-url"))?"":"Use an http:// or https:// link.");
+    if(showFeatImg)add(Boolean(Core.safeUrl(g("feat-img-url"))&&g("feat-img-alt").trim()),"Featured image "+(Core.safeUrl(g("feat-img-url"))&&g("feat-img-alt").trim()?"looks ready":"needs a valid URL and alt text"),"");
+  }
+  if(showLinks)[1,2,3].forEach(function(n){
+    var ready=Boolean(g("ql"+n+"-title").trim()&&Core.safeUrl(g("ql"+n+"-url")));
+    add(ready,"Quick link "+n+" "+(ready?"looks ready":"is incomplete"),ready?"":"Add a title and valid URL, or turn Quick Links off.");
+  });
+  add(g("s-unsub").trim()==="{{ unsubscribe }}",g("s-unsub").trim()==="{{ unsubscribe }}"?"Brevo unsubscribe variable is correct":"Brevo unsubscribe variable is incorrect",'Use exactly {{ unsubscribe }}.');
+  var address=g("footer-addr").trim();
+  var addressLooksComplete=/\d+\s+.+,\s*.+\b\d{5}(?:-\d{4})?\b/.test(address);
+  add(addressLooksComplete,addressLooksComplete?"Footer includes a postal address":"Footer may be missing a full postal address",addressLooksComplete?"":"Enter a verified street or mailing address before sending commercial campaigns.");
 
   var el=document.getElementById("checklist-items");
   el.innerHTML=issues.map(function(i){
@@ -1057,9 +1251,14 @@ function checklistThenCopy(){
     "Everything looks ready. Copy your HTML when you are ready to paste it into Brevo.";
   document.getElementById("checklist-primary").textContent=hasIssues?"Copy Anyway":"Copy HTML";
   document.getElementById("checklist-modal").classList.add("open");
+  lastFocusedBeforeModal=document.activeElement;
+  setTimeout(function(){document.getElementById("checklist-primary").focus();},0);
 }
 
-function closeChecklist(){document.getElementById("checklist-modal").classList.remove("open");}
+function closeChecklist(){
+  document.getElementById("checklist-modal").classList.remove("open");
+  if(lastFocusedBeforeModal&&lastFocusedBeforeModal.focus)lastFocusedBeforeModal.focus();
+}
 function proceedCopy(){closeChecklist();doCopy();}
 
 function showSubjectToast(){
@@ -1093,6 +1292,7 @@ function doCopy(){
 /* ── NEW ISSUE ── */
 function confirmNewIssue(){
   if(!confirm("Start a fresh issue? This will clear the current draft. Your saved templates will stay.")) return;
+  backupCurrentDraft("Before starting new issue");
   localStorage.removeItem("asme_nl_draft");
   // Reset to defaults
   events=[
@@ -1110,14 +1310,10 @@ function confirmNewIssue(){
   Object.keys(blanks).forEach(function(k){var el=document.getElementById(k);if(el)el.value=blanks[k];});
   ["featured","announce","links"].forEach(function(w){
     var on=true; var btn=document.getElementById("toggle-"+w);
-    if(btn){btn.textContent="On";btn.className="btn btn-toggle on";}
+    if(btn){btn.textContent="On";btn.className="btn btn-toggle on";btn.setAttribute("aria-pressed","true");}
   });
   buildThemeChips(); renderEventList(); render();
-  // Switch to events tab
-  document.querySelectorAll(".tab-panel").forEach(function(p){p.classList.remove("active");});
-  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("tab-events").classList.add("active");
-  document.querySelector('.tab-btn[onclick*="events"]').classList.add("active");
+  switchTabByName("events");
 }
 
 /* ── EXPORT / IMPORT TEMPLATES ── */
@@ -1129,6 +1325,7 @@ function exportTemplates(){
   a.href=URL.createObjectURL(blob);
   a.download="asme-newsletter-templates.json";
   a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
 }
 
 function importTemplates(ev){
@@ -1139,15 +1336,17 @@ function importTemplates(ev){
       var imported=JSON.parse(e.target.result);
       if(!Array.isArray(imported)) throw new Error("Invalid format");
       var existing=getTemplates();
-      imported.forEach(function(t){
-        if(t.name&&t.state){
-          existing=existing.filter(function(x){return x.name!==t.name;});
-          existing.push(t);
+      var accepted=0;
+      imported.slice(0,100).forEach(function(t){
+        if(t&&typeof t.name==="string"&&t.name.trim()&&t.state){
+          var clean={name:t.name.trim().slice(0,120),state:Core.sanitizeState(t.state),saved:String(t.saved||new Date().toLocaleDateString()).slice(0,80)};
+          existing=existing.filter(function(x){return x.name!==clean.name;});
+          existing.push(clean);accepted++;
         }
       });
       setTemplates(existing);
       renderTemplateList();
-      alert("Imported "+imported.length+" template(s).");
+      alert("Imported "+accepted+" valid template(s).");
     }catch(e){alert("Import failed: "+e.message);}
   };
   reader.readAsText(file);
@@ -1167,11 +1366,12 @@ function fallbackCopy(text,cb){var ta=document.createElement("textarea");ta.valu
 function downloadHTML(){
   var html=generateHTML(),blob=new Blob([html],{type:"text/html"}),a=document.createElement("a");
   a.href=URL.createObjectURL(blob);a.download="asme-osu-newsletter.html";a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
 }
 </script>
 <!-- CHECKLIST MODAL -->
-<div class="modal-overlay" id="checklist-modal">
-  <div class="modal">
+<div class="modal-overlay" id="checklist-modal" role="dialog" aria-modal="true" aria-labelledby="checklist-title" aria-describedby="checklist-subtitle">
+  <div class="modal" tabindex="-1">
     <h2 id="checklist-title">Ready to Send?</h2>
     <p class="modal-sub" id="checklist-subtitle">Quick check before copying your HTML to Brevo.</p>
     <div id="checklist-items"></div>

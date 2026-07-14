@@ -1,0 +1,17 @@
+{
+  "name": "asme-newsletter-builder",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "sync:calendar": "node scripts/sync-calendar.mjs",
+    "check": "npm test && node scripts/check-html.mjs"
+  },
+  "dependencies": {
+    "node-ical": "0.26.1"
+  },
+  "devDependencies": {
+    "jsdom": "28.1.0"
+  }
+}

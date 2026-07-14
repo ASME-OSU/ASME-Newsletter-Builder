@@ -1,56 +1,79 @@
 # ASME at OSU Newsletter Builder
 
-A single-file HTML newsletter builder for creating ASME at OSU newsletter campaigns and copying the finished HTML into Brevo.
+A static newsletter builder for creating ASME at Ohio State campaigns and copying email-safe HTML into Brevo.
 
-## How to Use
+**Open the builder:** [asme-osu.github.io/ASME-Newsletter-Builder](https://asme-osu.github.io/ASME-Newsletter-Builder/)
 
-1. Open `asme-newsletter-builder (2).html` in your browser.
-2. Edit the newsletter content using the left-side controls.
-3. Add, remove, duplicate, or reorder events as needed.
-4. Use **Templates** if you want to start from a preset newsletter layout.
-5. Use **Settings** to update the logo URL, subject line, preheader, social links, and footer text.
-6. Click **Copy HTML for Brevo**.
-7. Review the pre-send checklist.
-8. Click **Copy HTML**, then paste it into Brevo using **Code your own**.
+## Build a newsletter
 
-## Main Features
+1. Open the hosted builder.
+2. Import upcoming events from the **Calendar** tab or add an event manually.
+3. Edit any imported event to add newsletter-specific wording, images, or buttons.
+4. Customize the featured event, announcement, quick links, theme, and settings.
+5. Click **Copy HTML for Brevo** and review the pre-send checklist.
+6. In Brevo, choose **Design → Code your own** and paste the copied HTML.
+7. Copy the subject line from the confirmation shown by the builder.
 
-- Editable featured event section
-- Upcoming events list with add, duplicate, remove, and reorder controls
-- Optional event images
-- Optional event RSVP/link buttons
-- Announcement section
-- Quick links section
-- Multiple color themes, including a light theme
-- Built-in newsletter templates
-- Brevo-ready HTML export
-- Downloadable `.html` export
-- Browser auto-save using `localStorage`
+The builder auto-saves in the current browser. Drafts are not automatically shared between computers.
 
-## Brevo Workflow
+## Calendar importing
 
-In Brevo, create or edit a campaign, go to the design step, choose **Code your own**, and paste the HTML copied from the builder. The builder includes email-safe table-based layout styles so the newsletter should work better across email clients than normal webpage HTML.
+The **Calendar** tab lists upcoming events from the public ASME Google Calendar. Clicking **Import Event** creates a normal editable newsletter event containing the calendar title, date, time, location, description, and source link. Editing the imported copy does not change Google Calendar.
 
-## SharePoint Workflow
+The browser reads `calendar-events.json` from the same GitHub Pages site. An hourly GitHub Actions workflow refreshes that file from the public Google iCal feed. This avoids requiring officers to sign in to Google or exposing an API key in browser code.
 
-Upload the HTML file to SharePoint or link to the GitHub-hosted version. Users can open the builder in their browser, make edits, and copy the finished newsletter HTML for Brevo. The builder saves drafts only in the user's current browser, not to SharePoint or GitHub automatically.
+If an event is changed in Google Calendar after it was imported, remove the newsletter copy and import it again if you want the new calendar details. Custom newsletter edits are intentionally never overwritten automatically.
 
-## Auto-Save
+## Share an editable draft
 
-The builder auto-saves drafts to the browser's local storage. This means:
+Use **Templates → Export Draft .json** to download the entire editable issue. Another officer can use **Import Draft .json** to continue editing it. The builder keeps one automatic previous-draft backup before potentially destructive actions such as importing a draft, loading a template, or starting a new issue.
 
-- Drafts stay available on the same computer and browser.
-- Drafts do not automatically sync between people.
-- Clearing browser data may delete the saved draft.
-- Use templates or downloaded HTML if you need to share a version with someone else.
+Finished `.html` exports are email previews, not editable builder projects. Share the draft JSON when collaboration is required.
 
-## Files
+## Main features
 
-- `asme-newsletter-builder (2).html` - the newsletter builder app
-- `sharepoint-blurb.md` - short usage text for a SharePoint page
-- `README.md` - GitHub documentation
+- Google Calendar event importing
+- Editable featured event and upcoming event cards
+- Add, duplicate, remove, and reorder events
+- Optional images and event buttons
+- Announcement and quick-link sections
+- Built-in and user-saved templates
+- Multiple email color themes
+- Browser autosave and previous-draft recovery
+- Versioned editable draft import/export
+- Brevo-ready HTML and downloadable HTML export
+- URL, placeholder, image-alt, unsubscribe, and footer checks before copying
+- Responsive editor and keyboard-visible focus states
 
-## Recommended GitHub Setup
+## Brevo and footer requirements
 
-Put `asme-newsletter-builder (2).html` and this `README.md` in the repository. If using GitHub Pages, rename the HTML file to `index.html` so the builder opens as the main page.
+The unsubscribe field should contain exactly `{{ unsubscribe }}`. Brevo replaces that placeholder when sending.
 
+Before sending, replace the default footer text with a verified ASME/Ohio State mailing address appropriate for the campaign. The checklist warns when the footer does not resemble a complete postal address but still allows an officer to review and proceed.
+
+## Local development
+
+Requirements: Node.js 24 or newer.
+
+```bash
+npm install
+npm run check
+npm run sync:calendar
+```
+
+Serve the repository with a local web server when testing calendar imports. Opening `index.html` directly still supports the editor, but browsers generally block a `file://` page from fetching `calendar-events.json`.
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000`.
+
+## Repository structure
+
+- `index.html` — builder interface and email generator
+- `newsletter-core.js` — state validation, escaping, draft schema, and calendar mapping helpers
+- `calendar-events.json` — generated public event feed used by the hosted builder
+- `scripts/sync-calendar.mjs` — Google iCal synchronization script
+- `test/` — Node tests for state, security, draft, and calendar behavior
+- `.github/workflows/` — tests and hourly calendar synchronization
