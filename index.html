@@ -16,6 +16,12 @@
     .brand-label { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #ff9999; margin-bottom: 2px; }
     .brand-title { font-size: 17px; color: #fff; }
     .topbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .top-link-btn { color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:7px; padding:9px 14px; font-size:12px; font-weight:700; font-family:Arial,sans-serif; line-height:1; text-decoration:none; white-space:nowrap; transition:background 0.15s, border-color 0.15s; }
+    .top-link-btn:hover { border-color:rgba(255,255,255,0.45); }
+    .top-link-btn.brevo { background:#bb0000; }
+    .top-link-btn.brevo:hover { background:#990000; }
+    .top-link-btn.builder { background:rgba(255,255,255,0.1); color:#fff; }
+    .top-link-btn.builder:hover { background:rgba(255,255,255,0.17); }
     #copy-btn { background: #bb0000; color: #fff; border: none; border-radius: 7px; padding: 9px 22px; font-size: 13px; font-weight: 700; font-family: Arial,sans-serif; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
     #copy-btn:hover { background: #990000; }
     #copy-btn.success { background: #1a7a1a; }
@@ -182,7 +188,7 @@
     .calendar-event-desc { color:#b8c5d4; font-family:Arial,sans-serif; font-size:11px; line-height:1.5; margin-bottom:9px; white-space:pre-line; }
     .source-badge { display:inline-block; background:rgba(76,175,80,0.16); color:#8ee196; border-radius:999px; padding:3px 7px; font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
     .draft-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [role="button"]:focus-visible { outline:3px solid #ffd966; outline-offset:2px; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [role="button"]:focus-visible { outline:3px solid #ffd966; outline-offset:2px; }
     @media (max-width:720px) {
       #app { height:auto; min-height:100vh; }
       #main { display:block; overflow:visible; }
@@ -190,7 +196,7 @@
       #preview-panel { overflow:visible; padding:14px 8px; }
       #topbar { position:sticky; top:0; z-index:900; }
       .topbar-right { width:100%; }
-      #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; }
+      .top-link-btn, #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; text-align:center; }
       .draft-actions { grid-template-columns:1fr; }
     }
   </style>
@@ -203,6 +209,8 @@
       <div class="brand-title">Newsletter Builder</div>
     </div>
     <div class="topbar-right">
+      <a class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo &#8599;</a>
+      <a class="top-link-btn builder" href="https://asme-osu.github.io/ASME-Newsletter-Builder/" target="_blank" rel="noopener noreferrer">Newsletter Builder &#8599;</a>
       <span id="save-indicator">&#9679; Auto-saved</span>
       <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
       <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
