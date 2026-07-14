@@ -4,6 +4,8 @@ A static newsletter builder for creating ASME at Ohio State campaigns and copyin
 
 **Open the builder:** [asme-osu.github.io/ASME-Newsletter-Builder](https://asme-osu.github.io/ASME-Newsletter-Builder/)
 
+**Officer instructions:** [Read the short user guide](USER_GUIDE.md)
+
 ## Build a newsletter
 
 1. Open the hosted builder.
