@@ -24,7 +24,7 @@ If the calendar does not load, click **Refresh Events** or **Open Calendar**. Th
 - **Announce** adds or hides a message from the board.
 - **Links** manages the three quick-link cards.
 - **Design** selects the color theme and updates the issue bar and mailing-address footer.
-- When using the **Light** theme, add the optional **Light Theme Logo URL** in **Settings** if the regular logo was designed for a dark background.
+- The builder automatically uses the white-text logo for dark themes and the black-text logo for the **Light** theme. Both URLs can be changed in **Settings** when needed.
 - Watch the **Live Preview** while editing; use **Full Preview** for a final visual review.
 
 Use complete `https://` links. Every enabled image should have a public image URL and useful alt text.
