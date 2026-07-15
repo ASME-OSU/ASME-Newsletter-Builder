@@ -13,6 +13,8 @@
     ::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 3px; }
     #app { display: flex; flex-direction: column; height: 100vh; }
     #topbar { background: #0f3460; border-bottom: 3px solid #bb0000; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; gap: 10px; flex-wrap: wrap; }
+    .topbar-left { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .topbar-shortcuts { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .brand-label { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #ff9999; margin-bottom: 2px; }
     .brand-title { font-size: 17px; color: #fff; }
     .topbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -82,49 +84,49 @@
     .pv-topbar { height: 6px; }
     .pv-logo-wrap { padding: 24px 30px 18px; text-align: center; }
     .pv-logo-wrap img { max-width: 360px; width: 100%; height: auto; display: inline-block; }
-    .pv-issue { padding: 10px 24px; text-align: center; font-family: Arial,sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
-    .pv-body { padding: 18px 14px; }
-    .pv-featured { border-radius: 14px; display: flex; margin-bottom: 16px; overflow: hidden; }
+    .pv-issue { padding: 14px 28px; text-align: center; font-family: Arial,sans-serif; font-size: 12px; line-height:1.4; font-weight: 700; letter-spacing: 2.4px; color: #fff; text-transform: uppercase; }
+    .pv-body { padding: 24px 18px 18px; }
+    .pv-featured { border-radius: 16px; display: flex; overflow: hidden; }
     .pv-feat-bar { width: 6px; flex-shrink: 0; }
-    .pv-feat-content { padding: 20px 18px; flex: 1; }
-    .pv-feat-tag { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 10px; }
-    .pv-feat-title { font-family: Georgia,serif; color: #fff; font-size: 20px; line-height: 1.3; margin-bottom: 10px; }
-    .pv-feat-date { font-family: Arial,sans-serif; color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-    .pv-feat-loc { font-family: Arial,sans-serif; color: #a8c4e0; font-size: 12px; margin-bottom: 12px; }
+    .pv-feat-content { padding: 28px 26px 26px; flex: 1; }
+    .pv-feat-tag { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 12px; }
+    .pv-feat-title { font-family: Georgia,serif; color: #fff; font-size: 27px; line-height: 1.25; font-weight:400; margin-bottom: 14px; }
+    .pv-feat-date { font-family: Arial,sans-serif; color: #fff; font-size: 14px; line-height:1.5; font-weight: 700; margin-bottom: 6px; }
+    .pv-feat-loc { font-family: Arial,sans-serif; color: #a8c4e0; font-size: 13px; line-height:1.5; margin-bottom: 18px; }
     .pv-feat-img { width: 100%; max-height: 200px; object-fit: cover; display: block; margin-bottom: 14px; border-radius: 6px; }
-    .pv-feat-desc { font-family: Arial,sans-serif; color: #d8e2ee; font-size: 13px; line-height: 1.65; margin-bottom: 14px; }
-    .pv-feat-btn { font-family: Arial,sans-serif; font-size: 12px; font-weight: 700; padding: 9px 20px; border-radius: 999px; display: inline-block; color: #fff; }
-    .pv-section-title { border-bottom: 1px solid rgba(255,255,255,0.14); padding-bottom: 8px; margin-bottom: 4px; font-family: Georgia,serif; color: #fff; font-size: 18px; }
-    .pv-event { border-radius: 10px; margin-top: 10px; overflow: hidden; }
+    .pv-feat-desc { font-family: Arial,sans-serif; color: #d8e2ee; font-size: 14px; line-height: 1.7; margin-bottom: 22px; }
+    .pv-feat-btn { font-family: Arial,sans-serif; font-size: 13px; font-weight: 700; padding: 12px 26px; border-radius: 999px; display: inline-block; color: #fff; }
+    .pv-section-title { border-bottom: 1px solid rgba(255,255,255,0.14); padding-bottom: 10px; margin:20px 0 0; font-family: Georgia,serif; color: #fff; font-size: 22px; line-height:1.3; font-weight:400; }
+    .pv-event { border-radius: 12px; margin-top: 12px; overflow: hidden; }
     .pv-event-top { display: flex; }
     .pv-event-bar { width: 5px; flex-shrink: 0; }
-    .pv-event-content { padding: 13px 14px; flex: 1; }
+    .pv-event-content { padding: 17px 18px; flex: 1; }
     .pv-event-date { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
-    .pv-event-title { font-family: Arial,sans-serif; color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-    .pv-event-meta { font-family: Arial,sans-serif; color: #a8c4e0; font-size: 11px; margin-bottom: 5px; }
+    .pv-event-title { font-family: Arial,sans-serif; color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .pv-event-meta { font-family: Arial,sans-serif; color: #a8c4e0; font-size: 12px; margin-bottom: 6px; }
     .pv-event-desc { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 12px; line-height: 1.6; }
     .pv-event-img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
-    .pv-announcement { border-radius: 14px; padding: 20px; margin-top: 14px; }
-    .pv-ann-title { font-family: Georgia,serif; color: #fff; font-size: 18px; margin-bottom: 12px; }
+    .pv-announcement { border-radius: 16px; padding: 26px; margin-top: 20px; }
+    .pv-ann-title { font-family: Georgia,serif; color: #fff; font-size: 22px; font-weight:400; margin-bottom: 16px; }
     .pv-ann-inner { display: flex; gap: 12px; }
     .pv-ann-bar { width: 4px; border-radius: 2px; flex-shrink: 0; }
-    .pv-ann-quote { font-family: Georgia,serif; color: #e8eef6; font-size: 14px; line-height: 1.75; font-style: italic; margin-bottom: 8px; }
+    .pv-ann-quote { font-family: Georgia,serif; color: #e8eef6; font-size: 16px; line-height: 1.75; font-style: italic; margin-bottom: 12px; }
     .pv-feat-desc, .pv-event-desc, .pv-ann-quote { white-space: pre-line; }
     .pv-ann-author { font-family: Arial,sans-serif; color: #94a3b8; font-size: 12px; }
     .pv-ann-author strong { color: #fff; }
-    .pv-quicklinks { display: flex; gap: 8px; margin-top: 14px; }
-    .pv-ql { flex: 1; border-radius: 10px; padding: 14px 8px; text-align: center; }
-    .pv-ql-title { font-family: Arial,sans-serif; color: #fff; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-    .pv-ql-sub { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 10px; line-height: 1.5; margin-bottom: 10px; }
-    .pv-ql-btn { background: #0f3460; color: #fff; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 5px 12px; font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; display: inline-block; }
-    .pv-footer { border-radius: 0 0 18px 18px; padding: 22px 28px; }
-    .pv-footer-name { font-family: Arial,sans-serif; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 9px; }
-    .pv-footer-addr { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 11px; line-height: 1.65; margin-bottom: 8px; }
+    .pv-quicklinks { display: flex; gap: 8px; margin-top: 20px; }
+    .pv-ql { flex: 1; border-radius: 12px; padding: 20px 12px; text-align: center; }
+    .pv-ql-title { font-family: Arial,sans-serif; color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .pv-ql-sub { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
+    .pv-ql-btn { background: #0f3460; color: #fff; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 8px 14px; font-family: Arial,sans-serif; font-size: 11px; font-weight: 700; display: inline-block; }
+    .pv-footer { border-radius: 0 0 18px 18px; padding: 30px 36px 26px; }
+    .pv-footer-name { font-family: Arial,sans-serif; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 12px; }
+    .pv-footer-addr { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 12px; line-height: 1.65; margin-bottom: 12px; }
     .pv-footer-links { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 11px; margin-bottom: 8px; }
     .pv-footer-links span { color: #fff; }
-    .pv-footer-unsub { font-family: Arial,sans-serif; color: #7f8ea3; font-size: 10px; line-height: 1.6; }
+    .pv-footer-unsub { font-family: Arial,sans-serif; color: #94a3b8; font-size: 10px; line-height: 1.6; }
     .pv-footer-unsub span { color: #a8c4e0; }
-    .empty-state { font-family: Arial,sans-serif; color: #7f8ea3; font-size: 13px; text-align: center; padding: 22px 0; }
+    .empty-state { font-family: Arial,sans-serif; color: #94a3b8; font-size: 13px; text-align: center; padding: 22px 0; }
     .tip-box { margin: 14px auto 0; max-width: 640px; background: #0f3460; border-radius: 8px; padding: 12px 16px; font-family: Arial,sans-serif; font-size: 12px; color: #a8c4e0; line-height: 1.6; }
     .tip-box strong { color: #fff; }
     .theme-row { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -165,7 +167,7 @@
     /* Starter template grid */
     .starter-template { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
     .starter-template h3 { font-family:Arial,sans-serif; color:#fff; font-size:12px; font-weight:700; margin-bottom:3px; }
-    .starter-template p { font-family:Arial,sans-serif; color:#7f8ea3; font-size:11px; line-height:1.4; }
+    .starter-template p { font-family:Arial,sans-serif; color:#94a3b8; font-size:11px; line-height:1.4; }
     /* Modal */
     .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); z-index:2000; align-items:center; justify-content:center; }
     .modal-overlay.open { display:flex; }
@@ -176,7 +178,7 @@
     .checklist-item:last-child { border-bottom:none; }
     .check-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
     .check-label { font-family:Arial,sans-serif; font-size:13px; color:#d8e2ee; line-height:1.4; }
-    .check-label small { display:block; color:#7f8ea3; font-size:11px; margin-top:2px; }
+    .check-label small { display:block; color:#94a3b8; font-size:11px; margin-top:2px; }
     .modal-actions { display:flex; gap:8px; margin-top:20px; justify-content:flex-end; }
     .calendar-toolbar { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px; }
     .calendar-status { font-family:Arial,sans-serif; font-size:11px; line-height:1.5; color:#a8c4e0; margin-bottom:10px; }
@@ -195,6 +197,8 @@
       #editor { width:100%; min-width:0; max-height:none; border-right:0; border-bottom:1px solid rgba(255,255,255,0.08); }
       #preview-panel { overflow:visible; padding:14px 8px; }
       #topbar { position:sticky; top:0; z-index:900; }
+      .topbar-left { width:100%; }
+      .topbar-shortcuts { flex:1; }
       .topbar-right { width:100%; }
       .top-link-btn, #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; text-align:center; }
       .draft-actions { grid-template-columns:1fr; }
@@ -204,13 +208,17 @@
 <body>
 <div id="app">
   <div id="topbar">
-    <div>
-      <div class="brand-label">ASME at OSU</div>
-      <div class="brand-title">Newsletter Builder</div>
+    <div class="topbar-left">
+      <div>
+        <div class="brand-label">ASME at OSU</div>
+        <div class="brand-title">Newsletter Builder</div>
+      </div>
+      <nav class="topbar-shortcuts" aria-label="External tools">
+        <a class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo &#8599;</a>
+        <a id="builder-shortcut" class="top-link-btn builder" href="https://asme-osu.github.io/ASME-Newsletter-Builder/" target="_blank" rel="noopener noreferrer">Builder &#8599;</a>
+      </nav>
     </div>
     <div class="topbar-right">
-      <a class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo &#8599;</a>
-      <a class="top-link-btn builder" href="https://asme-osu.github.io/ASME-Newsletter-Builder/" target="_blank" rel="noopener noreferrer">Newsletter Builder &#8599;</a>
       <span id="save-indicator">&#9679; Auto-saved</span>
       <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
       <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
@@ -316,6 +324,7 @@
           <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:0.6;">(preview line in inbox)</span></label><input id="s-preheader" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/></div>
           <div class="section-divider"></div>
           <div class="field"><label>Logo Image URL</label><input id="s-logo" oninput="render()"/></div>
+          <div class="field"><label>Light Theme Logo URL <span style="font-weight:400;opacity:0.75;">(optional)</span></label><input id="s-logo-light" placeholder="Uses the regular logo when empty" oninput="render()"/></div>
           <div class="field"><label>Website URL</label><input id="s-website" oninput="render()"/></div>
           <div class="field"><label>Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
           <div class="field"><label>Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
@@ -387,14 +396,33 @@ var events=[
   {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
 ];
 var THEMES={
-  navy:{name:"Navy",bg:"#071426",headerBg:"#0f3460",bodyBg:"#0d1f38",cardBg:"#162d52",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#7f8ea3",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
-  light:{name:"Light",bg:"#f3f6fb",headerBg:"#ffffff",bodyBg:"#eef3f8",cardBg:"#ffffff",accent:"#bb0000",title:"#101828",text:"#26364a",muted:"#52657a",subtle:"#40566f",soft:"#667085",faint:"#7a8699",border:"rgba(15,52,96,0.16)",tag:"#bb0000",buttonText:"#ffffff"},
-  slate:{name:"Slate",bg:"#0e1117",headerBg:"#1c2333",bodyBg:"#161b27",cardBg:"#1e2a3a",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#7f8ea3",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
-  dark:{name:"Dark",bg:"#111111",headerBg:"#1a1a1a",bodyBg:"#141414",cardBg:"#1f1f1f",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#7f8ea3",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
-  osu:{name:"OSU Red",bg:"#0a0a0a",headerBg:"#1a0000",bodyBg:"#0f0000",cardBg:"#1c0000",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#7f8ea3",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"}
+  navy:{name:"Navy",bg:"#071426",headerBg:"#0f3460",bodyBg:"#0d1f38",cardBg:"#162d52",buttonBg:"#0f3460",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
+  light:{name:"Light",bg:"#e9eef5",headerBg:"#e8eef5",bodyBg:"#f6f8fb",cardBg:"#ffffff",buttonBg:"#dbe4ee",accent:"#bb0000",title:"#172033",text:"#27364a",muted:"#4d6075",subtle:"#405267",soft:"#5d6e82",faint:"#596a7e",border:"rgba(15,52,96,0.20)",tag:"#9d0000",buttonText:"#ffffff"},
+  slate:{name:"Slate",bg:"#0e1117",headerBg:"#1c2333",bodyBg:"#161b27",cardBg:"#1e2a3a",buttonBg:"#1c2333",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
+  dark:{name:"Dark",bg:"#111111",headerBg:"#1a1a1a",bodyBg:"#141414",cardBg:"#1f1f1f",buttonBg:"#1a1a1a",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
+  osu:{name:"OSU Red",bg:"#0a0a0a",headerBg:"#1a0000",bodyBg:"#0f0000",cardBg:"#1c0000",buttonBg:"#1a0000",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"}
 };
 
+function shouldShowBuilderShortcut(hostname,pathname,isEmbedded){
+  if(isEmbedded)return true;
+  var hosted=String(hostname||"").toLowerCase()==="asme-osu.github.io";
+  var builderPath=/^\/ASME-Newsletter-Builder(?:\/|$)/i.test(String(pathname||""));
+  return !(hosted&&builderPath);
+}
+
+function updateBuilderShortcutVisibility(){
+  var shortcut=document.getElementById("builder-shortcut");if(!shortcut)return;
+  shortcut.hidden=!shouldShowBuilderShortcut(window.location.hostname,window.location.pathname,window.self!==window.top);
+}
+
+function getActiveLogoUrl(){
+  var defaultLogo=Core.safeUrl(g("s-logo"));
+  var lightLogo=Core.safeUrl(g("s-logo-light"));
+  return activeTheme==="light"&&lightLogo?lightLogo:defaultLogo;
+}
+
 window.onload=function(){
+  updateBuilderShortcutVisibility();
   document.getElementById("feat-title").value="Industry Night: Meet Top Engineering Employers";
   document.getElementById("feat-date").value="Thursday, May 29th \u00b7 6:00\u20138:30 PM";
   document.getElementById("feat-location").value="Hitchcock Hall, Room 131";
@@ -413,6 +441,7 @@ window.onload=function(){
   document.getElementById("footer-name").value="Ohio State ASME";
   document.getElementById("footer-addr").value="American Society of Mechanical Engineers \u00b7 Columbus, OH 43210";
   document.getElementById("s-logo").value="https://img.mailinblue.com/11115816/images/content_library/original/6a053291958112c68ca16655.png";
+  document.getElementById("s-logo-light").value="";
   document.getElementById("s-website").value="https://org.osu.edu/asme/";
   document.getElementById("s-ig-url").value="https://www.instagram.com/asmeohiostate/";
   document.getElementById("s-ig-handle").value="@asmeohiostate";
@@ -663,7 +692,7 @@ function buildSocialIconsPreview(T){
 
 function render(){
   var T=THEMES[activeTheme];
-  var logoUrl=Core.safeUrl(g("s-logo")),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
+  var logoUrl=getActiveLogoUrl(),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
   var annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
   var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location");
@@ -709,7 +738,7 @@ function render(){
     '<div class="pv-quicklinks">'+[1,2,3].map(function(n){
       return '<div class="pv-ql" style="background:'+T.cardBg+';"><div class="pv-ql-title" style="color:'+T.title+';">'+escHtml(g("ql"+n+"-title"))+'</div>'+
         '<div class="pv-ql-sub" style="color:'+T.subtle+';">'+escHtml(g("ql"+n+"-sub"))+'</div>'+
-        '<span class="pv-ql-btn" style="background:'+T.headerBg+';color:'+T.title+';border-color:'+T.border+';">'+escHtml(g("ql"+n+"-btn"))+'</span></div>';
+        '<span class="pv-ql-btn" style="background:'+T.buttonBg+';color:'+T.title+';border-color:'+T.border+';">'+escHtml(g("ql"+n+"-btn"))+'</span></div>';
     }).join("")+'</div>':"";
 
   autoSave();
@@ -759,7 +788,7 @@ function buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl){
 
 function generateHTML(){
   var T=THEMES[activeTheme];
-  var logo=Core.safeUrl(g("s-logo")),website=Core.safeUrl(g("s-website")),igUrl=Core.safeUrl(g("s-ig-url")),igHandle=g("s-ig-handle"),unsub=Core.safeUrl(g("s-unsub"),{allowBrevo:true}),liUrl=Core.safeUrl(g("s-li-url")),gmUrl=Core.safeUrl(g("s-gm-url"));
+  var logo=getActiveLogoUrl(),website=Core.safeUrl(g("s-website")),igUrl=Core.safeUrl(g("s-ig-url")),igHandle=g("s-ig-handle"),unsub=Core.safeUrl(g("s-unsub"),{allowBrevo:true}),liUrl=Core.safeUrl(g("s-li-url")),gmUrl=Core.safeUrl(g("s-gm-url"));
   var issueBar=emailText(g("issue-bar-text")),annTitle=emailText(g("ann-title")),annQuote=emailText(g("ann-quote")),annAuthor=emailText(g("ann-author"));
   var footerName=emailText(g("footer-name")),footerAddr=emailText(g("footer-addr"));
   var featTitle=emailText(g("feat-title")),featDate=emailText(g("feat-date")),featLoc=emailText(g("feat-location")),featDesc=emailText(g("feat-desc")),featBtnText=emailText(g("feat-btn-text")),featBtnUrl=Core.safeUrl(g("feat-btn-url"));
@@ -822,11 +851,11 @@ function generateHTML(){
         '<tr><td align="center" style="padding:20px 12px;">'+
         '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+T.title+';font-size:13px;font-weight:700;">'+emailText(g("ql"+n+"-title"))+'</p>'+
         '<p style="margin:0 0 14px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:11px;line-height:1.5;">'+emailText(g("ql"+n+"-sub"))+'</p>'+
-        '<a href="'+emailUrl(g("ql"+n+"-url"))+'" style="background:'+T.headerBg+';color:'+T.title+';border:1px solid '+T.border+';border-radius:999px;padding:8px 14px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;text-decoration:none;">'+emailText(g("ql"+n+"-btn"))+'</a>'+
+        '<a href="'+emailUrl(g("ql"+n+"-url"))+'" style="background:'+T.buttonBg+';color:'+T.title+';border:1px solid '+T.border+';border-radius:999px;padding:8px 14px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;text-decoration:none;">'+emailText(g("ql"+n+"-btn"))+'</a>'+
         '</td></tr></table></td>';
     }).join("")+'</tr></table>':"";
 
-  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:34px 38px 28px;"><img src="'+escHtml(logo)+'" width="445" alt="ASME at The Ohio State University" style="width:445px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          '+buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl)+'\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+escHtml(unsub)+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
+  return '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta name="x-apple-disable-message-reformatting">\n  <title>ASME OSU Newsletter</title>\n  <style>\n    body,table,td,p,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n    table,td{border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;}\n    img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;display:block;}\n    body{margin:0!important;padding:0!important;width:100%!important;background:'+T.bg+';}\n    a{text-decoration:none;}\n    @media screen and (max-width:620px){.container{width:100%!important;}.pad{padding-left:16px!important;padding-right:16px!important;}.stack{display:block!important;width:100%!important;padding:0 0 10px!important;}}\n  </style>\n</head>\n<body style="margin:0;padding:0;background:'+T.bg+';">\n  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:'+T.bg+';">'+preheader+'</div>\n  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:'+T.bg+';">\n    <tr><td align="center" style="padding:26px 12px;">\n      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px;max-width:600px;">\n        <tr><td style="background:'+T.headerBg+';border-radius:18px 18px 0 0;overflow:hidden;">\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">\n            <tr><td style="height:6px;background:'+T.accent+';font-size:0;line-height:0;">&nbsp;</td></tr>\n            <tr><td align="center" style="padding:24px 30px 18px;"><img src="'+escHtml(logo)+'" width="360" alt="ASME at The Ohio State University" style="width:360px;max-width:100%;height:auto;"></td></tr>\n            <tr><td align="center" style="background:'+T.accent+';padding:14px 28px;"><p style="margin:0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:'+T.buttonText+';font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">'+issueBar+'</p></td></tr>\n          </table>\n        </td></tr>\n        <tr><td class="pad" style="background:'+T.bodyBg+';padding:24px 18px 18px;">\n          '+featuredBlock+'\n          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr><td style="padding:0 0 10px;border-bottom:1px solid '+T.border+';"><h2 style="margin:0;font-family:Georgia,serif;color:'+T.title+';font-size:22px;line-height:1.3;font-weight:400;">Upcoming Events</h2></td></tr></table>\n          '+eventCards+'\n          '+announceBlock+'\n          '+linksBlock+'\n        </td></tr>\n        <tr><td style="background:'+T.headerBg+';border-radius:0 0 18px 18px;padding:30px 36px 26px;">\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.title+';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+footerName+'</p>\n          <p style="margin:0 0 12px;font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.65;">'+footerAddr+'</p>\n          '+buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl)+'\n          <p style="margin:0;font-family:Arial,sans-serif;color:'+T.faint+';font-size:11px;line-height:1.6;">You\'re receiving this because you signed up for ASME OSU updates. <a href="'+escHtml(unsub)+'" style="color:'+T.muted+';text-decoration:underline;">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>';
 }
 
 
@@ -859,7 +888,7 @@ function collectState(){
       "ql2-title":g("ql2-title"),"ql2-sub":g("ql2-sub"),"ql2-btn":g("ql2-btn"),"ql2-url":g("ql2-url"),
       "ql3-title":g("ql3-title"),"ql3-sub":g("ql3-sub"),"ql3-btn":g("ql3-btn"),"ql3-url":g("ql3-url"),
       "issue-bar-text":g("issue-bar-text"),"footer-name":g("footer-name"),"footer-addr":g("footer-addr"),
-      "s-logo":g("s-logo"),"s-website":g("s-website"),"s-ig-url":g("s-ig-url"),
+      "s-logo":g("s-logo"),"s-logo-light":g("s-logo-light"),"s-website":g("s-website"),"s-ig-url":g("s-ig-url"),
       "s-ig-handle":g("s-ig-handle"),"s-li-url":g("s-li-url"),"s-gm-url":g("s-gm-url"),"s-unsub":g("s-unsub"),
       "s-subject":g("s-subject"),"s-preheader":g("s-preheader")
     }
@@ -988,13 +1017,13 @@ function renderTemplateList(){
   var list=document.getElementById("template-list");
   if(!list) return;
   if(tpls.length===0){
-    list.innerHTML='<div style="font-family:Arial,sans-serif;font-size:12px;color:#7f8ea3;text-align:center;padding:16px 0;">No templates saved yet.</div>';
+    list.innerHTML='<div style="font-family:Arial,sans-serif;font-size:12px;color:#94a3b8;text-align:center;padding:16px 0;">No templates saved yet.</div>';
     return;
   }
   list.innerHTML=tpls.map(function(t,i){
     return '<div class="template-item">'+
       '<div><div class="template-name">'+escHtml(t.name)+'</div>'+
-      '<div style="font-family:Arial,sans-serif;font-size:10px;color:#7f8ea3;">Saved '+escHtml(t.saved)+'</div></div>'+
+      '<div style="font-family:Arial,sans-serif;font-size:10px;color:#94a3b8;">Saved '+escHtml(t.saved)+'</div></div>'+
       '<div class="template-actions">'+
         '<button class="btn btn-ghost btn-sm" onclick="loadTemplateByIndex('+i+')">Load</button>'+
         '<button class="btn btn-danger btn-sm" onclick="deleteTemplateByIndex('+i+')">&#10005;</button>'+
@@ -1216,7 +1245,8 @@ function toggleFullscreen(){
 function checklistThenCopy(){
   var issues=[];
   function add(ok,label,detail){issues.push({ok:ok,label:label,detail:detail||""});}
-  add(Boolean(Core.safeUrl(g("s-logo"))),Core.safeUrl(g("s-logo"))?"Logo URL looks valid":"Logo URL is missing or invalid",Core.safeUrl(g("s-logo"))?"":"Use an https:// image URL in Settings.");
+  var activeLogo=getActiveLogoUrl();
+  add(Boolean(activeLogo),activeLogo?"Logo URL looks valid":"Logo URL is missing or invalid",activeLogo?"":"Use an https:// image URL in Settings.");
   var subject=g("s-subject").trim();
   add(Boolean(subject),subject?"Subject line: "+subject.substring(0,50)+(subject.length>50?"…":""):"No email subject line",subject?"":"Add one in Settings.");
   if(subject.length>65)add(false,"Subject line may be too long","Consider shortening it so inboxes are less likely to truncate it.");

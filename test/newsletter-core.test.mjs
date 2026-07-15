@@ -28,12 +28,13 @@ test("sanitizes imported state and whitelists themes and accents", () => {
   const state = Core.sanitizeState({
     activeTheme: "<script>",
     events: [{ id: "101", title: "GBM", accent: 'blue\" onclick=\"alert(1)' }],
-    fields: { "s-subject": "Hello", unexpected: "ignored" }
+    fields: { "s-subject": "Hello", "s-logo-light": "https://example.com/light-logo.png", unexpected: "ignored" }
   });
   assert.equal(state.activeTheme, "navy");
   assert.equal(state.events[0].id, 101);
   assert.equal(state.events[0].accent, "blue");
   assert.equal(state.fields["s-subject"], "Hello");
+  assert.equal(state.fields["s-logo-light"], "https://example.com/light-logo.png");
   assert.equal("unexpected" in state.fields, false);
 });
 
