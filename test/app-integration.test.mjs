@@ -87,6 +87,15 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   window.document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   assert.equal(infoModal.classList.contains("open"), false);
 
+  const fullscreenButton = window.document.getElementById("fullscreen-btn");
+  assert.equal(fullscreenButton.textContent, "Full Preview");
+  window.toggleFullscreen();
+  assert.equal(fullscreenButton.textContent, "Exit Full Preview");
+  assert.equal(window.document.getElementById("preview-panel").classList.contains("fullscreen"), true);
+  window.toggleFullscreen();
+  assert.equal(fullscreenButton.textContent, "Full Preview");
+  assert.equal(window.document.getElementById("preview-panel").classList.contains("fullscreen"), false);
+
   window.applyState({
     events: [{ id: 100, title: "Restored event", date: "SEP 1", accent: "red" }],
     fields: {}
