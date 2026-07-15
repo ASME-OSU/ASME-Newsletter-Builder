@@ -10,7 +10,7 @@
     "feat-img-url", "feat-img-alt", "ann-title", "ann-quote", "ann-author",
     "ql1-title", "ql1-sub", "ql1-btn", "ql1-url", "ql2-title", "ql2-sub", "ql2-btn", "ql2-url",
     "ql3-title", "ql3-sub", "ql3-btn", "ql3-url", "issue-bar-text", "footer-name", "footer-addr",
-    "s-logo", "s-website", "s-ig-url", "s-ig-handle", "s-li-url", "s-gm-url", "s-unsub",
+    "s-logo", "s-logo-light", "s-website", "s-ig-url", "s-ig-handle", "s-li-url", "s-gm-url", "s-unsub",
     "s-subject", "s-preheader"
   ];
 

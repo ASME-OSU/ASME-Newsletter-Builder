@@ -2,7 +2,7 @@
 
 Use the hosted [ASME at OSU Newsletter Builder](https://asme-osu.github.io/ASME-Newsletter-Builder/) in a modern browser. Your work is saved automatically in that browser.
 
-The top toolbar includes shortcuts that open **Brevo** or a fresh **Newsletter Builder** tab.
+The top toolbar includes a **Brevo** shortcut. A **Builder** shortcut also appears when the app is embedded or opened outside the hosted builder, making it easy to open the full builder in a new tab.
 
 ## 1. Start an issue
 
@@ -24,6 +24,7 @@ If the calendar does not load, click **Refresh Events** or **Open Calendar**. Th
 - **Announce** adds or hides a message from the board.
 - **Links** manages the three quick-link cards.
 - **Design** selects the color theme and updates the issue bar and mailing-address footer.
+- When using the **Light** theme, add the optional **Light Theme Logo URL** in **Settings** if the regular logo was designed for a dark background.
 - Watch the **Live Preview** while editing; use **Full Preview** for a final visual review.
 
 Use complete `https://` links. Every enabled image should have a public image URL and useful alt text.
