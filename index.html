@@ -33,6 +33,10 @@
     #new-issue-btn:hover { background: rgba(255,255,255,0.12); color:#fff; }
     #main { display: flex; flex: 1; overflow: hidden; }
     #editor { width: 380px; min-width: 320px; flex-shrink: 0; background: #071426; border-right: 1px solid rgba(255,255,255,0.08); overflow-y: auto; padding: 14px 13px; }
+    .editor-nav-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 2px 8px; }
+    .editor-nav-title { color:#94a3b8; font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; }
+    #info-btn { width:27px; height:27px; flex:0 0 27px; display:inline-flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.22); border-radius:50%; font-family:Georgia,serif; font-size:15px; font-weight:700; font-style:italic; cursor:pointer; }
+    #info-btn:hover { background:#bb0000; border-color:#bb0000; }
     .tabs { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
     .tab-btn { background: rgba(255,255,255,0.07); color: #a8c4e0; border: none; border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 700; font-family: Arial,sans-serif; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
     .tab-btn:hover { background: rgba(255,255,255,0.13); }
@@ -180,6 +184,10 @@
     .check-label { font-family:Arial,sans-serif; font-size:13px; color:#d8e2ee; line-height:1.4; }
     .check-label small { display:block; color:#94a3b8; font-size:11px; margin-top:2px; }
     .modal-actions { display:flex; gap:8px; margin-top:20px; justify-content:flex-end; }
+    .info-steps { margin:0; padding-left:22px; color:#d8e2ee; font-family:Arial,sans-serif; font-size:13px; line-height:1.55; }
+    .info-steps li { padding:0 0 10px 4px; }
+    .info-steps strong { color:#fff; }
+    .info-note { margin-top:8px; padding:12px 14px; border-left:4px solid #bb0000; border-radius:6px; background:rgba(255,255,255,0.06); color:#a8c4e0; font-family:Arial,sans-serif; font-size:12px; line-height:1.55; }
     .calendar-toolbar { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px; }
     .calendar-status { font-family:Arial,sans-serif; font-size:11px; line-height:1.5; color:#a8c4e0; margin-bottom:10px; }
     .calendar-event { background:#0f3460; border:1px solid rgba(255,255,255,0.08); border-radius:9px; padding:12px; margin-bottom:8px; }
@@ -228,6 +236,10 @@
   </div>
   <div id="main">
     <div id="editor">
+      <div class="editor-nav-heading">
+        <span class="editor-nav-title">Newsletter sections</span>
+        <button id="info-btn" type="button" aria-label="Open newsletter builder instructions" aria-haspopup="dialog" onclick="openInfoDialog()" title="How to use the builder">i</button>
+      </div>
       <div class="tabs" role="tablist" aria-label="Newsletter sections">
         <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-events" onclick="switchTab('events',this)">Events</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-calendar" onclick="switchTab('calendar',this)">Calendar</button>
@@ -453,9 +465,12 @@ window.onload=function(){
   renderTemplateList();
   loadCalendarEvents(false);
   document.addEventListener("keydown",function(event){
-    var modal=document.getElementById("checklist-modal");
-    if(!modal.classList.contains("open"))return;
-    if(event.key==="Escape"){closeChecklist();return;}
+    var modal=document.querySelector(".modal-overlay.open");
+    if(!modal)return;
+    if(event.key==="Escape"){
+      if(modal.id==="info-modal")closeInfoDialog();else closeChecklist();
+      return;
+    }
     if(event.key==="Tab"){
       var focusable=Array.prototype.slice.call(modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex]:not([tabindex="-1"])'));
       if(!focusable.length)return;
@@ -465,6 +480,17 @@ window.onload=function(){
     }
   });
 };
+
+function openInfoDialog(){
+  lastFocusedBeforeModal=document.activeElement;
+  document.getElementById("info-modal").classList.add("open");
+  setTimeout(function(){document.getElementById("info-close").focus();},0);
+}
+
+function closeInfoDialog(){
+  document.getElementById("info-modal").classList.remove("open");
+  if(lastFocusedBeforeModal&&lastFocusedBeforeModal.focus)lastFocusedBeforeModal.focus();
+}
 
 function buildThemeChips(){
   var r=document.getElementById("theme-row");
@@ -1407,6 +1433,25 @@ function downloadHTML(){
   setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
 }
 </script>
+<!-- INSTRUCTIONS MODAL -->
+<div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-subtitle">
+  <div class="modal" tabindex="-1">
+    <h2 id="info-title">How to Use the Builder</h2>
+    <p class="modal-sub" id="info-subtitle">Build, review, and hand off an ASME newsletter in five steps.</p>
+    <ol class="info-steps">
+      <li><strong>Start:</strong> Select <strong>New Issue</strong> or load a layout from <strong>Templates</strong>.</li>
+      <li><strong>Add events:</strong> Import upcoming items from <strong>Calendar</strong>, then refine their wording, images, and buttons under <strong>Events</strong>.</li>
+      <li><strong>Build content:</strong> Complete or turn off <strong>Featured</strong>, <strong>Announce</strong>, and <strong>Links</strong>.</li>
+      <li><strong>Finish:</strong> Choose a theme in <strong>Design</strong>; add the subject, preheader, branding, and unsubscribe variable in <strong>Settings</strong>.</li>
+      <li><strong>Send:</strong> Review <strong>Full Preview</strong>, select <strong>Copy HTML for Brevo</strong>, address the checklist, and paste the HTML into Brevo's code editor.</li>
+    </ol>
+    <div class="info-note"><strong>Saving and sharing:</strong> Work auto-saves only in this browser. Use <strong>Templates → Export Draft .json</strong> to continue on another computer. A downloaded HTML file is a finished preview, not an editable draft.</div>
+    <div class="modal-actions">
+      <button class="btn btn-red" id="info-close" onclick="closeInfoDialog()">Got It</button>
+    </div>
+  </div>
+</div>
+
 <!-- CHECKLIST MODAL -->
 <div class="modal-overlay" id="checklist-modal" role="dialog" aria-modal="true" aria-labelledby="checklist-title" aria-describedby="checklist-subtitle">
   <div class="modal" tabindex="-1">

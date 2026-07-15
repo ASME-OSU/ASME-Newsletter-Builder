@@ -13,5 +13,7 @@ assert.match(html, /id="tab-calendar"/);
 assert.match(html, /function importCalendarEvent\(/);
 assert.match(html, /function exportDraft\(/);
 assert.match(html, /role="dialog" aria-modal="true"/);
+assert.match(html, /id="info-modal" role="dialog" aria-modal="true"/);
+assert.match(html, /function openInfoDialog\(/);
 
 console.log("HTML structure and inline JavaScript syntax are valid.");

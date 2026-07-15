@@ -77,6 +77,16 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.shouldShowBuilderShortcut("asme-osu.github.io", "/ASME-Newsletter-Builder/", true), true);
   assert.equal(window.shouldShowBuilderShortcut("localhost", "/", false), true);
 
+  const infoButton = window.document.getElementById("info-btn");
+  const infoModal = window.document.getElementById("info-modal");
+  infoButton.click();
+  assert.equal(infoModal.classList.contains("open"), true);
+  assert.equal(infoModal.getAttribute("aria-modal"), "true");
+  assert.match(infoModal.textContent, /Import upcoming items from Calendar/);
+  assert.match(infoModal.textContent, /Export Draft \.json/);
+  window.document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  assert.equal(infoModal.classList.contains("open"), false);
+
   window.applyState({
     events: [{ id: 100, title: "Restored event", date: "SEP 1", accent: "red" }],
     fields: {}
