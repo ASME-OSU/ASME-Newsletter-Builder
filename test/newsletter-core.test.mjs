@@ -24,18 +24,29 @@ test("advances event IDs after a restored draft", () => {
   assert.equal(Core.nextEventId([{ id: 100 }, { id: 106 }, { id: "bad" }], 100), 107);
 });
 
-test("sanitizes imported state and whitelists themes and accents", () => {
+test("sanitizes imported state and whitelists themes, accents, and event types", () => {
   const state = Core.sanitizeState({
     activeTheme: "<script>",
-    events: [{ id: "101", title: "GBM", accent: 'blue\" onclick=\"alert(1)' }],
+    events: [{ id: "101", title: "GBM", eventType: "<script>", accent: 'blue\" onclick=\"alert(1)' }],
     fields: { "s-subject": "Hello", "s-logo-light": "https://example.com/light-logo.png", unexpected: "ignored" }
   });
   assert.equal(state.activeTheme, "navy");
   assert.equal(state.events[0].id, 101);
   assert.equal(state.events[0].accent, "blue");
+  assert.equal(state.events[0].eventType, "gbm");
   assert.equal(state.fields["s-subject"], "Hello");
   assert.equal(state.fields["s-logo-light"], "https://example.com/light-logo.png");
   assert.equal("unexpected" in state.fields, false);
+});
+
+test("splits compact event dates for the large editorial date treatment", () => {
+  const compact = Core.splitEventDate("May 28");
+  assert.equal(compact.month, "MAY");
+  assert.equal(compact.day, "28");
+  assert.equal(compact.label, "May 28");
+  const fallback = Core.splitEventDate("Date TBD");
+  assert.equal(fallback.month, "Date TBD");
+  assert.equal(fallback.day, "");
 });
 
 test("exports and imports a versioned editable draft", () => {
@@ -57,6 +68,7 @@ test("maps timed and all-day calendar events into editable newsletter events", (
   assert.match(timed.time, /6:00 PM/);
   assert.equal(timed.sourceEventId, "event-1");
   assert.equal(timed.showLink, true);
+  assert.equal(timed.eventType, "info");
 
   const allDay = Core.calendarEventToNewsletter({
     id: "event-2", title: "Classes Begin", start: "2027-01-11T00:00:00.000Z",

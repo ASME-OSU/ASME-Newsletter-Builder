@@ -51,11 +51,7 @@
     .field select option { background: #0d1f38; }
     .field-row { display: flex; gap: 8px; }
     .field-row .field { flex: 1; }
-    .editor-card { background: #0f3460; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
-    .editor-card.accent-red { border-left: 4px solid #bb0000; }
-    .editor-card.accent-blue { border-left: 4px solid #0f70a8; }
-    .editor-card.accent-green { border-left: 4px solid #1a7a1a; }
-    .editor-card.accent-gold { border-left: 4px solid #c8a000; }
+    .editor-card { background: #0f3460; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
     .btn { border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; font-family: Arial,sans-serif; padding: 6px 12px; transition: opacity 0.15s; }
     .btn:hover { opacity: 0.82; }
     .btn-red { background: #bb0000; color: #fff; }
@@ -101,11 +97,15 @@
     .pv-feat-desc { font-family: Arial,sans-serif; color: #d8e2ee; font-size: 14px; line-height: 1.7; margin-bottom: 22px; }
     .pv-feat-btn { font-family: Arial,sans-serif; font-size: 13px; font-weight: 700; padding: 12px 26px; border-radius: 999px; display: inline-block; color: #fff; }
     .pv-section-title { border-bottom: 1px solid rgba(255,255,255,0.14); padding-bottom: 10px; margin:20px 0 0; font-family: Georgia,serif; color: #fff; font-size: 22px; line-height:1.3; font-weight:400; }
-    .pv-event { border-radius: 12px; margin-top: 12px; overflow: hidden; }
-    .pv-event-top { display: flex; }
-    .pv-event-bar { width: 5px; flex-shrink: 0; }
-    .pv-event-content { padding: 17px 18px; flex: 1; }
-    .pv-event-date { font-family: Arial,sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+    .pv-event { border-radius:12px; margin-top:12px; overflow:hidden; }
+    .pv-event-body { position:relative; }
+    .pv-event-layout { display:flex; min-height:142px; }
+    .pv-event-date-block { width:92px; flex:0 0 92px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px 10px 18px 16px; }
+    .pv-event-month { font-family:Arial,sans-serif; font-size:12px; line-height:1.2; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+    .pv-event-day { font-family:Georgia,serif; font-size:48px; line-height:.95; font-weight:400; color:#fff; margin-top:4px; }
+    .pv-event-date-full { font-family:Arial,sans-serif; font-size:11px; line-height:1.4; font-weight:700; letter-spacing:1px; text-transform:uppercase; text-align:center; }
+    .pv-event-type { position:absolute; top:0; right:0; min-width:96px; padding:9px 13px 8px; border-radius:0 0 0 10px; font-family:Arial,sans-serif; font-size:9px; line-height:1.2; font-weight:700; letter-spacing:1.4px; text-align:center; text-transform:uppercase; }
+    .pv-event-content { min-width:0; flex:1; padding:40px 18px 18px 12px; }
     .pv-event-title { font-family: Arial,sans-serif; color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
     .pv-event-meta { font-family: Arial,sans-serif; color: #a8c4e0; font-size: 12px; margin-bottom: 6px; }
     .pv-event-desc { font-family: Arial,sans-serif; color: #b8c5d4; font-size: 12px; line-height: 1.6; }
@@ -157,6 +157,9 @@
     .preset-row { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
     .preset-btn { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:5px; color:#a8c4e0; font-family:Arial,sans-serif; font-size:10px; font-weight:700; padding:5px 10px; cursor:pointer; white-space:nowrap; }
     .preset-btn:hover { background:rgba(255,255,255,0.14); color:#fff; }
+    .preset-btn.selected { border-color:#fff; color:#fff; box-shadow:0 0 0 1px rgba(255,255,255,0.2); }
+    .preset-fill { border:0; background:transparent; color:#a8c4e0; font-family:Arial,sans-serif; font-size:10px; font-weight:700; text-decoration:underline; cursor:pointer; padding:0; }
+    .preset-fill:hover { color:#fff; }
 
     /* Template manager */
     .template-list { margin-top:8px; }
@@ -210,6 +213,10 @@
       .topbar-right { width:100%; }
       .top-link-btn, #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; text-align:center; }
       .draft-actions { grid-template-columns:1fr; }
+      .pv-event-date-block { width:72px; flex-basis:72px; padding-left:10px; padding-right:8px; }
+      .pv-event-day { font-size:39px; }
+      .pv-event-content { padding-left:8px; }
+      .pv-event-type { min-width:88px; padding-left:10px; padding-right:10px; letter-spacing:1px; }
     }
   </style>
 </head>
@@ -404,9 +411,17 @@ var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=fa
 var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="";
 var lastFocusedBeforeModal=null;
 var events=[
-  {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"},
-  {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
+  {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",eventType:"workshop",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"},
+  {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",eventType:"gbm",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
 ];
+var EVENT_TYPES={
+  event:{label:"Event",accent:"blue"},
+  gbm:{label:"GBM",accent:"red"},
+  workshop:{label:"Workshop",accent:"blue"},
+  social:{label:"Social",accent:"green"},
+  info:{label:"Info Session",accent:"gold"},
+  tour:{label:"Tour",accent:"blue"}
+};
 var THEMES={
   navy:{name:"Navy",bg:"#071426",headerBg:"#0f3460",bodyBg:"#0d1f38",cardBg:"#162d52",buttonBg:"#0f3460",accent:"#bb0000",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9999",buttonText:"#ffffff"},
   light:{name:"Light",bg:"#e9eef5",headerBg:"#e8eef5",bodyBg:"#f6f8fb",cardBg:"#ffffff",buttonBg:"#dbe4ee",accent:"#bb0000",title:"#172033",text:"#27364a",muted:"#4d6075",subtle:"#405267",soft:"#5d6e82",faint:"#596a7e",border:"rgba(15,52,96,0.20)",tag:"#9d0000",buttonText:"#ffffff"},
@@ -540,7 +555,7 @@ function toggleFeatButton(){
 }
 
 function addEvent(){
-  events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
+  events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
   renderEventList(); render();
 }
 function removeEvent(id){events=events.filter(function(e){return e.id!==id;});renderEventList();renderCalendarList();render();}
@@ -553,7 +568,7 @@ function moveEvent(id,dir){
 function updateEvent(id,field,value){
   var ev=events.find(function(e){return e.id===id;});
   if(ev) ev[field]=value;
-  if(field==="accent") renderEventList();
+  if(field==="accent"||field==="eventType") renderEventList();
   render();
 }
 function toggleEventLink(id){
@@ -569,7 +584,8 @@ function renderEventList(){
   var list=document.getElementById("event-list");
   document.getElementById("event-count").textContent=events.length+" event"+(events.length!==1?"s":"");
   list.innerHTML=events.map(function(ev,i){
-    return '<div class="editor-card accent-'+ev.accent+'" style="margin-bottom:10px;">'+
+    var eventType=EVENT_TYPES[ev.eventType]?ev.eventType:"event";
+    return '<div class="editor-card" style="margin-bottom:10px;">'+
       '<div class="row">'+
         '<div class="row-gap">'+
           '<button class="btn btn-ghost btn-sm" onclick="moveEvent('+ev.id+',\'up\')"'+(i===0?' disabled':'')+'>&#8593;</button>'+
@@ -581,13 +597,12 @@ function renderEventList(){
         '</div>'+
       '</div>'+
       (ev.sourceEventId?'<div style="margin:-3px 0 9px;"><span class="source-badge">Imported from Calendar</span></div>':'')+
-      '<div class="preset-row">'+
-        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'gbm\')">GBM</button>'+
-        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'workshop\')">Workshop</button>'+
-        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'social\')">Social</button>'+
-        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'info\')">Info Session</button>'+
-        '<button class="preset-btn" onclick="applyPreset('+ev.id+',\'tour\')">Tour</button>'+
-      '</div>'+
+      '<div class="field"><label>Event Type</label><div class="preset-row">'+
+        Object.keys(EVENT_TYPES).map(function(key){
+          var type=EVENT_TYPES[key],selected=key===eventType;
+          return '<button class="preset-btn '+(selected?'selected':'')+'" aria-pressed="'+String(selected)+'" style="'+(selected?'background:'+getAccentColor(type.accent)+';color:'+getAccentTextColor(type.accent)+';':'')+'" onclick="setEventType('+ev.id+',\''+key+'\')">'+type.label+'</button>';
+        }).join("")+
+      '</div><button class="preset-fill" onclick="applyPreset('+ev.id+',\''+eventType+'\')">Fill '+escHtml(EVENT_TYPES[eventType].label)+' preset details</button></div>'+
       '<div class="field-row">'+
         '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" placeholder="MAY 28"/></div>'+
         '<div class="field"><label>Time</label><input value="'+escHtml(ev.time)+'" oninput="updateEvent('+ev.id+',\'time\',this.value)" placeholder="6:00 PM"/></div>'+
@@ -632,6 +647,8 @@ function emailText(s){return Core.escapeMultiline(s);}
 function emailUrl(s,options){return escHtml(Core.safeUrl(s,options));}
 function getAccentColor(a){return{blue:"#0f70a8",red:"#bb0000",green:"#1a7a1a",gold:"#c8a000"}[a]||"#0f70a8";}
 function getDateColor(a){return{blue:"#a8c4e0",red:"#ff9999",green:"#7dd87d",gold:"#ffd966"}[a]||"#a8c4e0";}
+function getAccentTextColor(a){return a==="gold"?"#071426":"#ffffff";}
+function getEventTypeLabel(type){return(EVENT_TYPES[type]||EVENT_TYPES.event).label;}
 
 function calendarDateParts(event){
   var start=new Date(event.start),zone=event.allDay?"UTC":calendarTimeZone;
@@ -740,18 +757,21 @@ function render(){
   var eventsHTML=events.length===0?'<div class="empty-state">No events yet \u2014 add one in the Events tab</div>':
     events.map(function(ev){
       var bar=getAccentColor(ev.accent),dc=getDateColor(ev.accent);
+      var dateParts=Core.splitEventDate(ev.date),typeLabel=getEventTypeLabel(ev.eventType);
       var meta=[ev.time,ev.location].filter(Boolean).join(" \u00b7 ");
       var imgUrl=Core.safeUrl(ev.imgUrl),linkUrl=Core.safeUrl(ev.linkUrl);
+      var dateHTML=dateParts.day?
+        '<div class="pv-event-month" style="color:'+dc+';">'+escHtml(dateParts.month)+'</div><div class="pv-event-day" style="color:'+T.title+';">'+escHtml(dateParts.day)+'</div>':
+        '<div class="pv-event-date-full" style="color:'+dc+';">'+escHtml(dateParts.label)+'</div>';
       return '<div class="pv-event" style="background:'+T.cardBg+';overflow:hidden;">'+
         (ev.showImg&&imgUrl?'<img class="pv-event-img" src="'+escHtml(imgUrl)+'" alt="'+escHtml(ev.imgAlt)+'" onerror="this.style.display=\'none\'"/>':'')+
-        '<div class="pv-event-top"><div class="pv-event-bar" style="background:'+bar+';"></div>'+
-        '<div class="pv-event-content">'+
-        '<div class="pv-event-date" style="color:'+dc+';">'+escHtml(ev.date)+'</div>'+
+        '<div class="pv-event-body"><div class="pv-event-type" style="background:'+bar+';color:'+getAccentTextColor(ev.accent)+';">'+escHtml(typeLabel)+'</div>'+
+        '<div class="pv-event-layout"><div class="pv-event-date-block">'+dateHTML+'</div><div class="pv-event-content">'+
         '<div class="pv-event-title" style="color:'+T.title+';">'+escHtml(ev.title)+'</div>'+
         (meta?'<div class="pv-event-meta" style="color:'+T.muted+';">'+escHtml(meta)+'</div>':'')+
         '<div class="pv-event-desc" style="color:'+T.subtle+';">'+escHtml(ev.description)+'</div>'+
-        (ev.showLink&&linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
-        '</div></div></div>';
+        (ev.showLink&&linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:'+getAccentTextColor(ev.accent)+';font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
+        '</div></div></div></div>';
     }).join("");
 
   var annHTML=showAnnounce?
@@ -841,19 +861,24 @@ function generateHTML(){
 
   var eventCards=events.map(function(ev){
     var bar=getAccentColor(ev.accent),dc=getDateColor(ev.accent);
+    var dateParts=Core.splitEventDate(ev.date),typeLabel=getEventTypeLabel(ev.eventType);
     var metaParts=[ev.time,ev.location].filter(Boolean);
     var imgUrl=Core.safeUrl(ev.imgUrl),linkUrl=Core.safeUrl(ev.linkUrl);
     var imgRow=ev.showImg&&imgUrl?'<tr><td colspan="2" style="padding:0;"><img src="'+escHtml(imgUrl)+'" alt="'+escHtml(ev.imgAlt||'Event')+'" width="100%" style="width:100%;height:auto;display:block;max-height:220px;object-fit:cover;"></td></tr>':"";
-    var radius=ev.showImg&&ev.imgUrl?"0":"12px";
+    var dateBlock=dateParts.day?
+      '<p style="margin:0;font-family:Arial,sans-serif;color:'+dc+';font-size:12px;line-height:1.2;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">'+emailText(dateParts.month)+'</p>'+
+      '<p style="margin:4px 0 0;font-family:Georgia,serif;color:'+T.title+';font-size:45px;line-height:.95;font-weight:400;">'+emailText(dateParts.day)+'</p>':
+      '<p style="margin:0;font-family:Arial,sans-serif;color:'+dc+';font-size:11px;line-height:1.4;font-weight:700;letter-spacing:1px;text-transform:uppercase;">'+emailText(dateParts.label)+'</p>';
     return '\n              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;background:'+T.cardBg+';border-radius:12px;overflow:hidden;">'+
       imgRow+
-      '<tr><td width="5" style="background:'+bar+';border-radius:'+radius+' 0 0 '+radius+';font-size:0;">&nbsp;</td>'+
-      '<td style="padding:17px 18px;">'+
-      '<p style="margin:0 0 8px;font-family:Arial,sans-serif;color:'+dc+';font-size:10px;font-weight:700;letter-spacing:1px;">'+emailText(ev.date)+'</p>'+
+      '<tr><td width="94" rowspan="2" align="center" valign="middle" style="width:94px;padding:22px 10px 18px 16px;">'+dateBlock+'</td>'+
+      '<td align="right" valign="top" style="padding:0;">'+
+      '<table role="presentation" cellpadding="0" cellspacing="0" align="right"><tr><td align="center" style="background:'+bar+';color:'+getAccentTextColor(ev.accent)+';border-radius:0 0 0 10px;padding:9px 13px 8px;font-family:Arial,sans-serif;font-size:9px;line-height:1.2;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+emailText(typeLabel)+'</td></tr></table>'+
+      '</td></tr><tr><td valign="top" style="padding:2px 18px 18px 12px;">'+
       '<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.title+';font-size:15px;font-weight:700;">'+emailText(ev.title)+'</p>'+
       (metaParts.length?'<p style="margin:0 0 6px;font-family:Arial,sans-serif;color:'+T.muted+';font-size:12px;">'+emailText(metaParts.join(' \u00b7 '))+'</p>':'')+
       '<p style="margin:0'+(ev.showLink&&linkUrl?' 0 12px':'')+';font-family:Arial,sans-serif;color:'+T.subtle+';font-size:12px;line-height:1.6;">'+emailText(ev.description)+'</p>'+
-      (ev.showLink&&linkUrl?'<a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+bar+';color:#ffffff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:8px 18px;border-radius:999px;text-decoration:none;">'+emailText(ev.linkText||'Learn More')+'</a>':'')+
+      (ev.showLink&&linkUrl?'<a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+bar+';color:'+getAccentTextColor(ev.accent)+';font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:8px 18px;border-radius:999px;text-decoration:none;">'+emailText(ev.linkText||'Learn More')+'</a>':'')+
       '</td></tr></table>';
   }).join("");
 
@@ -1241,6 +1266,7 @@ function duplicateEvent(id){
 
 /* ── EVENT PRESETS ── */
 var PRESETS={
+  event:{title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",accent:"blue"},
   gbm:{title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock Hall 035",description:"Monthly GBM with project updates, semester announcements, and free food.",accent:"red"},
   workshop:{title:"Workshop: [Topic]",time:"5:00 PM",location:"Hitchcock Hall 131",description:"Hands-on workshop. Bring your laptop. Open to all skill levels.",accent:"blue"},
   social:{title:"Social Event: [Name]",time:"7:00 PM",location:"[Location TBD]",description:"Come hang out with fellow ASME members. Food and fun provided!",accent:"green"},
@@ -1248,12 +1274,20 @@ var PRESETS={
   tour:{title:"Tour: [Facility Name]",time:"[Time TBD]",location:"[Facility Address]",description:"Join us for a tour of [facility]. Space is limited — sign up early!",accent:"blue"}
 };
 
+function setEventType(id,key){
+  var type=EVENT_TYPES[key]; if(!type) return;
+  var ev=events.find(function(e){return e.id===id;});
+  if(!ev) return;
+  ev.eventType=key; ev.accent=type.accent;
+  renderEventList(); render(); autoSave();
+}
+
 function applyPreset(id,key){
   var p=PRESETS[key]; if(!p) return;
   var ev=events.find(function(e){return e.id===id;});
   if(!ev) return;
   ev.title=p.title; ev.time=p.time; ev.location=p.location;
-  ev.description=p.description; ev.accent=p.accent;
+  ev.description=p.description; ev.eventType=key; ev.accent=p.accent;
   renderEventList(); render(); autoSave();
 }
 
@@ -1360,7 +1394,7 @@ function confirmNewIssue(){
   localStorage.removeItem("asme_nl_draft");
   // Reset to defaults
   events=[
-    {id:nextId++,date:"MON DD",title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
+    {id:nextId++,date:"MON DD",title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
   ];
   showFeatured=true; showAnnounce=true; showLinks=true; showFeatImg=false; showFeatButton=true;
   activeTheme="navy";
