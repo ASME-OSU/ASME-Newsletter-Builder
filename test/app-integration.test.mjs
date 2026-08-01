@@ -57,6 +57,10 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   await waitFor(() => window.calendarEvents.length === 1);
 
   assert.equal(window.document.querySelectorAll("#event-list .editor-card").length, 2);
+  assert.equal(window.document.querySelector("#event-list .editor-card .preset-btn[aria-pressed='true']").textContent, "Workshop");
+  assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
+  assert.equal(window.document.querySelector(".pv-event-day").textContent, "28");
+  assert.equal(window.document.querySelectorAll(".pv-event-bar").length, 0);
   assert.match(window.document.querySelector("#calendar-status").textContent, /1 upcoming event/);
   assert.equal(window.document.querySelectorAll("#calendar-list .calendar-event").length, 1);
   assert.equal(window.document.getElementById("s-logo").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png");
@@ -100,6 +104,9 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
     events: [{ id: 100, title: "Restored event", date: "SEP 1", accent: "red" }],
     fields: {}
   });
+  window.setEventType(100, "info");
+  assert.equal(window.events[0].eventType, "info");
+  assert.equal(window.events[0].accent, "gold");
   window.addEvent();
   assert.deepEqual(Array.from(window.events, (event) => event.id), [100, 101]);
 
@@ -107,6 +114,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.events.length, 3);
   assert.equal(window.events[2].sourceEventId, "calendar-event-1");
   assert.equal(window.events[2].title, "Imported GBM");
+  assert.equal(window.events[2].eventType, "gbm");
   assert.equal(window.document.querySelector("#calendar-list button").disabled, true);
 
   window.document.getElementById("feat-title").value = 'Engineering <Design> & "Build"';
@@ -117,6 +125,9 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.match(exported, /First line<br>Second line/);
   assert.doesNotMatch(exported, /javascript:alert/);
   assert.match(exported, /width="360" alt="ASME at The Ohio State University"/);
+  assert.match(exported, /font-size:45px/);
+  assert.match(exported, />Info Session</);
+  assert.doesNotMatch(exported, /<tr><td width="5" style="background:/);
 
   window.setTheme("light");
   window.document.getElementById("s-logo-light").value = "https://example.com/light-logo.png";

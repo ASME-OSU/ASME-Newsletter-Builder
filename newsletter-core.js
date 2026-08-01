@@ -1,10 +1,11 @@
 (function (global) {
   "use strict";
 
-  var SCHEMA_VERSION = 2;
+  var SCHEMA_VERSION = 3;
   var DRAFT_KIND = "asme-newsletter-draft";
   var ALLOWED_THEMES = ["navy", "light", "slate", "dark", "osu"];
   var ALLOWED_ACCENTS = ["blue", "red", "green", "gold"];
+  var ALLOWED_EVENT_TYPES = ["event", "gbm", "workshop", "social", "info", "tour"];
   var FIELD_IDS = [
     "feat-title", "feat-date", "feat-location", "feat-desc", "feat-btn-text", "feat-btn-url",
     "feat-img-url", "feat-img-alt", "ann-title", "ann-quote", "ann-author",
@@ -46,6 +47,24 @@
     }
   }
 
+  function inferEventType(value, title) {
+    if (ALLOWED_EVENT_TYPES.indexOf(value) >= 0) return value;
+    var text = asString(title).toLowerCase();
+    if (/\b(gbm|general body)\b/.test(text)) return "gbm";
+    if (/\b(workshop|skills? night|training|cad)\b/.test(text)) return "workshop";
+    if (/\b(social|mixer|game night|picnic)\b/.test(text)) return "social";
+    if (/\b(info(?:rmation)? session|industry|company|panel|career)\b/.test(text)) return "info";
+    if (/\b(tour|site visit|plant visit)\b/.test(text)) return "tour";
+    return "event";
+  }
+
+  function splitEventDate(value) {
+    var label = asString(value).trim().replace(/\s+/g, " ");
+    var match = label.match(/^([A-Za-z]{3,9})[.,]?\s+(\d{1,2}|DD)\b/i);
+    if (!match) return { month: label, day: "", label: label };
+    return { month: match[1].toUpperCase(), day: match[2].toUpperCase(), label: label };
+  }
+
   function normalizeEvent(raw, fallbackId) {
     var source = raw && typeof raw === "object" ? raw : {};
     var numericId = Number(source.id);
@@ -57,6 +76,7 @@
       time: asString(source.time),
       location: asString(source.location),
       description: asString(source.description),
+      eventType: inferEventType(source.eventType, source.title),
       accent: ALLOWED_ACCENTS.indexOf(source.accent) >= 0 ? source.accent : "blue",
       showImg: Boolean(source.showImg),
       imgUrl: asString(source.imgUrl),
@@ -185,9 +205,12 @@
     FIELD_IDS: FIELD_IDS.slice(),
     ALLOWED_THEMES: ALLOWED_THEMES.slice(),
     ALLOWED_ACCENTS: ALLOWED_ACCENTS.slice(),
+    ALLOWED_EVENT_TYPES: ALLOWED_EVENT_TYPES.slice(),
     escapeHtml: escapeHtml,
     escapeMultiline: escapeMultiline,
     safeUrl: safeUrl,
+    inferEventType: inferEventType,
+    splitEventDate: splitEventDate,
     normalizeEvent: normalizeEvent,
     nextEventId: nextEventId,
     sanitizeState: sanitizeState,
