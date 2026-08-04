@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T21:34:56.187Z",
+  "generatedAt": "2026-08-04T23:17:32.003Z",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
@@ -146,6 +146,17 @@
       "description": "Casino Night",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-07-13T22:58:14.000Z"
+    },
+    {
+      "id": "040gnn2783gthupf4m50v7qdet@google.com::2026-09-21T22:00:00.000Z",
+      "title": "ExxonMobil Career Fair Prep",
+      "start": "2026-09-21T22:00:00.000Z",
+      "end": "2026-09-21T23:00:00.000Z",
+      "allDay": false,
+      "location": "Scott Laboratory, 201 W 19th Ave, Columbus, OH 43210, USA",
+      "description": "",
+      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
+      "updated": "2026-08-04T23:13:47.000Z"
     },
     {
       "id": "4n32e7as58n00rtnhesgcfv5c3@google.com::2026-09-22T22:00:00.000Z",
