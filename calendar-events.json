@@ -1,20 +1,9 @@
 {
-  "generatedAt": "2026-08-07T10:09:20.567Z",
+  "generatedAt": "2026-08-10T02:33:02.713Z",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "in97rvct2ilpavcm9m32jcaa47@google.com::2026-08-03T00:00:00.000Z",
-      "title": "ASME Exec Meeting",
-      "start": "2026-08-03T00:00:00.000Z",
-      "end": "2026-08-03T00:45:00.000Z",
-      "allDay": false,
-      "location": "Scott Laboratory, 201 W 19th Ave, Columbus, OH 43210, USA",
-      "description": "",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-06-21T21:56:14.000Z"
-    },
     {
       "id": "in97rvct2ilpavcm9m32jcaa47@google.com::2026-08-17T00:00:00.000Z",
       "title": "ASME Exec Meeting",
