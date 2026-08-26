@@ -1,20 +1,9 @@
 {
-  "generatedAt": "2026-08-25T16:53:52.705Z",
+  "generatedAt": "2026-08-26T01:57:09.055Z",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "47for1l8v99aapd4o6bp8d1kte@google.com::2026-08-18T00:00:00.000Z",
-      "title": "Initial Fee Due Date",
-      "start": "2026-08-18T00:00:00.000Z",
-      "end": "2026-08-19T00:00:00.000Z",
-      "allDay": true,
-      "location": "",
-      "description": "",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-07-09T22:43:12.000Z"
-    },
     {
       "id": "39035g9jmv341tcj172slc1o8l@google.com::2026-08-23T20:00:00.000Z",
       "title": "Involvement Fair ASME Fair",
