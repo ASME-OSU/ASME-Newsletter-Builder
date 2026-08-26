@@ -58,7 +58,9 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
 
   assert.equal(window.document.querySelectorAll("#event-list .editor-card").length, 2);
   assert.equal(window.activeTheme, "light");
-  assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Light · Default");
+  assert.equal(window.document.querySelectorAll(".theme-chip").length, 2);
+  assert.deepEqual(Array.from(window.document.querySelectorAll(".theme-chip"), (node) => node.textContent.trim()), ["Light", "Navy Dark"]);
+  assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Light");
   assert.equal(window.document.querySelector(".pv-body").style.background, "rgb(247, 248, 250)");
   assert.equal(window.document.querySelector("#event-list .editor-card .preset-btn[aria-pressed='true']").textContent, "Workshop");
   assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
@@ -137,6 +139,13 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   window.render();
   assert.equal(window.document.querySelector(".pv-logo-wrap img").src, "https://example.com/light-logo.png");
   assert.match(window.generateHTML(), /src="https:\/\/example\.com\/light-logo\.png"/);
+
+  window.setTheme("navy");
+  assert.equal(window.activeTheme, "navy");
+  assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Navy Dark");
+  assert.equal(window.document.querySelector(".theme-chip.selected").getAttribute("aria-pressed"), "true");
+  window.setTheme("slate");
+  assert.equal(window.activeTheme, "navy");
 
   window.checklistThenCopy();
   assert.match(window.document.getElementById("checklist-items").textContent, /unsubscribe variable is incorrect/i);
