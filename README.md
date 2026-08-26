@@ -40,7 +40,8 @@ Finished `.html` exports are email previews, not editable builder projects. Shar
 - Optional images and event buttons
 - Announcement and quick-link sections
 - Built-in and user-saved templates
-- Multiple email color themes
+- Readable Light and Navy Dark email appearances
+- Prefilled organization website and social links, including GroupMe
 - Browser autosave and previous-draft recovery
 - Versioned editable draft import/export
 - Brevo-ready HTML and downloadable HTML export

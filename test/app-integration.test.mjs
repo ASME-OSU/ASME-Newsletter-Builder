@@ -70,6 +70,8 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.document.querySelectorAll("#calendar-list .calendar-event").length, 1);
   assert.equal(window.document.getElementById("s-logo").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png");
   assert.equal(window.document.getElementById("s-logo-light").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png");
+  assert.equal(window.document.getElementById("s-gm-url").value, "https://groupme.com/join_group/95825283/iaBgk5Ld");
+  assert.match(window.generateHTML(), /https:\/\/groupme\.com\/join_group\/95825283\/iaBgk5Ld/);
 
   const topLinks = window.document.querySelectorAll(".top-link-btn");
   assert.equal(topLinks.length, 2);

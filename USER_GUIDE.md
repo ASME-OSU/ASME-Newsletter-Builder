@@ -25,8 +25,9 @@ If the calendar does not load, click **Refresh Events** or **Open Calendar**. Th
 - **Featured** controls the main highlighted event.
 - **Announce** adds or hides a message from the board.
 - **Links** manages the three quick-link cards.
-- **Design** selects the color theme and updates the issue bar and mailing-address footer.
+- **Design** switches between the recommended **Light** appearance and **Navy Dark**, and updates the issue bar and mailing-address footer.
 - The builder automatically uses the white-text logo for dark themes and the black-text logo for the **Light** theme. Both URLs can be changed in **Settings** when needed.
+- **Settings** starts with the organization website, Instagram, LinkedIn, and GroupMe links filled in. Update or clear any social link when an issue needs different destinations.
 - Watch the **Live Preview** while editing; use **Full Preview** for a final visual review.
 
 Use complete `https://` links. Every enabled image should have a public image URL and useful alt text.
