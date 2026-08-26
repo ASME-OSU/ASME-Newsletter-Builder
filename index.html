@@ -219,6 +219,45 @@
     .calendar-event-meta { color:var(--ink-muted); font-family:Arial,sans-serif; font-size:11px; line-height:1.5; margin-bottom:8px; }
     .calendar-event-desc { color:var(--ink-muted); font-family:Arial,sans-serif; font-size:11px; line-height:1.5; margin-bottom:9px; white-space:pre-line; }
     .source-badge { display:inline-block; background:#e5f3e9; color:#27643a; border-radius:999px; padding:3px 7px; font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .warning-badge { display:inline-block; background:#fff3d6; color:#785000; border:1px solid #efd28f; border-radius:999px; padding:3px 7px; margin:0 4px 5px 0; font-family:Arial,sans-serif; font-size:9px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; }
+    .readiness-card { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:12px 13px; margin-bottom:14px; box-shadow:var(--shadow-sm); font-family:Arial,sans-serif; }
+    .readiness-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
+    .readiness-title { font-size:11px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:var(--ink-muted); }
+    #readiness-score { font-size:18px; font-weight:800; color:var(--scarlet); }
+    .readiness-track { height:7px; background:var(--surface-muted); border-radius:999px; overflow:hidden; }
+    #readiness-fill { height:100%; width:0; background:var(--scarlet); border-radius:999px; transition:width .2s,background .2s; }
+    #readiness-summary { color:var(--ink-muted); font-size:11px; line-height:1.45; margin:7px 0 9px; }
+    .count-line { margin-top:4px; text-align:right; color:var(--ink-soft); font:10px Arial,sans-serif; }
+    .count-line.warning { color:#8b5a00; font-weight:700; }
+    .history-list { margin-top:8px; }
+    .history-item { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
+    .history-item:last-child { border-bottom:0; }
+    .history-meta { min-width:0; color:var(--ink-muted); font:11px/1.45 Arial,sans-serif; }
+    .history-meta strong { display:block; color:var(--ink); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .preview-tools { max-width:660px; margin:0 auto 10px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .preview-mode-group { display:flex; gap:5px; flex-wrap:wrap; }
+    .preview-mode-btn[aria-pressed="true"] { background:var(--scarlet); border-color:var(--scarlet); color:#fff; }
+    #inbox-preview { max-width:660px; margin:0 auto 12px; padding:13px 15px; background:#fff; border:1px solid var(--border); border-radius:11px; box-shadow:var(--shadow-sm); font-family:Arial,sans-serif; }
+    .inbox-from { font-size:12px; color:var(--ink); font-weight:700; }
+    .inbox-subject { margin-top:4px; font-size:13px; color:var(--ink); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .inbox-preheader { margin-top:3px; font-size:11px; color:var(--ink-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #preview-shell.preview-mobile { max-width:390px; padding:13px 8px; }
+    #preview-panel.simulate-client-dark { background:#111820; }
+    #preview-panel.simulate-client-dark .preview-label { color:#d4dbe2; }
+    #preview-panel.simulate-client-dark #inbox-preview { background:#1c232b; border-color:#3a4652; }
+    #preview-panel.simulate-client-dark .inbox-from,#preview-panel.simulate-client-dark .inbox-subject { color:#f4f6f8; }
+    #preview-panel.simulate-client-dark .inbox-preheader { color:#b8c2cc; }
+    #preview-panel.simulate-client-dark #preview-shell { background:#0d1117; border-color:#3a4652; }
+    #preview-panel.simulate-client-dark .pv-header,#preview-panel.simulate-client-dark .pv-footer { background:#151b22 !important; }
+    #preview-panel.simulate-client-dark .pv-body { background:#0d1117 !important; }
+    #preview-panel.simulate-client-dark .pv-featured,#preview-panel.simulate-client-dark .pv-event,#preview-panel.simulate-client-dark .pv-announcement,#preview-panel.simulate-client-dark .pv-ql { background:#202832 !important; border-color:#465260 !important; }
+    #preview-panel.simulate-client-dark .pv-feat-title,#preview-panel.simulate-client-dark .pv-feat-date,#preview-panel.simulate-client-dark .pv-section-title,#preview-panel.simulate-client-dark .pv-event-title,#preview-panel.simulate-client-dark .pv-ann-title,#preview-panel.simulate-client-dark .pv-ql-title,#preview-panel.simulate-client-dark .pv-footer-name { color:#fff !important; }
+    #preview-panel.simulate-client-dark .pv-feat-desc,#preview-panel.simulate-client-dark .pv-event-desc,#preview-panel.simulate-client-dark .pv-ann-quote,#preview-panel.simulate-client-dark .pv-ql-sub,#preview-panel.simulate-client-dark .pv-footer-addr { color:#d3dae2 !important; }
+    #preview-panel.simulate-client-dark .pv-feat-loc,#preview-panel.simulate-client-dark .pv-event-meta,#preview-panel.simulate-client-dark .pv-ann-author,#preview-panel.simulate-client-dark .pv-footer-unsub { color:#b8c2cc !important; }
+    #preview-panel.simulate-client-dark .pv-feat-tag { color:#ff9aae !important; }
+    .link-results { margin-top:10px; font:11px/1.5 Arial,sans-serif; }
+    .link-result { padding:7px 0; border-top:1px solid var(--border); overflow-wrap:anywhere; }
+    .link-result strong { color:var(--ink); }
     .draft-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
     button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [role="button"]:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
     #editor [style*="color:#a8c4e0"], #editor [style*="color: #a8c4e0"] { color:var(--ink-muted) !important; }
@@ -235,6 +274,7 @@
       .topbar-right { width:100%; }
       .top-link-btn, #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; text-align:center; }
       .draft-actions { grid-template-columns:1fr; }
+      .preview-tools { align-items:flex-start; }
       .pv-event-date-block { width:72px; flex-basis:72px; padding-left:10px; padding-right:8px; }
       .pv-event-day { font-size:39px; }
       .pv-event-content { padding-left:8px; }
@@ -279,10 +319,20 @@
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-settings" onclick="switchTab('settings',this)">Settings</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-templates" onclick="switchTab('templates',this)">Templates</button>
       </div>
+      <div class="readiness-card" aria-live="polite">
+        <div class="readiness-top"><span class="readiness-title">Live readiness</span><span id="readiness-score">0%</span></div>
+        <div class="readiness-track"><div id="readiness-fill"></div></div>
+        <div id="readiness-summary">Add content to see send-readiness guidance.</div>
+        <div style="display:flex;gap:6px;"><button class="btn btn-ghost btn-sm" onclick="openReadinessChecklist()" style="flex:1;">View Checks</button><button class="btn btn-ghost btn-sm" onclick="checkAllLinks()" style="flex:1;">Check Links</button></div>
+        <div id="link-check-results" class="link-results" role="status"></div>
+      </div>
       <div id="tab-events" class="tab-panel active" role="tabpanel">
         <div class="row">
           <span id="event-count" style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;"></span>
           <button class="btn btn-blue" onclick="addEvent()">+ Add Event</button>
+        </div>
+        <div class="editor-card" style="padding:10px 12px;">
+          <div class="row" style="margin:0;"><button class="btn btn-ghost btn-sm" onclick="sortEventsChronologically(true)">Sort by date</button><div style="display:flex;align-items:center;gap:7px;font:11px Arial,sans-serif;color:var(--ink-muted);"><span>Auto-sort</span><button id="auto-sort-toggle" class="btn btn-toggle on btn-sm" aria-pressed="true" onclick="toggleAutoSort()">On</button></div></div>
         </div>
         <div id="event-list"></div>
       </div>
@@ -365,9 +415,11 @@
       </div>
       <div id="tab-settings" class="tab-panel">
         <div class="editor-card">
-          <div class="field"><label>Email Subject Line</label><input id="s-subject" placeholder="ASME OSU Newsletter — May 2026" oninput="autoSave()"/></div>
-          <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:0.6;">(preview line in inbox)</span></label><input id="s-preheader" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/></div>
+          <div class="field"><label>Email Subject Line</label><input id="s-subject" maxlength="120" placeholder="ASME OSU Newsletter — May 2026" oninput="render()"/><div id="subject-count" class="count-line">0 / 65 recommended</div></div>
+          <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:0.6;">(preview line in inbox)</span></label><input id="s-preheader" maxlength="180" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/><div id="preheader-count" class="count-line">0 / 100 recommended</div></div>
           <div class="section-divider"></div>
+          <div style="font:800 10px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Organization defaults</div>
+          <div style="font:11px/1.5 Arial,sans-serif;color:var(--ink-muted);margin-bottom:10px;">These branding and contact values can be saved once for every new issue on this browser.</div>
           <div class="field"><label>Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/></div>
           <div class="field"><label>Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/></div>
           <div class="field"><label>Website URL</label><input id="s-website" oninput="render()"/></div>
@@ -376,6 +428,7 @@
           <div class="field"><label>LinkedIn URL</label><input id="s-li-url" oninput="render()" placeholder="https://linkedin.com/company/..."/></div>
           <div class="field"><label>GroupMe Invite URL</label><input id="s-gm-url" oninput="render()" placeholder="https://groupme.com/join_group/..."/></div>
           <div class="field"><label>Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
+          <div style="display:flex;gap:6px;margin-top:10px;"><button class="btn btn-blue btn-sm" onclick="saveOrganizationDefaults()" style="flex:1;">Save as Defaults</button><button class="btn btn-ghost btn-sm" onclick="restoreAsmeDefaults()" style="flex:1;">Restore ASME Defaults</button></div>
           <div class="section-divider"></div>
           <button class="btn btn-danger" style="width:100%;" onclick="if(confirm('Clear saved draft from this browser?')){localStorage.removeItem('asme_nl_draft');alert('Draft cleared. Refresh to reset to defaults.');}">Clear Saved Draft</button>
         </div>
@@ -414,14 +467,22 @@
           <div class="draft-actions">
             <button class="btn btn-blue" onclick="exportDraft()">Export Draft .json</button>
             <label class="btn btn-ghost" style="cursor:pointer;text-align:center;">Import Draft .json<input type="file" accept=".json,application/json" onchange="importDraft(event)" style="display:none;"/></label>
-            <button class="btn btn-ghost" onclick="restorePreviousDraft()">Restore Previous Draft</button>
+            <button class="btn btn-ghost" onclick="restorePreviousDraft()">Undo Last Major Change</button>
           </div>
+        </div>
+        <div class="section-divider"></div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a8c4e0;margin-bottom:8px;">Revision History</div>
+        <div class="editor-card">
+          <div style="font:11px/1.5 Arial,sans-serif;color:var(--ink-muted);">The builder keeps up to 20 snapshots before major changes. Restore any version without losing the current one.</div>
+          <div id="revision-list" class="history-list"></div>
+          <button class="btn btn-danger btn-sm" onclick="clearRevisionHistory()" style="width:100%;margin-top:8px;">Clear Revision History</button>
         </div>
       </div>
     </div>
     <div id="preview-panel">
       <button id="fullscreen-exit" onclick="toggleFullscreen()">Exit Full Preview</button>
-      <div class="preview-label">Live Preview</div>
+      <div class="preview-tools"><div class="preview-label" style="margin:0;">Live Preview</div><div class="preview-mode-group" role="group" aria-label="Preview mode"><button id="preview-desktop-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="true" onclick="setPreviewMode('desktop')">Desktop</button><button id="preview-mobile-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="setPreviewMode('mobile')">Mobile</button><button id="preview-dark-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="toggleDarkSimulation()">Email dark mode</button></div></div>
+      <div id="inbox-preview"><div class="inbox-from">Ohio State ASME</div><div id="inbox-subject" class="inbox-subject">Add a subject line</div><div id="inbox-preheader" class="inbox-preheader">Add preheader text in Settings</div></div>
       <div id="preview-shell"><div id="preview-inner"></div></div>
       <div class="tip-box">
         <strong>Brevo:</strong> Click <em>Copy HTML for Brevo</em> &rarr; New campaign &rarr; Design &rarr; Code your own &rarr; paste.<br>
@@ -436,6 +497,18 @@ var Core=window.NewsletterCore;
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="light";
 var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="";
 var lastFocusedBeforeModal=null;
+var autoSortEvents=true,previewMode="desktop",darkSimulation=false;
+var ASME_ORG_DEFAULTS={
+  "ql1-title":"Join ASME","ql1-sub":"Access events and opportunities.","ql1-btn":"Join Now","ql1-url":"https://org.osu.edu/asme/join/",
+  "ql2-title":"Calendar","ql2-sub":"See all upcoming events.","ql2-btn":"See Events","ql2-url":"https://org.osu.edu/asme/calendar/",
+  "ql3-title":"Sponsor Us","ql3-sub":"Reach ME students at OSU.","ql3-btn":"Partner","ql3-url":"https://org.osu.edu/asme/sponsor-asme/",
+  "footer-name":"Ohio State ASME","footer-addr":"American Society of Mechanical Engineers · Columbus, OH 43210",
+  "s-logo":"https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png",
+  "s-logo-light":"https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png",
+  "s-website":"https://org.osu.edu/asme/","s-ig-url":"https://www.instagram.com/asmeohiostate/","s-ig-handle":"@asmeohiostate",
+  "s-li-url":"https://www.linkedin.com/company/asme-ohio-state-university/","s-gm-url":"https://groupme.com/join_group/95825283/iaBgk5Ld","s-unsub":"{{ unsubscribe }}"
+};
+var ORG_DEFAULT_FIELD_IDS=Object.keys(ASME_ORG_DEFAULTS);
 var events=[
   {id:1,date:"MAY 28",title:"CAD Workshop: SolidWorks Basics",time:"5:00 PM",location:"Hitchcock 131",description:"Hands-on intro to SolidWorks for beginners. Laptops provided or bring your own.",eventType:"workshop",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"},
   {id:2,date:"JUN 4",title:"General Body Meeting",time:"6:00 PM",location:"Hitchcock 035",description:"Monthly GBM with project updates, semester announcements, and free food.",eventType:"gbm",accent:"red",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"}
@@ -473,6 +546,29 @@ function getActiveLogoUrl(){
   var lightLogo=Core.safeUrl(g("s-logo-light"));
   return activeTheme==="light"&&lightLogo?lightLogo:defaultLogo;
 }
+function getPreviewLogoUrl(){return darkSimulation?(Core.safeUrl(g("s-logo"))||getActiveLogoUrl()):getActiveLogoUrl();}
+
+function getOrganizationDefaults(){
+  try{
+    var saved=JSON.parse(localStorage.getItem("asme_nl_org_defaults")||"null");
+    return saved&&typeof saved==="object"?Object.assign({},ASME_ORG_DEFAULTS,saved):Object.assign({},ASME_ORG_DEFAULTS);
+  }catch(error){return Object.assign({},ASME_ORG_DEFAULTS);}
+}
+function applyOrganizationDefaults(profile){
+  ORG_DEFAULT_FIELD_IDS.forEach(function(id){var el=document.getElementById(id);if(el&&Object.prototype.hasOwnProperty.call(profile,id))el.value=String(profile[id]||"");});
+}
+function saveOrganizationDefaults(){
+  var profile={};ORG_DEFAULT_FIELD_IDS.forEach(function(id){profile[id]=g(id);});
+  try{localStorage.setItem("asme_nl_org_defaults",JSON.stringify(profile));alert("Organization defaults saved for future issues on this browser.");}catch(error){alert("Defaults could not be saved in this browser.");}
+  render();
+}
+function restoreAsmeDefaults(){
+  if(!confirm("Restore the official ASME branding, links, footer, and GroupMe defaults?"))return;
+  backupCurrentDraft("Before restoring ASME defaults");
+  applyOrganizationDefaults(ASME_ORG_DEFAULTS);
+  try{localStorage.setItem("asme_nl_org_defaults",JSON.stringify(ASME_ORG_DEFAULTS));}catch(error){}
+  render();
+}
 
 window.onload=function(){
   updateBuilderShortcutVisibility();
@@ -487,23 +583,14 @@ window.onload=function(){
   document.getElementById("ann-title").value="From the Board";
   document.getElementById("ann-quote").value="\u201cWe\u2019re thrilled to kick off the year with our biggest lineup of events yet. Whether you\u2019re here to build skills, network with industry, or meet fellow engineers, there\u2019s something for everyone this semester.\u201d";
   document.getElementById("ann-author").value="Matthew Allen, ASME OSU President 2026\u20132027";
-  document.getElementById("ql1-title").value="Join ASME"; document.getElementById("ql1-sub").value="Access events and opportunities."; document.getElementById("ql1-btn").value="Join Now"; document.getElementById("ql1-url").value="https://org.osu.edu/asme/join/";
-  document.getElementById("ql2-title").value="Calendar"; document.getElementById("ql2-sub").value="See all upcoming events."; document.getElementById("ql2-btn").value="See Events"; document.getElementById("ql2-url").value="https://org.osu.edu/asme/calendar/";
-  document.getElementById("ql3-title").value="Sponsor Us"; document.getElementById("ql3-sub").value="Reach ME students at OSU."; document.getElementById("ql3-btn").value="Partner"; document.getElementById("ql3-url").value="https://org.osu.edu/asme/sponsor-asme/";
   document.getElementById("issue-bar-text").value="Biweekly Newsletter \u00b7 May 2026";
-  document.getElementById("footer-name").value="Ohio State ASME";
-  document.getElementById("footer-addr").value="American Society of Mechanical Engineers \u00b7 Columbus, OH 43210";
-  document.getElementById("s-logo").value="https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png";
-  document.getElementById("s-logo-light").value="https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png";
-  document.getElementById("s-website").value="https://org.osu.edu/asme/";
-  document.getElementById("s-ig-url").value="https://www.instagram.com/asmeohiostate/";
-  document.getElementById("s-ig-handle").value="@asmeohiostate";
-  document.getElementById("s-li-url").value="https://www.linkedin.com/company/asme-ohio-state-university/";
-  document.getElementById("s-gm-url").value="https://groupme.com/join_group/95825283/iaBgk5Ld";
-  document.getElementById("s-unsub").value="{{ unsubscribe }}";
+  applyOrganizationDefaults(getOrganizationDefaults());
+  try{autoSortEvents=localStorage.getItem("asme_nl_auto_sort")!=="false";}catch(error){}
+  syncAutoSortButton();
   buildThemeChips();
   restoreDraft(); // always populates; falls back to defaults if nothing saved
   renderTemplateList();
+  renderRevisionHistory();
   loadCalendarEvents(false);
   document.addEventListener("keydown",function(event){
     var modal=document.querySelector(".modal-overlay.open");
@@ -593,13 +680,15 @@ function toggleFeatButton(){
 }
 
 function addEvent(){
+  backupCurrentDraft("Before adding event");
   events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
   renderEventList(); render();
 }
-function removeEvent(id){events=events.filter(function(e){return e.id!==id;});renderEventList();renderCalendarList();render();}
+function removeEvent(id){backupCurrentDraft("Before removing event");events=events.filter(function(e){return e.id!==id;});renderEventList();renderCalendarList();render();}
 function moveEvent(id,dir){
   var idx=events.findIndex(function(e){return e.id===id;});
   if(dir==="up"&&idx===0) return; if(dir==="down"&&idx===events.length-1) return;
+  backupCurrentDraft("Before reordering event");
   var swap=dir==="up"?idx-1:idx+1; var tmp=events[idx]; events[idx]=events[swap]; events[swap]=tmp;
   renderEventList(); render();
 }
@@ -609,6 +698,30 @@ function updateEvent(id,field,value){
   if(field==="accent"||field==="eventType") renderEventList();
   render();
 }
+
+function eventDateValue(event){
+  var raw=String(event.date||"").trim(),year=(new Date()).getFullYear();
+  if(!/\b\d{4}\b/.test(raw))raw+=" "+year;
+  var parsed=Date.parse(raw);if(Number.isNaN(parsed))return Number.POSITIVE_INFINITY;
+  var time=String(event.time||"").match(/\b(\d{1,2})(?::(\d{2}))?\s*(AM|PM)\b/i);
+  if(time){var hours=Number(time[1])%12+(time[3].toUpperCase()==="PM"?12:0),minutes=Number(time[2]||0),date=new Date(parsed);date.setHours(hours,minutes,0,0);parsed=date.getTime();}
+  return parsed;
+}
+function normalizedEventKey(event){return[String(event.title||"").trim().toLowerCase(),String(event.date||"").trim().toLowerCase()].join("|");}
+function eventWarnings(event){
+  var duplicate=events.some(function(other){return other.id!==event.id&&normalizedEventKey(other)===normalizedEventKey(event)&&event.title.trim()&&event.date.trim();});
+  var conflict=events.some(function(other){return other.id!==event.id&&String(other.date||"").trim().toLowerCase()===String(event.date||"").trim().toLowerCase()&&String(other.time||"").trim().toLowerCase()===String(event.time||"").trim().toLowerCase()&&event.date.trim()&&event.time.trim();});
+  return{duplicate:duplicate,conflict:conflict};
+}
+function sortEventsChronologically(showNotice){
+  if(events.length<2)return;
+  if(showNotice)backupCurrentDraft("Before sorting events");
+  events=events.map(function(event,index){return{event:event,index:index};}).sort(function(a,b){var diff=eventDateValue(a.event)-eventDateValue(b.event);return Number.isNaN(diff)||diff===0?a.index-b.index:diff;}).map(function(item){return item.event;});
+  renderEventList();render();
+}
+function sortAfterEventEdit(){if(autoSortEvents)sortEventsChronologically(false);else renderEventList();}
+function syncAutoSortButton(){var btn=document.getElementById("auto-sort-toggle");if(btn){btn.textContent=autoSortEvents?"On":"Off";btn.className="btn btn-toggle "+(autoSortEvents?"on":"off")+" btn-sm";btn.setAttribute("aria-pressed",String(autoSortEvents));}}
+function toggleAutoSort(){autoSortEvents=!autoSortEvents;try{localStorage.setItem("asme_nl_auto_sort",String(autoSortEvents));}catch(error){}syncAutoSortButton();if(autoSortEvents)sortEventsChronologically(true);}
 function toggleEventLink(id){
   var ev=events.find(function(e){return e.id===id;});
   if(!ev) return; ev.showLink=!ev.showLink; renderEventList(); render();
@@ -623,6 +736,7 @@ function renderEventList(){
   document.getElementById("event-count").textContent=events.length+" event"+(events.length!==1?"s":"");
   list.innerHTML=events.map(function(ev,i){
     var eventType=EVENT_TYPES[ev.eventType]?ev.eventType:"event";
+    var warnings=eventWarnings(ev);
     return '<div class="editor-card" style="margin-bottom:10px;">'+
       '<div class="row">'+
         '<div class="row-gap">'+
@@ -634,7 +748,7 @@ function renderEventList(){
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
       '</div>'+
-      (ev.sourceEventId?'<div style="margin:-3px 0 9px;"><span class="source-badge">Imported from Calendar</span></div>':'')+
+      ((ev.sourceEventId||warnings.duplicate||warnings.conflict)?'<div style="margin:-3px 0 9px;">'+(ev.sourceEventId?'<span class="source-badge">Imported from Calendar</span> ':'')+(warnings.duplicate?'<span class="warning-badge">Possible duplicate</span>':'')+(warnings.conflict?'<span class="warning-badge">Schedule conflict</span>':'')+'</div>':'')+
       '<div class="field"><label>Event Type</label><div class="preset-row">'+
         Object.keys(EVENT_TYPES).map(function(key){
           var type=EVENT_TYPES[key],selected=key===eventType;
@@ -642,10 +756,10 @@ function renderEventList(){
         }).join("")+
       '</div><button class="preset-fill" onclick="applyPreset('+ev.id+',\''+eventType+'\')">Fill '+escHtml(EVENT_TYPES[eventType].label)+' preset details</button></div>'+
       '<div class="field-row">'+
-        '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" placeholder="MAY 28"/></div>'+
-        '<div class="field"><label>Time</label><input value="'+escHtml(ev.time)+'" oninput="updateEvent('+ev.id+',\'time\',this.value)" placeholder="6:00 PM"/></div>'+
+        '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" onchange="sortAfterEventEdit()" placeholder="MAY 28"/></div>'+
+        '<div class="field"><label>Time</label><input value="'+escHtml(ev.time)+'" oninput="updateEvent('+ev.id+',\'time\',this.value)" onchange="sortAfterEventEdit()" placeholder="6:00 PM"/></div>'+
       '</div>'+
-      '<div class="field"><label>Event Title</label><input value="'+escHtml(ev.title)+'" oninput="updateEvent('+ev.id+',\'title\',this.value)"/></div>'+
+      '<div class="field"><label>Event Title</label><input value="'+escHtml(ev.title)+'" oninput="updateEvent('+ev.id+',\'title\',this.value)" onchange="renderEventList()"/></div>'+
       '<div class="field"><label>Location</label><input value="'+escHtml(ev.location)+'" oninput="updateEvent('+ev.id+',\'location\',this.value)" placeholder="Hitchcock 035"/></div>'+
       '<div class="field"><label>Description</label><textarea oninput="updateEvent('+ev.id+',\'description\',this.value)">'+escHtml(ev.description)+'</textarea></div>'+
       '<div class="img-toggle-row">'+
@@ -750,6 +864,7 @@ function importCalendarEvent(index){
   if(events.some(function(event){return event.sourceEventId===source.id;}))return;
   var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
   events.push(Core.calendarEventToNewsletter(sourceWithUrl,nextId++,calendarTimeZone));
+  if(autoSortEvents)sortEventsChronologically(false);
   renderEventList();renderCalendarList();render();autoSave();switchTabByName("events");
   document.getElementById("editor").scrollTop=document.getElementById("editor").scrollHeight;
 }
@@ -778,7 +893,7 @@ function buildSocialIconsPreview(T){
 
 function render(){
   var T=THEMES[activeTheme];
-  var logoUrl=getActiveLogoUrl(),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
+  var logoUrl=getPreviewLogoUrl(),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
   var annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
   var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location");
@@ -845,6 +960,32 @@ function render(){
     '<div class="pv-footer-addr" style="color:'+T.subtle+';">'+escHtml(footerAddr)+'</div>'+
     buildSocialIconsPreview(T)+
     '<div class="pv-footer-unsub" style="color:'+T.faint+';">You\'re receiving this because you signed up for ASME OSU updates. <span style="color:'+T.muted+';">Unsubscribe</span></div></div>';
+  renderLiveTools();
+}
+
+function renderLiveTools(){
+  var subject=g("s-subject").trim(),preheader=g("s-preheader").trim();
+  var subjectCount=document.getElementById("subject-count"),preheaderCount=document.getElementById("preheader-count");
+  if(subjectCount){subjectCount.textContent=subject.length+" / 65 recommended";subjectCount.classList.toggle("warning",subject.length>65);}
+  if(preheaderCount){preheaderCount.textContent=preheader.length+" / 100 recommended";preheaderCount.classList.toggle("warning",preheader.length>100);}
+  var inboxSubject=document.getElementById("inbox-subject"),inboxPreheader=document.getElementById("inbox-preheader");
+  if(inboxSubject)inboxSubject.textContent=subject||"Add a subject line";
+  if(inboxPreheader)inboxPreheader.textContent=preheader||"Add preheader text in Settings";
+  renderReadiness();
+}
+
+function setPreviewMode(mode){
+  previewMode=mode==="mobile"?"mobile":"desktop";
+  var shell=document.getElementById("preview-shell");if(shell)shell.classList.toggle("preview-mobile",previewMode==="mobile");
+  var desktop=document.getElementById("preview-desktop-btn"),mobile=document.getElementById("preview-mobile-btn");
+  if(desktop)desktop.setAttribute("aria-pressed",String(previewMode==="desktop"));
+  if(mobile)mobile.setAttribute("aria-pressed",String(previewMode==="mobile"));
+}
+function toggleDarkSimulation(){
+  darkSimulation=!darkSimulation;
+  document.getElementById("preview-panel").classList.toggle("simulate-client-dark",darkSimulation);
+  document.getElementById("preview-dark-btn").setAttribute("aria-pressed",String(darkSimulation));
+  render();
 }
 
 function buildSocialIconsHTML(T,igUrl,igHandle,website,liUrl,gmUrl){
@@ -1023,11 +1164,29 @@ function restoreDraft(){
 
 function backupCurrentDraft(reason){
   try{
-    localStorage.setItem("asme_nl_previous_draft",JSON.stringify({
-      reason:reason||"Before change",savedAt:new Date().toISOString(),state:Core.sanitizeState(collectState())
-    }));
+    var entry={reason:reason||"Before change",savedAt:new Date().toISOString(),state:Core.sanitizeState(collectState())};
+    localStorage.setItem("asme_nl_previous_draft",JSON.stringify(entry));
+    var revisions=getRevisions(),signature=JSON.stringify(entry.state);
+    if(!revisions.length||JSON.stringify(revisions[0].state)!==signature){revisions.unshift(entry);localStorage.setItem("asme_nl_revisions",JSON.stringify(revisions.slice(0,20)));}
+    renderRevisionHistory();
   }catch(error){console.warn("Draft backup failed:",error);}
 }
+
+function getRevisions(){try{var revisions=JSON.parse(localStorage.getItem("asme_nl_revisions")||"[]");return Array.isArray(revisions)?revisions:[];}catch(error){return[];}}
+function renderRevisionHistory(){
+  var list=document.getElementById("revision-list");if(!list)return;
+  var revisions=getRevisions();
+  if(!revisions.length){list.innerHTML='<div class="empty-state" style="padding:14px 0;">No revisions yet.</div>';return;}
+  list.innerHTML=revisions.map(function(entry,index){
+    var date=new Date(entry.savedAt),stamp=Number.isNaN(date.getTime())?"Saved version":date.toLocaleString();
+    return '<div class="history-item"><div class="history-meta"><strong>'+escHtml(entry.reason||"Saved version")+'</strong>'+escHtml(stamp)+'</div><button class="btn btn-ghost btn-sm" onclick="restoreRevision('+index+')">Restore</button></div>';
+  }).join("");
+}
+function restoreRevision(index){
+  var revisions=getRevisions(),entry=revisions[index];if(!entry||!entry.state){alert("That revision is no longer available.");return;}
+  var target=entry.state;backupCurrentDraft("Before restoring revision");applyState(target);autoSave();renderRevisionHistory();
+}
+function clearRevisionHistory(){if(!confirm("Clear all saved revision history from this browser?"))return;localStorage.removeItem("asme_nl_revisions");renderRevisionHistory();}
 
 function downloadJson(data,fileName){
   var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
@@ -1299,6 +1458,7 @@ function loadBuiltInTemplate(key){
 function duplicateEvent(id){
   var ev=events.find(function(e){return e.id===id;});
   if(!ev) return;
+  backupCurrentDraft("Before duplicating event");
   var clone=JSON.parse(JSON.stringify(ev));
   clone.id=nextId++;
   clone.title=clone.title+" (Copy)";
@@ -1345,7 +1505,8 @@ function toggleFullscreen(){
 }
 
 /* ── PRE-SEND CHECKLIST ── */
-function checklistThenCopy(){
+var checklistCopyMode=true;
+function getReadinessChecks(){
   var issues=[];
   function add(ok,label,detail){issues.push({ok:ok,label:label,detail:detail||""});}
   var activeLogo=getActiveLogoUrl();
@@ -1355,6 +1516,7 @@ function checklistThenCopy(){
   if(subject.length>65)add(false,"Subject line may be too long","Consider shortening it so inboxes are less likely to truncate it.");
   var preheader=g("s-preheader").trim();
   add(Boolean(preheader),preheader?"Preheader text added":"Preheader text is empty",preheader?"":"Add a concise inbox preview line in Settings.");
+  if(preheader.length>100)add(false,"Preheader may be too long","Keep it near 100 characters so more inboxes show the full message.");
   if(events.length===0) issues.push({ok:false,label:"No events added",detail:"Add at least one event in the Events tab."});
   else issues.push({ok:true,label:events.length+" event"+(events.length!==1?"s":"")+" added",detail:""});
   var placeholderEvents=events.filter(function(e){return !e.title.trim()||!e.date.trim()||/^(New Event|Event Name|MON DD)$/i.test(e.title.trim())||e.date.trim()==="MON DD";});
@@ -1363,6 +1525,10 @@ function checklistThenCopy(){
     if(event.showLink&&!Core.safeUrl(event.linkUrl))add(false,"Event "+(index+1)+" has an invalid button URL","Use an http:// or https:// link, or turn the button off.");
     if(event.showImg&&(!Core.safeUrl(event.imgUrl)||!event.imgAlt.trim()))add(false,"Event "+(index+1)+" image needs attention","Use a valid image URL and meaningful alt text.");
   });
+  var duplicateCount=events.filter(function(event){return eventWarnings(event).duplicate;}).length;
+  var conflictCount=events.filter(function(event){return eventWarnings(event).conflict;}).length;
+  if(duplicateCount)add(false,"Possible duplicate events detected","Review the warning badges in Events before sending.");
+  if(conflictCount)add(false,"Possible schedule conflict detected","Two or more events share the same date and start time.");
   if(showFeatured){
     add(Boolean(g("feat-title").trim()),"Featured event title "+(g("feat-title").trim()?"added":"is missing"),g("feat-title").trim()?"":"Complete the Featured tab or turn the section off.");
     if(showFeatButton)add(Boolean(Core.safeUrl(g("feat-btn-url"))),"Featured button URL "+(Core.safeUrl(g("feat-btn-url"))?"looks valid":"is invalid"),Core.safeUrl(g("feat-btn-url"))?"":"Use an http:// or https:// link.");
@@ -1376,6 +1542,24 @@ function checklistThenCopy(){
   var address=g("footer-addr").trim();
   var addressLooksComplete=/\d+\s+.+,\s*.+\b\d{5}(?:-\d{4})?\b/.test(address);
   add(addressLooksComplete,addressLooksComplete?"Footer includes a postal address":"Footer may be missing a full postal address",addressLooksComplete?"":"Enter a verified street or mailing address before sending commercial campaigns.");
+  return issues;
+}
+
+function readinessScore(issues){
+  if(!issues.length)return 100;
+  return Math.round(issues.filter(function(item){return item.ok;}).length/issues.length*100);
+}
+function renderReadiness(){
+  var issues=getReadinessChecks(),score=readinessScore(issues),open=issues.filter(function(item){return!item.ok;});
+  var scoreEl=document.getElementById("readiness-score"),fill=document.getElementById("readiness-fill"),summary=document.getElementById("readiness-summary");
+  if(scoreEl)scoreEl.textContent=score+"%";
+  if(fill){fill.style.width=score+"%";fill.style.background=score>=90?"#267044":score>=70?"#a87300":"#ba0c2f";}
+  if(summary)summary.textContent=open.length?(open.length+" item"+(open.length===1?"":"s")+" need attention · "+open[0].label):"All live checks pass. Run the link checker before export.";
+}
+
+function showReadinessChecklist(copyMode){
+  checklistCopyMode=copyMode;
+  var issues=getReadinessChecks();
 
   var el=document.getElementById("checklist-items");
   el.innerHTML=issues.map(function(i){
@@ -1388,19 +1572,52 @@ function checklistThenCopy(){
   var hasIssues=issues.some(function(i){return!i.ok;});
   document.getElementById("checklist-title").textContent=hasIssues?"Check Before Copying":"Checks Passed";
   document.getElementById("checklist-subtitle").textContent=hasIssues?
-    "A few things may need attention before copying your HTML to Brevo.":
-    "Everything looks ready. Copy your HTML when you are ready to paste it into Brevo.";
-  document.getElementById("checklist-primary").textContent=hasIssues?"Copy Anyway":"Copy HTML";
+    "A few things may need attention before this newsletter is sent.":
+    "Everything looks ready. Run the network link checker too if you have not already.";
+  document.getElementById("checklist-primary").textContent=copyMode?(hasIssues?"Copy Anyway":"Copy HTML"):"Close";
   document.getElementById("checklist-modal").classList.add("open");
   lastFocusedBeforeModal=document.activeElement;
   setTimeout(function(){document.getElementById("checklist-primary").focus();},0);
 }
+function checklistThenCopy(){showReadinessChecklist(true);}
+function openReadinessChecklist(){showReadinessChecklist(false);}
 
 function closeChecklist(){
   document.getElementById("checklist-modal").classList.remove("open");
   if(lastFocusedBeforeModal&&lastFocusedBeforeModal.focus)lastFocusedBeforeModal.focus();
 }
-function proceedCopy(){closeChecklist();doCopy();}
+function proceedCopy(){closeChecklist();if(checklistCopyMode)doCopy();}
+
+function collectEnabledLinks(){
+  var links=[];
+  function add(label,url){if(String(url||"").trim())links.push({label:label,url:String(url).trim(),safe:Core.safeUrl(url)});}
+  add("Website",g("s-website"));add("Instagram",g("s-ig-url"));add("LinkedIn",g("s-li-url"));add("GroupMe",g("s-gm-url"));
+  if(showFeatured&&showFeatButton)add("Featured button",g("feat-btn-url"));
+  if(showLinks)[1,2,3].forEach(function(n){add("Quick link "+n,g("ql"+n+"-url"));});
+  events.forEach(function(event,index){if(event.showLink)add("Event "+(index+1)+" button",event.linkUrl);});
+  return links;
+}
+function linkCheckRow(result){
+  var icon=result.status==="ok"?"✅":result.status==="redirect"?"↪️":result.status==="invalid"||result.status==="broken"?"⚠️":"ℹ️";
+  return '<div class="link-result">'+icon+' <strong>'+escHtml(result.label)+'</strong> — '+escHtml(result.message)+'</div>';
+}
+function probeLink(link){
+  if(!link.safe)return Promise.resolve({label:link.label,status:"invalid",message:"Invalid URL"});
+  var controller=typeof AbortController!=="undefined"?new AbortController():null;
+  var timer=controller?setTimeout(function(){controller.abort();},7000):null;
+  return fetch(link.safe,{method:"HEAD",redirect:"follow",cache:"no-store",signal:controller?controller.signal:undefined}).then(function(response){
+    if(timer)clearTimeout(timer);
+    if(!response.ok){var blocked=[401,403,405,429].indexOf(response.status)>=0;return{label:link.label,status:blocked?"unverified":"broken",message:blocked?"The site blocked the automated check (HTTP "+response.status+")":"Returned HTTP "+response.status};}
+    var redirected=Boolean(response.redirected)||Boolean(response.url&&response.url!==link.safe);
+    return{label:link.label,status:redirected?"redirect":"ok",message:redirected?"Redirects to "+response.url:"Reachable"};
+  }).catch(function(){if(timer)clearTimeout(timer);return{label:link.label,status:"unverified",message:"Could not verify from this browser (the site may block automated checks)"};});
+}
+function checkAllLinks(){
+  var container=document.getElementById("link-check-results"),links=collectEnabledLinks();
+  if(!links.length){container.innerHTML='<div class="link-result">No enabled links to check.</div>';return Promise.resolve([]);}
+  container.innerHTML='<div class="link-result">Checking '+links.length+' links…</div>';
+  return Promise.all(links.map(probeLink)).then(function(results){container.innerHTML=results.map(linkCheckRow).join("");return results;});
+}
 
 function showSubjectToast(){
   var subj=g("s-subject");
@@ -1449,6 +1666,7 @@ function confirmNewIssue(){
     "s-subject":"","s-preheader":""
   };
   Object.keys(blanks).forEach(function(k){var el=document.getElementById(k);if(el)el.value=blanks[k];});
+  applyOrganizationDefaults(getOrganizationDefaults());
   ["featured","announce","links"].forEach(function(w){
     var on=true; var btn=document.getElementById("toggle-"+w);
     if(btn){btn.textContent="On";btn.className="btn btn-toggle on";btn.setAttribute("aria-pressed","true");}
@@ -1514,15 +1732,17 @@ function downloadHTML(){
 <div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-subtitle">
   <div class="modal" tabindex="-1">
     <h2 id="info-title">How to Use the Builder</h2>
-    <p class="modal-sub" id="info-subtitle">Build, review, and hand off an ASME newsletter in five steps.</p>
+    <p class="modal-sub" id="info-subtitle">A new-officer guide to building, checking, and sending an ASME newsletter.</p>
     <ol class="info-steps">
-      <li><strong>Start:</strong> Select <strong>New Issue</strong> or load a layout from <strong>Templates</strong>.</li>
-      <li><strong>Add events:</strong> Import upcoming items from <strong>Calendar</strong>, then refine their wording, images, and buttons under <strong>Events</strong>.</li>
-      <li><strong>Build content:</strong> Complete or turn off <strong>Featured</strong>, <strong>Announce</strong>, and <strong>Links</strong>.</li>
-      <li><strong>Finish:</strong> Choose a theme in <strong>Design</strong>; add the subject, preheader, branding, and unsubscribe variable in <strong>Settings</strong>.</li>
-      <li><strong>Send:</strong> Review <strong>Full Preview</strong>, select <strong>Copy HTML for Brevo</strong>, address the checklist, and paste the HTML into Brevo's code editor.</li>
+      <li><strong>Set up once:</strong> Confirm standard links under <strong>Links</strong>, the footer under <strong>Design</strong>, and logos/contact destinations under <strong>Settings</strong>. Then select <strong>Save as Defaults</strong> in Settings so every new issue starts with them. <strong>Restore ASME Defaults</strong> returns to the official values.</li>
+      <li><strong>Start an issue:</strong> Select <strong>New Issue</strong> or load a layout from <strong>Templates</strong>. The current draft auto-saves in this browser.</li>
+      <li><strong>Add events:</strong> Import upcoming items from <strong>Calendar</strong> or add them manually under <strong>Events</strong>. Auto-sort arranges recognizable dates; warning badges flag possible duplicates and identical start times.</li>
+      <li><strong>Build content:</strong> Complete or turn off <strong>Featured</strong>, <strong>Announce</strong>, and <strong>Links</strong>. Add meaningful alt text whenever an image is enabled.</li>
+      <li><strong>Write for the inbox:</strong> Add the subject and preheader in <strong>Settings</strong>. Use the character counters and inbox preview to keep both concise.</li>
+      <li><strong>Review:</strong> Watch the <strong>Live readiness</strong> score, run <strong>Check Links</strong>, and inspect Desktop, Mobile, and Email dark mode previews. Dark simulation is only an approximation because email apps render dark mode differently.</li>
+      <li><strong>Send:</strong> Select <strong>Copy HTML for Brevo</strong>, resolve the final checklist, then paste into Brevo → New campaign → Design → Code your own. Send yourself a Brevo test before the full list.</li>
     </ol>
-    <div class="info-note"><strong>Saving and sharing:</strong> Work auto-saves only in this browser. Use <strong>Templates → Export Draft .json</strong> to continue on another computer. A downloaded HTML file is a finished preview, not an editable draft.</div>
+    <div class="info-note"><strong>Recovery and handoff:</strong> Major actions create up to 20 snapshots in <strong>Templates → Revision History</strong>. Use <strong>Export Draft .json</strong> to continue on another computer. A downloaded HTML file is a finished preview, not an editable draft. Link results marked “could not verify” usually mean that site blocks browser-based checks; open those links manually.</div>
     <div class="modal-actions">
       <button class="btn btn-red" id="info-close" onclick="closeInfoDialog()">Got It</button>
     </div>

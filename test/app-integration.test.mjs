@@ -158,3 +158,75 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
 
   dom.window.close();
 });
+
+test("readiness, organization defaults, previews, event warnings, revisions, and link checks work together", async () => {
+  const dom = new JSDOM(html, {
+    url: "https://asme-osu.github.io/ASME-Newsletter-Builder/",
+    runScripts: "dangerously",
+    pretendToBeVisual: true,
+    beforeParse(window) {
+      window.alert = () => {};
+      window.confirm = () => true;
+      window.fetch = async (url, options = {}) => {
+        if (options.method === "HEAD") {
+          return { ok: true, status: 200, redirected: false, url: String(url) };
+        }
+        return { ok: true, json: async () => calendarFeed };
+      };
+      window.navigator.clipboard = { writeText: async () => {} };
+    }
+  });
+
+  const { window } = dom;
+  await new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+  await waitFor(() => window.calendarEvents.length === 1);
+
+  assert.match(window.document.getElementById("readiness-score").textContent, /^\d+%$/);
+  assert.equal(window.document.getElementById("preview-desktop-btn").getAttribute("aria-pressed"), "true");
+  assert.equal(window.document.getElementById("s-gm-url").value, "https://groupme.com/join_group/95825283/iaBgk5Ld");
+
+  window.document.getElementById("s-subject").value = "ASME September Events";
+  window.document.getElementById("s-preheader").value = "Workshops, meetings, and member opportunities.";
+  window.render();
+  assert.equal(window.document.getElementById("inbox-subject").textContent, "ASME September Events");
+  assert.match(window.document.getElementById("subject-count").textContent, /^21 \/ 65/);
+
+  window.setPreviewMode("mobile");
+  assert.equal(window.document.getElementById("preview-shell").classList.contains("preview-mobile"), true);
+  window.toggleDarkSimulation();
+  assert.equal(window.document.getElementById("preview-panel").classList.contains("simulate-client-dark"), true);
+  assert.equal(window.document.querySelector(".pv-logo-wrap img").src, window.document.getElementById("s-logo").value);
+  assert.match(window.generateHTML(), new RegExp(window.document.getElementById("s-logo-light").value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  window.events = [
+    { id: 301, date: "OCT 2", time: "6:00 PM", title: "Design Workshop", location: "A", description: "A", eventType: "workshop", accent: "blue", showImg: false, imgUrl: "", imgAlt: "", showLink: false, linkUrl: "", linkText: "" },
+    { id: 302, date: "SEP 1", time: "5:00 PM", title: "Early Event", location: "B", description: "B", eventType: "event", accent: "blue", showImg: false, imgUrl: "", imgAlt: "", showLink: false, linkUrl: "", linkText: "" },
+    { id: 303, date: "OCT 2", time: "6:00 PM", title: "Design Workshop", location: "C", description: "C", eventType: "workshop", accent: "blue", showImg: false, imgUrl: "", imgAlt: "", showLink: false, linkUrl: "", linkText: "" },
+    { id: 304, date: "OCT 2", time: "4:00 PM–5:00 PM", title: "Earlier Workshop", location: "D", description: "D", eventType: "workshop", accent: "blue", showImg: false, imgUrl: "", imgAlt: "", showLink: false, linkUrl: "", linkText: "" }
+  ];
+  window.renderEventList();
+  assert.equal(window.document.querySelectorAll(".warning-badge").length, 4);
+  assert.equal(window.getReadinessChecks().some((item) => /duplicate/i.test(item.label)), true);
+  assert.equal(window.getReadinessChecks().some((item) => /schedule conflict/i.test(item.label)), true);
+  window.sortEventsChronologically(false);
+  assert.deepEqual(Array.from(window.events, (event) => event.title), ["Early Event", "Earlier Workshop", "Design Workshop", "Design Workshop"]);
+
+  window.localStorage.removeItem("asme_nl_revisions");
+  window.backupCurrentDraft("Test snapshot");
+  assert.equal(window.getRevisions().length, 1);
+  assert.match(window.document.getElementById("revision-list").textContent, /Test snapshot/);
+
+  window.document.getElementById("s-gm-url").value = "https://groupme.com/join_group/custom";
+  window.saveOrganizationDefaults();
+  window.document.getElementById("s-gm-url").value = "";
+  window.applyOrganizationDefaults(window.getOrganizationDefaults());
+  assert.equal(window.document.getElementById("s-gm-url").value, "https://groupme.com/join_group/custom");
+  window.restoreAsmeDefaults();
+  assert.equal(window.document.getElementById("s-gm-url").value, "https://groupme.com/join_group/95825283/iaBgk5Ld");
+
+  const checked = await window.checkAllLinks();
+  assert.ok(checked.length >= 7);
+  assert.equal(checked.every((result) => result.status === "ok"), true);
+
+  dom.window.close();
+});
