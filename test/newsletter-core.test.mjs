@@ -30,7 +30,7 @@ test("sanitizes imported state and whitelists themes, accents, and event types",
     events: [{ id: "101", title: "GBM", eventType: "<script>", accent: 'blue\" onclick=\"alert(1)' }],
     fields: { "s-subject": "Hello", "s-logo-light": "https://example.com/light-logo.png", unexpected: "ignored" }
   });
-  assert.equal(state.activeTheme, "navy");
+  assert.equal(state.activeTheme, "light");
   assert.equal(state.events[0].id, 101);
   assert.equal(state.events[0].accent, "blue");
   assert.equal(state.events[0].eventType, "gbm");
