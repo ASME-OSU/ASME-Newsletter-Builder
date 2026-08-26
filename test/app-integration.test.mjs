@@ -57,6 +57,9 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   await waitFor(() => window.calendarEvents.length === 1);
 
   assert.equal(window.document.querySelectorAll("#event-list .editor-card").length, 2);
+  assert.equal(window.activeTheme, "light");
+  assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Light · Default");
+  assert.equal(window.document.querySelector(".pv-body").style.background, "rgb(247, 248, 250)");
   assert.equal(window.document.querySelector("#event-list .editor-card .preset-btn[aria-pressed='true']").textContent, "Workshop");
   assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
   assert.equal(window.document.querySelector(".pv-event-day").textContent, "28");

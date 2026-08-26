@@ -118,7 +118,7 @@
       showLinks: raw.showLinks !== false,
       showFeatImg: Boolean(raw.showFeatImg),
       showFeatButton: raw.showFeatButton !== false,
-      activeTheme: ALLOWED_THEMES.indexOf(raw.activeTheme) >= 0 ? raw.activeTheme : "navy",
+      activeTheme: ALLOWED_THEMES.indexOf(raw.activeTheme) >= 0 ? raw.activeTheme : "light",
       fields: sanitizeFields(raw.fields)
     };
   }
