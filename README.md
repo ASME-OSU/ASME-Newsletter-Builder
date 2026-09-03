@@ -24,7 +24,7 @@ The **Calendar** tab lists upcoming events from the public ASME Google Calendar.
 
 The browser reads `calendar-events.json` from the same GitHub Pages site. An hourly GitHub Actions workflow refreshes that file from the public Google iCal feed. This avoids requiring officers to sign in to Google or exposing an API key in browser code.
 
-If an event is changed in Google Calendar after it was imported, remove the newsletter copy and import it again if you want the new calendar details. Custom newsletter edits are intentionally never overwritten automatically.
+If an imported event changes in Google Calendar, the builder marks it **Calendar update available**. Use **Update Imported Event** on that calendar card or **Sync Imported Events** to apply all available changes. Updating refreshes the calendar-owned title, date, time, location, description, event type, and link while preserving newsletter images. Changes are never applied silently, so newsletter-specific edits are not overwritten without a click. If an imported event is cancelled or removed, its editor card is marked **No longer on Calendar**.
 
 ## Share an editable draft
 

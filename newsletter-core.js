@@ -161,6 +161,12 @@
     };
   }
 
+  function calendarEventSourceKey(value) {
+    var id = asString(value && typeof value === "object" ? value.id : value);
+    var separator = id.lastIndexOf("::");
+    return separator > 0 ? id.slice(0, separator) : id;
+  }
+
   function calendarEventToNewsletter(raw, id, timeZone) {
     var event = sanitizeCalendarEvent(raw);
     if (!event) throw new Error("Calendar event is invalid.");
@@ -217,6 +223,7 @@
     createDraftDocument: createDraftDocument,
     readDraftDocument: readDraftDocument,
     sanitizeCalendarEvent: sanitizeCalendarEvent,
+    calendarEventSourceKey: calendarEventSourceKey,
     calendarEventToNewsletter: calendarEventToNewsletter
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);

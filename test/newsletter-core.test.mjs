@@ -77,3 +77,9 @@ test("maps timed and all-day calendar events into editable newsletter events", (
   assert.equal(allDay.date, "JAN 11");
   assert.equal(allDay.time, "All day");
 });
+
+test("extracts a stable source key when a calendar occurrence changes time", () => {
+  assert.equal(Core.calendarEventSourceKey("meeting@example.com::2026-09-10T22:00:00.000Z"), "meeting@example.com");
+  assert.equal(Core.calendarEventSourceKey({ id: "plain-event-id" }), "plain-event-id");
+  assert.equal(Core.calendarEventSourceKey(null), "");
+});

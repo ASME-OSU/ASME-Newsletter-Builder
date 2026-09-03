@@ -15,7 +15,7 @@ const calendarFeed = {
   timeZone: "America/New_York",
   sourceUrl: "https://calendar.google.com/calendar/embed?src=public",
   events: [{
-    id: "calendar-event-1",
+    id: "calendar-event-1::2026-09-15T22:00:00.000Z",
     title: "Imported GBM",
     start: "2026-09-15T22:00:00.000Z",
     end: "2026-09-15T23:00:00.000Z",
@@ -120,10 +120,39 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
 
   window.importCalendarEvent(0);
   assert.equal(window.events.length, 3);
-  assert.equal(window.events[2].sourceEventId, "calendar-event-1");
+  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2026-09-15T22:00:00.000Z");
   assert.equal(window.events[2].title, "Imported GBM");
   assert.equal(window.events[2].eventType, "gbm");
   assert.equal(window.document.querySelector("#calendar-list button").disabled, true);
+
+  window.calendarEvents[0] = window.NewsletterCore.sanitizeCalendarEvent({
+    ...calendarFeed.events[0],
+    id: "calendar-event-1::2026-09-15T23:00:00.000Z",
+    title: "Updated Industry GBM",
+    start: "2026-09-15T23:00:00.000Z",
+    end: "2026-09-16T00:00:00.000Z",
+    location: "Scott E100",
+    updated: "2026-09-01T12:00:00.000Z"
+  });
+  window.renderCalendarList();
+  window.renderEventList();
+  assert.equal(window.document.querySelector("#calendar-list button").textContent, "Update Imported Event");
+  assert.match(window.document.getElementById("event-list").textContent, /Calendar update available/);
+  assert.equal(window.document.getElementById("sync-calendar-imports").hidden, false);
+  window.events[2].showImg = true;
+  window.events[2].imgUrl = "https://example.com/custom-event.png";
+  window.events[2].imgAlt = "Newsletter-specific event artwork";
+  window.syncImportedCalendarEvents();
+  assert.equal(window.events.length, 3);
+  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2026-09-15T23:00:00.000Z");
+  assert.equal(window.events[2].title, "Updated Industry GBM");
+  assert.equal(window.events[2].location, "Scott E100");
+  assert.equal(window.events[2].imgUrl, "https://example.com/custom-event.png");
+  assert.equal(window.document.querySelector("#calendar-list button").textContent, "Synced");
+
+  window.calendarEvents = [];
+  window.renderEventList();
+  assert.match(window.document.getElementById("event-list").textContent, /No longer on Calendar/);
 
   window.document.getElementById("feat-title").value = 'Engineering <Design> & "Build"';
   window.document.getElementById("feat-desc").value = "First line\nSecond line";

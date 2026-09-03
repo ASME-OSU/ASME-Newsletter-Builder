@@ -339,6 +339,7 @@
       <div id="tab-calendar" class="tab-panel" role="tabpanel">
         <div class="calendar-toolbar">
           <button class="btn btn-blue" onclick="loadCalendarEvents(true)">Refresh Events</button>
+          <button id="sync-calendar-imports" class="btn btn-ghost" onclick="syncImportedCalendarEvents()" hidden>Sync Imported Events</button>
           <a class="btn btn-ghost" href="https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&amp;ctz=America%2FNew_York" target="_blank" rel="noopener" style="text-decoration:none;">Open Calendar</a>
         </div>
         <div id="calendar-status" class="calendar-status" role="status" aria-live="polite">Loading public calendar…</div>
@@ -495,7 +496,7 @@
 <script>
 var Core=window.NewsletterCore;
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="light";
-var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="";
+var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="",calendarFeedLoaded=false;
 var lastFocusedBeforeModal=null;
 var autoSortEvents=true,previewMode="desktop",darkSimulation=false;
 var ASME_ORG_DEFAULTS={
@@ -737,6 +738,9 @@ function renderEventList(){
   list.innerHTML=events.map(function(ev,i){
     var eventType=EVENT_TYPES[ev.eventType]?ev.eventType:"event";
     var warnings=eventWarnings(ev);
+    var calendarSource=calendarFeedLoaded&&ev.sourceEventId?findCalendarEventForImported(ev):null;
+    var calendarUpdate=calendarSource&&calendarImportNeedsUpdate(ev,calendarSource);
+    var calendarMissing=calendarFeedLoaded&&ev.sourceEventId&&!calendarSource;
     return '<div class="editor-card" style="margin-bottom:10px;">'+
       '<div class="row">'+
         '<div class="row-gap">'+
@@ -748,7 +752,7 @@ function renderEventList(){
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
       '</div>'+
-      ((ev.sourceEventId||warnings.duplicate||warnings.conflict)?'<div style="margin:-3px 0 9px;">'+(ev.sourceEventId?'<span class="source-badge">Imported from Calendar</span> ':'')+(warnings.duplicate?'<span class="warning-badge">Possible duplicate</span>':'')+(warnings.conflict?'<span class="warning-badge">Schedule conflict</span>':'')+'</div>':'')+
+      ((ev.sourceEventId||warnings.duplicate||warnings.conflict)?'<div style="margin:-3px 0 9px;">'+(calendarUpdate?'<span class="warning-badge">Calendar update available</span> ':calendarMissing?'<span class="warning-badge">No longer on Calendar</span> ':ev.sourceEventId?'<span class="source-badge">Synced from Calendar</span> ':'')+(warnings.duplicate?'<span class="warning-badge">Possible duplicate</span>':'')+(warnings.conflict?'<span class="warning-badge">Schedule conflict</span>':'')+'</div>':'')+
       '<div class="field"><label>Event Type</label><div class="preset-row">'+
         Object.keys(EVENT_TYPES).map(function(key){
           var type=EVENT_TYPES[key],selected=key===eventType;
@@ -817,6 +821,38 @@ function calendarDateParts(event){
   return{date:date,time:time};
 }
 
+function closestCalendarMatch(items,targetStart,getStart){
+  if(items.length===1)return items[0];
+  var target=new Date(targetStart).getTime();if(Number.isNaN(target))return null;
+  var closest=null,closestDistance=Number.POSITIVE_INFINITY;
+  items.forEach(function(item){var time=new Date(getStart(item)).getTime(),distance=Math.abs(time-target);if(!Number.isNaN(time)&&distance<closestDistance){closest=item;closestDistance=distance;}});
+  return closestDistance<=48*60*60*1000?closest:null;
+}
+
+function findCalendarEventForImported(imported){
+  var exact=calendarEvents.find(function(source){return source.id===imported.sourceEventId;});if(exact)return exact;
+  var key=Core.calendarEventSourceKey(imported.sourceEventId);if(!key)return null;
+  var candidates=calendarEvents.filter(function(source){return Core.calendarEventSourceKey(source)===key;});
+  return closestCalendarMatch(candidates,imported.sourceStart,function(source){return source.start;});
+}
+
+function findImportedEventForCalendar(source){
+  var exact=events.find(function(imported){return imported.sourceEventId===source.id;});if(exact)return exact;
+  var key=Core.calendarEventSourceKey(source);if(!key)return null;
+  var candidates=events.filter(function(imported){return imported.sourceEventId&&Core.calendarEventSourceKey(imported.sourceEventId)===key;});
+  return closestCalendarMatch(candidates,source.start,function(imported){return imported.sourceStart;});
+}
+
+function calendarImportNeedsUpdate(imported,source){
+  return imported.sourceEventId!==source.id||imported.sourceStart!==source.start||String(imported.sourceUpdated||"")!==String(source.updated||"");
+}
+
+function updateCalendarSyncButton(){
+  var button=document.getElementById("sync-calendar-imports");if(!button)return;
+  var count=events.filter(function(imported){var source=imported.sourceEventId&&findCalendarEventForImported(imported);return source&&calendarImportNeedsUpdate(imported,source);}).length;
+  button.hidden=!count;button.textContent=count?"Sync "+count+" Imported Event"+(count===1?"":"s"):"Sync Imported Events";
+}
+
 function loadCalendarEvents(force){
   var status=document.getElementById("calendar-status");
   if(!status)return Promise.resolve();
@@ -826,6 +862,7 @@ function loadCalendarEvents(force){
     if(!response.ok)throw new Error("Calendar feed returned "+response.status);
     return response.json();
   }).then(function(feed){
+    calendarFeedLoaded=true;
     calendarTimeZone=feed.timeZone||"America/New_York";
     calendarSourceUrl=Core.safeUrl(feed.sourceUrl);
     calendarEvents=(Array.isArray(feed.events)?feed.events:[]).map(Core.sanitizeCalendarEvent).filter(Boolean).filter(function(event){
@@ -833,10 +870,11 @@ function loadCalendarEvents(force){
       return end.getTime()>=Date.now()-24*60*60*1000;
     });
     var generated=feed.generatedAt?new Date(feed.generatedAt):null;
-    status.textContent=calendarEvents.length+" upcoming event"+(calendarEvents.length===1?"":"s")+" available"+(generated&&!Number.isNaN(generated.getTime())?" · synced "+generated.toLocaleString():"")+".";
+    status.textContent=calendarEvents.length+" upcoming event"+(calendarEvents.length===1?"":"s")+" available"+(generated&&!Number.isNaN(generated.getTime())?" · calendar data updated "+generated.toLocaleString():"")+".";
     renderCalendarList();
+    renderEventList();
   }).catch(function(error){
-    calendarEvents=[];renderCalendarList();
+    calendarFeedLoaded=false;calendarEvents=[];renderCalendarList();renderEventList();
     status.textContent="Calendar events could not be loaded here. The rest of the builder still works; use Open Calendar or try the hosted GitHub Pages version.";
     console.warn("Calendar load failed:",error);
   });
@@ -844,29 +882,56 @@ function loadCalendarEvents(force){
 
 function renderCalendarList(){
   var list=document.getElementById("calendar-list");if(!list)return;
+  updateCalendarSyncButton();
   if(!calendarEvents.length){list.innerHTML='<div class="empty-state">No upcoming calendar events are available.</div>';return;}
   list.innerHTML=calendarEvents.map(function(event,index){
     var parts=calendarDateParts(event);
-    var imported=events.some(function(existing){return existing.sourceEventId===event.id;});
+    var imported=findImportedEventForCalendar(event),needsUpdate=imported&&calendarImportNeedsUpdate(imported,event);
     var meta=[parts.time,event.location].filter(Boolean).join(" · ");
     return '<div class="calendar-event '+(imported?'imported':'')+'">'+
       '<div class="calendar-event-date">'+escHtml(parts.date)+'</div>'+
       '<div class="calendar-event-title">'+escHtml(event.title)+'</div>'+
       (meta?'<div class="calendar-event-meta">'+escHtml(meta)+'</div>':'')+
       (event.description?'<div class="calendar-event-desc">'+escHtml(event.description.slice(0,320))+(event.description.length>320?'…':'')+'</div>':'')+
-      '<button class="btn '+(imported?'btn-ghost':'btn-blue')+'" '+(imported?'disabled':'onclick="importCalendarEvent('+index+')"')+'>'+(imported?'Imported':'Import Event')+'</button>'+
+      '<button class="btn '+(imported&&!needsUpdate?'btn-ghost':'btn-blue')+'" '+(imported&&!needsUpdate?'disabled':needsUpdate?'onclick="updateCalendarEvent('+index+')"':'onclick="importCalendarEvent('+index+')"')+'>'+(needsUpdate?'Update Imported Event':imported?'Synced':'Import Event')+'</button>'+
       '</div>';
   }).join("");
 }
 
 function importCalendarEvent(index){
   var source=calendarEvents[index];if(!source)return;
-  if(events.some(function(event){return event.sourceEventId===source.id;}))return;
+  var imported=findImportedEventForCalendar(source);
+  if(imported){if(calendarImportNeedsUpdate(imported,source))updateCalendarEvent(index);return;}
   var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
   events.push(Core.calendarEventToNewsletter(sourceWithUrl,nextId++,calendarTimeZone));
   if(autoSortEvents)sortEventsChronologically(false);
   renderEventList();renderCalendarList();render();autoSave();switchTabByName("events");
   document.getElementById("editor").scrollTop=document.getElementById("editor").scrollHeight;
+}
+
+function applyCalendarUpdate(imported,source){
+  var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
+  var next=Core.calendarEventToNewsletter(sourceWithUrl,imported.id,calendarTimeZone);
+  var image={showImg:imported.showImg,imgUrl:imported.imgUrl,imgAlt:imported.imgAlt};
+  Object.assign(imported,next,image);
+}
+
+function updateCalendarEvent(index){
+  var source=calendarEvents[index],imported=source&&findImportedEventForCalendar(source);if(!source||!imported)return;
+  backupCurrentDraft("Before syncing imported calendar event");
+  applyCalendarUpdate(imported,source);
+  if(autoSortEvents)sortEventsChronologically(false);else renderEventList();
+  renderCalendarList();render();autoSave();
+}
+
+function syncImportedCalendarEvents(){
+  var updates=events.map(function(imported){var source=imported.sourceEventId&&findCalendarEventForImported(imported);return source&&calendarImportNeedsUpdate(imported,source)?{imported:imported,source:source}:null;}).filter(Boolean);
+  if(!updates.length){updateCalendarSyncButton();return;}
+  backupCurrentDraft("Before syncing imported calendar events");
+  updates.forEach(function(update){applyCalendarUpdate(update.imported,update.source);});
+  if(autoSortEvents)sortEventsChronologically(false);else renderEventList();
+  renderCalendarList();render();autoSave();
+  document.getElementById("calendar-status").textContent=updates.length+" imported event"+(updates.length===1?" was":"s were")+" updated from the calendar.";
 }
 
 function socialSVG(type){

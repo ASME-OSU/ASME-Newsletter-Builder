@@ -27,16 +27,24 @@ function publicEventUrl() {
   return EMBED_URL;
 }
 
+function eventDateIso(value, allDay) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  if (!allDay) return date.toISOString();
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString();
+}
+
 function serializeInstance(instance, base) {
   const event = instance.isOverride ? instance.event : base;
-  const start = new Date(instance.start);
+  const allDay = Boolean(instance.isFullDay);
+  const start = eventDateIso(instance.start, allDay);
   const uid = text(event.uid);
   return {
-    id: `${uid}::${start.toISOString()}`,
+    id: `${uid}::${start}`,
     title: text(instance.summary || event.summary) || "Untitled Event",
-    start: start.toISOString(),
-    end: iso(instance.end),
-    allDay: Boolean(instance.isFullDay),
+    start,
+    end: allDay ? eventDateIso(instance.end, true) : iso(instance.end),
+    allDay,
     location: text(event.location),
     description: instance.isRecurring && !instance.isOverride ? "" : text(event.description),
     url: publicEventUrl(event),
