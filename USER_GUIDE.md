@@ -35,12 +35,13 @@ If the calendar does not load, click **Refresh Events** or **Open Calendar**. Th
 - **Featured** controls the main highlighted event.
 - **Announce** adds or hides a message from the board.
 - **Links** manages the three quick-link cards.
-- **Design** switches between the recommended **Light** appearance and **Navy Dark**, and updates the issue bar and mailing-address footer.
+- **Design** switches between the recommended **Light** appearance and **Navy Dark**, sets the email width (600, 680, or 760 px), and updates the issue bar and mailing-address footer. The default is 680 px. The selected width is a desktop maximum; the email adapts to narrow screens.
 - The builder automatically uses the white-text logo for dark themes and the black-text logo for the **Light** theme. Both URLs can be changed in **Settings** when needed.
 - **Settings** starts with the organization website, Instagram, LinkedIn, and GroupMe links filled in. Update or clear any social link when an issue needs different destinations.
 - Watch **Live readiness** while editing. Select **View Checks** for details; it checks missing/placeholder content, subject and preheader length, URLs, image alt text, event duplicates/conflicts, the unsubscribe variable, and the mailing-address footer.
 - The inbox card shows how the sender, subject, and preheader will scan in a message list.
 - Switch the preview between **Desktop** and **Mobile**. **Email dark mode** approximates a common automatic color conversion without changing the selected newsletter design or exported HTML. Email clients vary, so still send a real test.
+- The sun/moon button in the top bar switches the builder between light and dark editor modes. Your choice is saved in this browser and does not change the email or its dark-mode preview.
 - Use **Full Preview** for a final visual review.
 
 Use complete `https://` links. Every enabled image should have a public image URL and useful alt text.

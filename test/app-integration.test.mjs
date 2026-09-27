@@ -15,10 +15,10 @@ const calendarFeed = {
   timeZone: "America/New_York",
   sourceUrl: "https://calendar.google.com/calendar/embed?src=public",
   events: [{
-    id: "calendar-event-1::2026-09-15T22:00:00.000Z",
+    id: "calendar-event-1::2099-09-15T22:00:00.000Z",
     title: "Imported GBM",
-    start: "2026-09-15T22:00:00.000Z",
-    end: "2026-09-15T23:00:00.000Z",
+    start: "2099-09-15T22:00:00.000Z",
+    end: "2099-09-15T23:00:00.000Z",
     allDay: false,
     location: "Hitchcock 035",
     description: "Agenda and free food",
@@ -62,6 +62,33 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.deepEqual(Array.from(window.document.querySelectorAll(".theme-chip"), (node) => node.textContent.trim()), ["Light", "Navy Dark"]);
   assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Light");
   assert.equal(window.document.querySelector(".pv-body").style.background, "rgb(247, 248, 250)");
+  assert.equal(window.document.getElementById("email-width").value, "680");
+  assert.match(window.generateHTML(), /class="container" style="width:680px;max-width:680px;"/);
+  assert.equal(window.document.querySelector(".pv-feat-bar"), null);
+  assert.doesNotMatch(window.generateHTML(), /<td width="6" style="background:/);
+  const themeButton = window.document.getElementById("editor-theme-btn");
+  assert.equal(themeButton.textContent, "☾");
+  themeButton.click();
+  assert.equal(themeButton.getAttribute("aria-pressed"), "true");
+  assert.equal(themeButton.textContent, "☀");
+  assert.equal(themeButton.getAttribute("aria-label"), "Switch to light editor mode");
+  assert.equal(window.document.documentElement.dataset.editorTheme, "dark");
+  assert.equal(window.localStorage.getItem("asme_nl_editor_theme"), "dark");
+  assert.equal(window.activeTheme, "light");
+  themeButton.click();
+  assert.equal(window.document.documentElement.dataset.editorTheme, "light");
+  assert.equal(themeButton.getAttribute("aria-label"), "Switch to dark editor mode");
+  const widthControl = window.document.getElementById("email-width");
+  widthControl.value = "680";
+  window.render();
+  assert.equal(window.document.getElementById("preview-panel").style.getPropertyValue("--email-width"), "680px");
+  assert.match(window.generateHTML(), /class="container" style="width:680px;max-width:680px;"/);
+  assert.match(window.generateHTML(), /max-width:700px/);
+  assert.equal(window.collectState().fields["email-width"], "680");
+  window.applyState(window.collectState());
+  assert.equal(widthControl.value, "680");
+  widthControl.value = "600";
+  window.render();
   assert.equal(window.document.querySelector("#event-list .editor-card .preset-btn[aria-pressed='true']").textContent, "Workshop");
   assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
   assert.equal(window.document.querySelector(".pv-event-day").textContent, "28");
@@ -120,17 +147,17 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
 
   window.importCalendarEvent(0);
   assert.equal(window.events.length, 3);
-  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2026-09-15T22:00:00.000Z");
+  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2099-09-15T22:00:00.000Z");
   assert.equal(window.events[2].title, "Imported GBM");
   assert.equal(window.events[2].eventType, "gbm");
   assert.equal(window.document.querySelector("#calendar-list button").disabled, true);
 
   window.calendarEvents[0] = window.NewsletterCore.sanitizeCalendarEvent({
     ...calendarFeed.events[0],
-    id: "calendar-event-1::2026-09-15T23:00:00.000Z",
+    id: "calendar-event-1::2099-09-15T23:00:00.000Z",
     title: "Updated Industry GBM",
-    start: "2026-09-15T23:00:00.000Z",
-    end: "2026-09-16T00:00:00.000Z",
+    start: "2099-09-15T23:00:00.000Z",
+    end: "2099-09-16T00:00:00.000Z",
     location: "Scott E100",
     updated: "2026-09-01T12:00:00.000Z"
   });
@@ -144,7 +171,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   window.events[2].imgAlt = "Newsletter-specific event artwork";
   window.syncImportedCalendarEvents();
   assert.equal(window.events.length, 3);
-  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2026-09-15T23:00:00.000Z");
+  assert.equal(window.events[2].sourceEventId, "calendar-event-1::2099-09-15T23:00:00.000Z");
   assert.equal(window.events[2].title, "Updated Industry GBM");
   assert.equal(window.events[2].location, "Scott E100");
   assert.equal(window.events[2].imgUrl, "https://example.com/custom-event.png");
