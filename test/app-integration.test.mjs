@@ -27,6 +27,61 @@ const calendarFeed = {
   }]
 };
 
+test("New Issue resets featured controls and image content while preserving defaults and templates", async () => {
+  const dom = new JSDOM(html, {
+    url: "https://isolated.invalid/",
+    runScripts: "dangerously",
+    pretendToBeVisual: true,
+    beforeParse(window) {
+      window.alert = () => {};
+      window.confirm = () => true;
+      window.fetch = async () => ({ ok: true, json: async () => calendarFeed });
+    }
+  });
+  const { window } = dom;
+  try {
+    await new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+    await waitFor(() => window.calendarEvents.length === 1);
+    window.document.getElementById("footer-addr").value = "100 Mock Street, Columbus OH 43210";
+    window.document.getElementById("ql1-url").value = "https://example.com/approved";
+    window.saveOrganizationDefaults();
+    const defaults = window.localStorage.getItem("asme_nl_org_defaults");
+    window.setTemplates([{ name: "Preserved fixture", state: window.collectState() }]);
+    const templates = window.localStorage.getItem("asme_nl_templates");
+    window.toggleFeatImg();
+    window.toggleFeatButton();
+    window.document.getElementById("feat-img-url").value = "https://example.com/outgoing.png";
+    window.document.getElementById("feat-img-alt").value = "Outgoing image";
+    window.confirmNewIssue();
+
+    assert.equal(window.showFeatImg, false);
+    assert.equal(window.document.getElementById("toggle-feat-img").textContent, "Off");
+    assert.equal(window.document.getElementById("toggle-feat-img").getAttribute("aria-pressed"), "false");
+    assert.equal(window.document.getElementById("feat-img-fields").style.display, "none");
+    assert.equal(window.showFeatButton, true);
+    assert.equal(window.document.getElementById("toggle-feat-btn").textContent, "On");
+    assert.equal(window.document.getElementById("toggle-feat-btn").getAttribute("aria-pressed"), "true");
+    assert.equal(window.collectState().fields["feat-img-url"], "");
+    assert.equal(window.collectState().fields["feat-img-alt"], "");
+    assert.equal(window.localStorage.getItem("asme_nl_org_defaults"), defaults);
+    assert.equal(window.localStorage.getItem("asme_nl_templates"), templates);
+    for (const [id, value] of Object.entries(JSON.parse(defaults))) {
+      assert.equal(window.document.getElementById(id).value, value, id);
+    }
+    const previous = JSON.parse(window.localStorage.getItem("asme_nl_previous_draft"));
+    assert.equal(previous.state.fields["feat-img-url"], "https://example.com/outgoing.png");
+    assert.equal(previous.state.showFeatImg, true);
+    assert.equal(previous.state.showFeatButton, false);
+    await waitFor(() => Boolean(window.localStorage.getItem("asme_nl_draft")));
+    const saved = JSON.parse(window.localStorage.getItem("asme_nl_draft"));
+    assert.equal(saved.showFeatImg, false);
+    assert.equal(saved.showFeatButton, true);
+    assert.equal(saved.fields["feat-img-url"], "");
+  } finally {
+    window.close();
+  }
+});
+
 function waitFor(predicate, timeout = 2000) {
   return new Promise((resolve, reject) => {
     const started = Date.now();

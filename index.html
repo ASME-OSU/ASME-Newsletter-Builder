@@ -1774,6 +1774,7 @@ function confirmNewIssue(){
   document.getElementById("email-width").value="680";
   var blanks={
     "feat-title":"","feat-date":"","feat-location":"","feat-desc":"",
+    "feat-img-url":"","feat-img-alt":"",
     "feat-btn-text":"RSVP Now","feat-btn-url":"https://org.osu.edu/asme/calendar/",
     "ann-title":"From the Board","ann-quote":"","ann-author":"",
     "issue-bar-text":"Biweekly Newsletter · "+new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'}),
@@ -1781,11 +1782,8 @@ function confirmNewIssue(){
   };
   Object.keys(blanks).forEach(function(k){var el=document.getElementById(k);if(el)el.value=blanks[k];});
   applyOrganizationDefaults(getOrganizationDefaults());
-  ["featured","announce","links"].forEach(function(w){
-    var on=true; var btn=document.getElementById("toggle-"+w);
-    if(btn){btn.textContent="On";btn.className="btn btn-toggle on";btn.setAttribute("aria-pressed","true");}
-  });
-  buildThemeChips(); renderEventList(); render();
+  // Synchronize every section control with the reset state, including image/button toggles.
+  applyState(collectState());
   switchTabByName("events");
 }
 
