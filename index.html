@@ -368,10 +368,20 @@
       </div>
       <div id="tab-calendar" class="tab-panel" role="tabpanel">
         <div class="calendar-toolbar">
-          <button class="btn btn-blue" onclick="loadCalendarEvents(true)">Refresh Events</button>
+          <button class="btn btn-blue" onclick="useChapterCalendar()">Refresh chapter snapshot</button>
           <button id="sync-calendar-imports" class="btn btn-ghost" onclick="syncImportedCalendarEvents()" hidden>Sync Imported Events</button>
           <a class="btn btn-ghost" href="https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&amp;ctz=America%2FNew_York" target="_blank" rel="noopener" style="text-decoration:none;">Open Calendar</a>
+          <a class="btn btn-ghost" href="https://calendar.google.com/calendar/r" target="_blank" rel="noopener">Open event editor</a>
         </div>
+        <div class="calendar-toolbar">
+          <label for="calendar-preview-year">Academic year (August–July)</label>
+          <input id="calendar-preview-year" placeholder="2027-2028" pattern="[0-9]{4}-[0-9]{4}" aria-describedby="calendar-preview-help">
+          <button class="btn btn-ghost" onclick="applyCalendarPreview()">Preview year</button>
+          <button class="btn btn-ghost" onclick="showUpcomingCalendar()">Upcoming</button>
+          <button class="btn btn-ghost" onclick="loadFictionalCalendar()">Load fictional Fall/Spring</button>
+          <button id="clear-fictional-calendar" class="btn btn-ghost" onclick="clearFictionalCalendar()" hidden>Remove fictional events</button>
+        </div>
+        <p id="calendar-preview-help" class="calendar-status">Preview changes only this browser. Refresh rereads generated JSON; the hourly job reads Google. Fictional rehearsal creates no Google events. Verify the selected calendar before saving an event and keep rehearsal guests empty.</p>
         <div id="calendar-status" class="calendar-status" role="status" aria-live="polite">Loading public calendar…</div>
         <div id="calendar-list"></div>
       </div>
@@ -443,7 +453,7 @@
           <div class="field"><label>Issue Bar Text</label><input id="issue-bar-text" oninput="render()" placeholder="Biweekly Newsletter · May 2026"/></div>
           <div class="section-divider"></div>
           <div class="field"><label>Footer Org Name</label><input id="footer-name" oninput="render()"/></div>
-          <div class="field"><label>Footer Address Line</label><input id="footer-addr" oninput="render()"/></div>
+          <div class="field"><label>Footer Address Line</label><input aria-describedby="footer-address-review" id="footer-addr" oninput="render()"/><p id="footer-address-review" class="calendar-status">Secretary: verify the official chapter mailing address before saving organization defaults or sending. Keep the readiness warning until a verified postal address is entered.</p></div>
         </div>
       </div>
       <div id="tab-settings" class="tab-panel">
@@ -528,7 +538,7 @@
 <script>
 var Core=window.NewsletterCore;
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="light";
-var calendarEvents=[],calendarTimeZone="America/New_York",calendarSourceUrl="",calendarFeedLoaded=false;
+var calendarEvents=[],calendarAllEvents=[],calendarCurrentFeed=null,calendarPreviewYear="",calendarIsFictional=false,calendarLoadGeneration=0,calendarTimeZone="America/New_York",calendarSourceUrl="",calendarFeedLoaded=false;
 var lastFocusedBeforeModal=null;
 var autoSortEvents=true,previewMode="desktop",darkSimulation=false;
 function getEmailWidth(){var width=g("email-width");return ["600","680","760"].indexOf(width)>=0?width:"680";}
@@ -746,7 +756,7 @@ function updateEvent(id,field,value){
 }
 
 function eventDateValue(event){
-  var raw=String(event.date||"").trim(),year=(new Date()).getFullYear();
+  var raw=String(event.date||"").trim(),sourceDate=event.sourceStart?new Date(event.sourceStart):null,year=sourceDate&&!Number.isNaN(sourceDate.getTime())?sourceDate.getUTCFullYear():(new Date()).getFullYear();
   if(!/\b\d{4}\b/.test(raw))raw+=" "+year;
   var parsed=Date.parse(raw);if(Number.isNaN(parsed))return Number.POSITIVE_INFINITY;
   var time=String(event.time||"").match(/\b(\d{1,2})(?::(\d{2}))?\s*(AM|PM)\b/i);
@@ -875,9 +885,9 @@ function closestCalendarMatch(items,targetStart,getStart){
 }
 
 function findCalendarEventForImported(imported){
-  var exact=calendarEvents.find(function(source){return source.id===imported.sourceEventId;});if(exact)return exact;
+  var exact=calendarAllEvents.find(function(source){return source.id===imported.sourceEventId;});if(exact)return exact;
   var key=Core.calendarEventSourceKey(imported.sourceEventId);if(!key)return null;
-  var candidates=calendarEvents.filter(function(source){return Core.calendarEventSourceKey(source)===key;});
+  var candidates=calendarAllEvents.filter(function(source){return Core.calendarEventSourceKey(source)===key;});
   return closestCalendarMatch(candidates,imported.sourceStart,function(source){return source.start;});
 }
 
@@ -898,29 +908,53 @@ function updateCalendarSyncButton(){
   button.hidden=!count;button.textContent=count?"Sync "+count+" Imported Event"+(count===1?"":"s"):"Sync Imported Events";
 }
 
-function loadCalendarEvents(force){
+function setCalendarFeed(feed){
+  if(!feed||!Array.isArray(feed.events))throw new Error("Calendar snapshot has no events array.");
+  calendarCurrentFeed=feed;
+  calendarTimeZone=feed.timeZone||"America/New_York";
+  calendarSourceUrl=calendarIsFictional?"":Core.safeUrl(feed.sourceUrl);
+  calendarAllEvents=feed.events.map(Core.sanitizeCalendarEvent).filter(Boolean);
+  calendarFeedLoaded=!calendarIsFictional;
+  applyCalendarPreview(false);
+}
+
+function applyCalendarPreview(readInput){
   var status=document.getElementById("calendar-status");
+  try{
+    if(readInput!==false){var selectedYear=document.getElementById("calendar-preview-year").value.trim();if(selectedYear)Core.eventsForAcademicYear([],selectedYear,calendarTimeZone);calendarPreviewYear=selectedYear;}
+    calendarEvents=calendarPreviewYear?Core.eventsForAcademicYear(calendarAllEvents,calendarPreviewYear,calendarTimeZone):calendarAllEvents.filter(function(event){var end=event.end?new Date(event.end):new Date(event.start);return end.getTime()>=Date.now()-24*60*60*1000;});
+    var generated=calendarCurrentFeed&&calendarCurrentFeed.generatedAt?new Date(calendarCurrentFeed.generatedAt):null;
+    var coverage=calendarIsFictional?"":calendarCurrentFeed&&calendarCurrentFeed.windowStart&&calendarCurrentFeed.windowEnd?" Snapshot coverage "+calendarCurrentFeed.windowStart.slice(0,10)+" through "+calendarCurrentFeed.windowEnd.slice(0,10)+"; dates outside this range are unavailable.":" Snapshot coverage is not supplied; use Open Calendar to confirm missing dates.";
+    status.textContent=(calendarIsFictional?"FICTIONAL REHEARSAL — no Google events. ":"Chapter generated snapshot. ")+calendarEvents.length+" event"+(calendarEvents.length===1?"":"s")+" for "+(calendarPreviewYear||"upcoming dates")+(generated&&!Number.isNaN(generated.getTime())?" · generated "+generated.toLocaleString():"")+(calendarCurrentFeed&&calendarCurrentFeed.checkedAt?" · source checked "+calendarCurrentFeed.checkedAt:"")+" · read "+new Date().toLocaleString()+". Refresh rereads JSON; it does not fetch Google live."+coverage;
+    document.getElementById("clear-fictional-calendar").hidden=!calendarIsFictional;
+    renderCalendarList();renderEventList();
+  }catch(error){status.textContent=error.message;}
+}
+
+function showUpcomingCalendar(){document.getElementById("calendar-preview-year").value="";calendarPreviewYear="";applyCalendarPreview(false);}
+function useChapterCalendar(){calendarIsFictional=false;return loadCalendarEvents(true);}
+function loadFictionalCalendar(){
+  var input=document.getElementById("calendar-preview-year"),year=input.value.trim();
+  if(!year){var now=new Date(),start=now.getMonth()>=7?now.getFullYear():now.getFullYear()-1;year=start+"-"+(start+1);input.value=year;}
+  try{var feed=Core.fictionalCalendarFeed(year);calendarLoadGeneration++;calendarPreviewYear=year;calendarIsFictional=true;setCalendarFeed(feed);}catch(error){document.getElementById("calendar-status").textContent=error.message;}
+}
+function clearFictionalCalendar(){if(!calendarIsFictional)return;setCalendarFeed(Object.assign({},calendarCurrentFeed,{events:[]}));}
+
+function loadCalendarEvents(force){
+  var status=document.getElementById("calendar-status"),generation=++calendarLoadGeneration;
   if(!status)return Promise.resolve();
-  status.textContent="Loading public calendar…";
+  status.textContent="Reading generated chapter calendar snapshot…";
   var url="calendar-events.json"+(force?"?refresh="+Date.now():"");
   return fetch(url,{cache:"no-store"}).then(function(response){
     if(!response.ok)throw new Error("Calendar feed returned "+response.status);
     return response.json();
   }).then(function(feed){
-    calendarFeedLoaded=true;
-    calendarTimeZone=feed.timeZone||"America/New_York";
-    calendarSourceUrl=Core.safeUrl(feed.sourceUrl);
-    calendarEvents=(Array.isArray(feed.events)?feed.events:[]).map(Core.sanitizeCalendarEvent).filter(Boolean).filter(function(event){
-      var end=event.end?new Date(event.end):new Date(event.start);
-      return end.getTime()>=Date.now()-24*60*60*1000;
-    });
-    var generated=feed.generatedAt?new Date(feed.generatedAt):null;
-    status.textContent=calendarEvents.length+" upcoming event"+(calendarEvents.length===1?"":"s")+" available"+(generated&&!Number.isNaN(generated.getTime())?" · calendar data updated "+generated.toLocaleString():"")+".";
-    renderCalendarList();
-    renderEventList();
+    if(generation!==calendarLoadGeneration)return;
+    calendarIsFictional=false;setCalendarFeed(feed);
   }).catch(function(error){
-    calendarFeedLoaded=false;calendarEvents=[];renderCalendarList();renderEventList();
-    status.textContent="Calendar events could not be loaded here. The rest of the builder still works; use Open Calendar or try the hosted GitHub Pages version.";
+    if(generation!==calendarLoadGeneration)return;
+    calendarFeedLoaded=false;calendarAllEvents=[];calendarEvents=[];renderCalendarList();renderEventList();
+    status.textContent="Calendar snapshot could not be loaded. Use Open Calendar or retry Refresh chapter snapshot. Drafts and templates remain available.";
     console.warn("Calendar load failed:",error);
   });
 }
@@ -928,7 +962,7 @@ function loadCalendarEvents(force){
 function renderCalendarList(){
   var list=document.getElementById("calendar-list");if(!list)return;
   updateCalendarSyncButton();
-  if(!calendarEvents.length){list.innerHTML='<div class="empty-state">No upcoming calendar events are available.</div>';return;}
+  if(!calendarEvents.length){list.innerHTML='<div class="empty-state">No events are available for this calendar view.</div>';return;}
   list.innerHTML=calendarEvents.map(function(event,index){
     var parts=calendarDateParts(event);
     var imported=findImportedEventForCalendar(event),needsUpdate=imported&&calendarImportNeedsUpdate(imported,event);
@@ -947,7 +981,7 @@ function importCalendarEvent(index){
   var source=calendarEvents[index];if(!source)return;
   var imported=findImportedEventForCalendar(source);
   if(imported){if(calendarImportNeedsUpdate(imported,source))updateCalendarEvent(index);return;}
-  var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
+  var sourceWithUrl=Object.assign({},source,{url:calendarIsFictional?"":source.url||calendarSourceUrl});
   events.push(Core.calendarEventToNewsletter(sourceWithUrl,nextId++,calendarTimeZone));
   if(autoSortEvents)sortEventsChronologically(false);
   renderEventList();renderCalendarList();render();autoSave();switchTabByName("events");
@@ -955,7 +989,7 @@ function importCalendarEvent(index){
 }
 
 function applyCalendarUpdate(imported,source){
-  var sourceWithUrl=Object.assign({},source,{url:source.url||calendarSourceUrl});
+  var sourceWithUrl=Object.assign({},source,{url:calendarIsFictional?"":source.url||calendarSourceUrl});
   var next=Core.calendarEventToNewsletter(sourceWithUrl,imported.id,calendarTimeZone);
   var image={showImg:imported.showImg,imgUrl:imported.imgUrl,imgAlt:imported.imgAlt};
   Object.assign(imported,next,image);

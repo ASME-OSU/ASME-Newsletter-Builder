@@ -161,6 +161,28 @@
     };
   }
 
+  function calendarYearKey(event, timeZone) {
+    var date = new Date(event.start);
+    if (Number.isNaN(date.getTime())) return "";
+    var parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: event.allDay ? "UTC" : timeZone || "America/New_York" }).formatToParts(date).map(function (part) { return [part.type, part.value]; }));
+    return parts.year + "-" + parts.month + "-" + parts.day;
+  }
+
+  function eventsForAcademicYear(items, year, timeZone) {
+    var match = String(year || "").match(/^(\d{4})-(\d{4})$/);
+    if (!match || Number(match[2]) !== Number(match[1]) + 1) throw new Error("Enter consecutive academic years, such as 2027-2028.");
+    return items.filter(function (event) { var key = calendarYearKey(event, timeZone); return key >= match[1] + "-08-01" && key < match[2] + "-08-01"; });
+  }
+
+  function fictionalCalendarFeed(year) {
+    eventsForAcademicYear([], year);
+    var startYear = Number(year.slice(0, 4));
+    return { generatedAt: new Date().toISOString(), calendarName: "Fictional rehearsal — local only", timeZone: "America/New_York", sourceUrl: "", events: [
+      { id: "fictional-fall-" + year, title: "TEST ONLY — Fall workshop — DO NOT SEND", start: startYear + "-09-15T22:00:00.000Z", end: startYear + "-09-15T23:00:00.000Z", location: "Fictional training room", description: "Fictional local rehearsal. No Google event or guest invitation was created.", url: "", updated: "" },
+      { id: "fictional-spring-" + year, title: "TEST ONLY — Spring workshop — DO NOT SEND", start: (startYear + 1) + "-01-15T23:00:00.000Z", end: (startYear + 1) + "-01-16T00:00:00.000Z", location: "Fictional training room", description: "Fictional local rehearsal. No Google event or guest invitation was created.", url: "", updated: "" }
+    ] };
+  }
+
   function calendarEventSourceKey(value) {
     var id = asString(value && typeof value === "object" ? value.id : value);
     var separator = id.lastIndexOf("::");
@@ -223,6 +245,8 @@
     createDraftDocument: createDraftDocument,
     readDraftDocument: readDraftDocument,
     sanitizeCalendarEvent: sanitizeCalendarEvent,
+    eventsForAcademicYear: eventsForAcademicYear,
+    fictionalCalendarFeed: fictionalCalendarFeed,
     calendarEventSourceKey: calendarEventSourceKey,
     calendarEventToNewsletter: calendarEventToNewsletter
   };

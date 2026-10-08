@@ -148,7 +148,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
   assert.equal(window.document.querySelector(".pv-event-day").textContent, "28");
   assert.equal(window.document.querySelectorAll(".pv-event-bar").length, 0);
-  assert.match(window.document.querySelector("#calendar-status").textContent, /1 upcoming event/);
+  assert.match(window.document.querySelector("#calendar-status").textContent, /Chapter generated snapshot\. 1 event for upcoming dates/);
   assert.equal(window.document.querySelectorAll("#calendar-list .calendar-event").length, 1);
   assert.equal(window.document.getElementById("s-logo").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png");
   assert.equal(window.document.getElementById("s-logo-light").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png");
@@ -216,6 +216,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
     location: "Scott E100",
     updated: "2026-09-01T12:00:00.000Z"
   });
+  window.calendarAllEvents = window.calendarEvents.slice();
   window.renderCalendarList();
   window.renderEventList();
   assert.equal(window.document.querySelector("#calendar-list button").textContent, "Update Imported Event");
@@ -233,6 +234,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.document.querySelector("#calendar-list button").textContent, "Synced");
 
   window.calendarEvents = [];
+  window.calendarAllEvents = [];
   window.renderEventList();
   assert.match(window.document.getElementById("event-list").textContent, /No longer on Calendar/);
 
