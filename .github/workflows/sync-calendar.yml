@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: sync-public-calendar
@@ -34,3 +35,13 @@ jobs:
           git add calendar-events.json
           git commit -m "Sync public calendar"
           git push
+      - name: Request GitHub Pages source deployment
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail-with-body --retry 3 --retry-delay 3 \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pages/builds"
