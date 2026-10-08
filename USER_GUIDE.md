@@ -77,3 +77,15 @@ A downloaded `.html` file is a preview, not an editable draft. Browser autosave,
 6. Send yourself a test email and check desktop, mobile, and dark-mode appearances, links, images, mailing address, and unsubscribe link before scheduling the campaign.
 
 Use **Download .html** when someone only needs an offline preview of the finished newsletter.
+
+## Annual calendar preview and rehearsal
+
+Calendar → enter `2027-2028` under **Academic year (August–July)** → **Preview year**. This filters the generated snapshot by Eastern calendar date; all-day dates retain their source day. **Upcoming** returns to upcoming dates. The selected view changes this browser, not a Google calendar or the newsletter draft.
+
+**Refresh chapter snapshot** reads `calendar-events.json` again and returns from a fictional source to the chapter snapshot. It does not fetch Google live. The hourly `sync-calendar.yml` job reads the public chapter iCal feed; status reports when JSON was generated/read, its source check time when available and date coverage. A blank year view is not proof that Google has no events outside that coverage. Hub annual settings do not change this repository's calendar source.
+
+**Load fictional Fall/Spring** creates two labeled TEST ONLY/DO NOT SEND local fixture records for the entered year. No Google event, guest or invitation is created. **Remove fictional events** verifies the empty local source. Importing a fictional event explicitly adds it to your editable draft; preserve a revision/export first, remove the fictional draft event afterward and restore the original draft. Refresh chapter snapshot clears the fictional source. Existing organization defaults and named templates are preserved.
+
+For real chapter entry, **Open event editor**, choose the approved chapter calendar before Save and verify the calendar selector again. For a separate private native rehearsal, choose the training calendar and keep guests empty. Reuse the approved chapter calendar for routine future years; do not publish a private calendar's secret feed. Infrastructure/feed changes require the Webmaster's reviewed receipt.
+
+Secretary: verify the official chapter postal/mailing address under Design before saving approved organization defaults or sending. The missing-address warning remains until this is verified; no street address is supplied by this repair. Before a handoff export, load the intended Spring template and confirm subject, issue year and January event, then export JSON and HTML. Import the exact JSON into a fresh builder, edit a field, confirm HTML footer and desktop/mobile/dark previews, and restore the original draft using its revision. Local HTML is a separate check from email delivery.
