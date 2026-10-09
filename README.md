@@ -94,3 +94,7 @@ Then open `http://localhost:8000`.
 - `scripts/sync-calendar.mjs` — Google iCal synchronization script
 - `test/` — Node tests for state, security, draft, and calendar behavior
 - `.github/workflows/` — tests and hourly calendar synchronization
+
+## Practice calendar cleanup
+
+The preview accepts either a starting year such as `2027` or its complete academic year, `2027-2028`. **Remove fictional events** leaves fictional mode immediately, restores the chapter source and refreshes its generated JSON. Loading and failure messages remain visible; a failed refresh keeps any available chapter snapshot. Choose **Upcoming** afterward to clear the year filter and show chapter events. Removing preview events does not delete editable newsletter cards already imported into a draft.
