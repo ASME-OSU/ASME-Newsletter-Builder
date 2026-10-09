@@ -375,13 +375,13 @@
         </div>
         <div class="calendar-toolbar">
           <label for="calendar-preview-year">Academic year (August–July)</label>
-          <input id="calendar-preview-year" placeholder="2027-2028" pattern="[0-9]{4}-[0-9]{4}" aria-describedby="calendar-preview-help">
+          <input id="calendar-preview-year" placeholder="2027-2028" pattern="[0-9]{4}(-[0-9]{4})?" aria-describedby="calendar-preview-help">
           <button class="btn btn-ghost" onclick="applyCalendarPreview()">Preview year</button>
           <button class="btn btn-ghost" onclick="showUpcomingCalendar()">Upcoming</button>
           <button class="btn btn-ghost" onclick="loadFictionalCalendar()">Load fictional Fall/Spring</button>
           <button id="clear-fictional-calendar" class="btn btn-ghost" onclick="clearFictionalCalendar()" hidden>Remove fictional events</button>
         </div>
-        <p id="calendar-preview-help" class="calendar-status">Preview changes only this browser. Refresh rereads generated JSON; the hourly job reads Google. Fictional rehearsal creates no Google events. Verify the selected calendar before saving an event and keep rehearsal guests empty.</p>
+        <p id="calendar-preview-help" class="calendar-status">Enter 2027 or 2027-2028 for the same academic year. Preview changes only this browser. Remove fictional events restores the chapter snapshot. Refresh rereads generated JSON; the hourly job reads Google. Fictional rehearsal creates no Google events. Verify the selected calendar before saving an event and keep rehearsal guests empty.</p>
         <div id="calendar-status" class="calendar-status" role="status" aria-live="polite">Loading public calendar…</div>
         <div id="calendar-list"></div>
       </div>
@@ -538,7 +538,7 @@
 <script>
 var Core=window.NewsletterCore;
 var nextId=100,showFeatured=true,showAnnounce=true,showLinks=true,showFeatImg=false,showFeatButton=true,activeTheme="light";
-var calendarEvents=[],calendarAllEvents=[],calendarCurrentFeed=null,calendarPreviewYear="",calendarIsFictional=false,calendarLoadGeneration=0,calendarTimeZone="America/New_York",calendarSourceUrl="",calendarFeedLoaded=false;
+var calendarEvents=[],calendarAllEvents=[],calendarCurrentFeed=null,calendarChapterFeed=null,calendarLoadNotice="",calendarLoadPending=false,calendarPreviewYear="",calendarIsFictional=false,calendarLoadGeneration=0,calendarTimeZone="America/New_York",calendarSourceUrl="",calendarFeedLoaded=false;
 var lastFocusedBeforeModal=null;
 var autoSortEvents=true,previewMode="desktop",darkSimulation=false;
 function getEmailWidth(){var width=g("email-width");return ["600","680","760"].indexOf(width)>=0?width:"680";}
@@ -921,40 +921,46 @@ function setCalendarFeed(feed){
 function applyCalendarPreview(readInput){
   var status=document.getElementById("calendar-status");
   try{
-    if(readInput!==false){var selectedYear=document.getElementById("calendar-preview-year").value.trim();if(selectedYear)Core.eventsForAcademicYear([],selectedYear,calendarTimeZone);calendarPreviewYear=selectedYear;}
+    if(readInput!==false){var selectedYear=document.getElementById("calendar-preview-year").value.trim();if(selectedYear)selectedYear=Core.normalizeAcademicYear(selectedYear);calendarPreviewYear=selectedYear;document.getElementById("calendar-preview-year").value=selectedYear;}
     calendarEvents=calendarPreviewYear?Core.eventsForAcademicYear(calendarAllEvents,calendarPreviewYear,calendarTimeZone):calendarAllEvents.filter(function(event){var end=event.end?new Date(event.end):new Date(event.start);return end.getTime()>=Date.now()-24*60*60*1000;});
     var generated=calendarCurrentFeed&&calendarCurrentFeed.generatedAt?new Date(calendarCurrentFeed.generatedAt):null;
     var coverage=calendarIsFictional?"":calendarCurrentFeed&&calendarCurrentFeed.windowStart&&calendarCurrentFeed.windowEnd?" Snapshot coverage "+calendarCurrentFeed.windowStart.slice(0,10)+" through "+calendarCurrentFeed.windowEnd.slice(0,10)+"; dates outside this range are unavailable.":" Snapshot coverage is not supplied; use Open Calendar to confirm missing dates.";
-    status.textContent=(calendarIsFictional?"FICTIONAL REHEARSAL — no Google events. ":"Chapter generated snapshot. ")+calendarEvents.length+" event"+(calendarEvents.length===1?"":"s")+" for "+(calendarPreviewYear||"upcoming dates")+(generated&&!Number.isNaN(generated.getTime())?" · generated "+generated.toLocaleString():"")+(calendarCurrentFeed&&calendarCurrentFeed.checkedAt?" · source checked "+calendarCurrentFeed.checkedAt:"")+" · read "+new Date().toLocaleString()+". Refresh rereads JSON; it does not fetch Google live."+coverage;
+    status.textContent=calendarLoadNotice+(calendarIsFictional?"FICTIONAL REHEARSAL — no Google events. ":"Chapter generated snapshot. ")+calendarEvents.length+" event"+(calendarEvents.length===1?"":"s")+" for "+(calendarPreviewYear||"upcoming dates")+(generated&&!Number.isNaN(generated.getTime())?" · generated "+generated.toLocaleString():"")+(calendarCurrentFeed&&calendarCurrentFeed.checkedAt?" · source checked "+calendarCurrentFeed.checkedAt:"")+" · read "+new Date().toLocaleString()+". Refresh rereads JSON; it does not fetch Google live."+coverage;
     document.getElementById("clear-fictional-calendar").hidden=!calendarIsFictional;
-    renderCalendarList();renderEventList();
+    renderCalendarList();renderEventList();document.getElementById("calendar-list").setAttribute("aria-busy",String(calendarLoadPending));
   }catch(error){status.textContent=error.message;}
 }
 
 function showUpcomingCalendar(){document.getElementById("calendar-preview-year").value="";calendarPreviewYear="";applyCalendarPreview(false);}
-function useChapterCalendar(){calendarIsFictional=false;return loadCalendarEvents(true);}
+function useChapterCalendar(){return loadCalendarEvents(true);}
 function loadFictionalCalendar(){
   var input=document.getElementById("calendar-preview-year"),year=input.value.trim();
   if(!year){var now=new Date(),start=now.getMonth()>=7?now.getFullYear():now.getFullYear()-1;year=start+"-"+(start+1);input.value=year;}
-  try{var feed=Core.fictionalCalendarFeed(year);calendarLoadGeneration++;calendarPreviewYear=year;calendarIsFictional=true;setCalendarFeed(feed);}catch(error){document.getElementById("calendar-status").textContent=error.message;}
+  try{year=Core.normalizeAcademicYear(year);var feed=Core.fictionalCalendarFeed(year);input.value=year;calendarLoadGeneration++;calendarLoadPending=false;calendarLoadNotice="";calendarPreviewYear=year;calendarIsFictional=true;setCalendarFeed(feed);}catch(error){document.getElementById("calendar-status").textContent=error.message;}
 }
-function clearFictionalCalendar(){if(!calendarIsFictional)return;setCalendarFeed(Object.assign({},calendarCurrentFeed,{events:[]}));}
+function clearFictionalCalendar(){if(!calendarIsFictional)return Promise.resolve();return loadCalendarEvents(true,true);}
 
-function loadCalendarEvents(force){
+function loadCalendarEvents(force,removed){
   var status=document.getElementById("calendar-status"),generation=++calendarLoadGeneration;
   if(!status)return Promise.resolve();
-  status.textContent="Reading generated chapter calendar snapshot…";
+  calendarIsFictional=false;calendarLoadPending=true;
+  calendarLoadNotice=(removed?"Fictional events removed. ":"")+"Reading generated chapter calendar snapshot… ";
+  setCalendarFeed(calendarChapterFeed||{events:[]});
+  calendarFeedLoaded=!!calendarChapterFeed;
   var url="calendar-events.json"+(force?"?refresh="+Date.now():"");
   return fetch(url,{cache:"no-store"}).then(function(response){
     if(!response.ok)throw new Error("Calendar feed returned "+response.status);
     return response.json();
   }).then(function(feed){
     if(generation!==calendarLoadGeneration)return;
+    if(!feed||!Array.isArray(feed.events))throw new Error("Calendar snapshot has no events array.");
+    calendarChapterFeed=feed;calendarLoadPending=false;calendarLoadNotice=removed?"Fictional events removed. ":"";
     calendarIsFictional=false;setCalendarFeed(feed);
   }).catch(function(error){
     if(generation!==calendarLoadGeneration)return;
-    calendarFeedLoaded=false;calendarAllEvents=[];calendarEvents=[];renderCalendarList();renderEventList();
-    status.textContent="Calendar snapshot could not be loaded. Use Open Calendar or retry Refresh chapter snapshot. Drafts and templates remain available.";
+    calendarLoadPending=false;
+    calendarLoadNotice=(removed?"Fictional events removed. ":"")+(calendarChapterFeed?"Snapshot request failed; showing the last loaded chapter events. ":"Calendar snapshot unavailable. ")+"Use Open Calendar or retry Refresh chapter snapshot. ";
+    setCalendarFeed(calendarChapterFeed||{events:[]});calendarFeedLoaded=!!calendarChapterFeed;
     console.warn("Calendar load failed:",error);
   });
 }

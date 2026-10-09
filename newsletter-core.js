@@ -168,14 +168,21 @@
     return parts.year + "-" + parts.month + "-" + parts.day;
   }
 
+  function normalizeAcademicYear(year) {
+    var value = String(year || "").trim();
+    if (/^\d{4}$/.test(value)) value += "-" + String(Number(value) + 1).padStart(4, "0");
+    var match = value.match(/^(\d{4})-(\d{4})$/);
+    if (!match || Number(match[2]) !== Number(match[1]) + 1) throw new Error("Enter a start year such as 2027, or consecutive academic years such as 2027-2028.");
+    return value;
+  }
+
   function eventsForAcademicYear(items, year, timeZone) {
-    var match = String(year || "").match(/^(\d{4})-(\d{4})$/);
-    if (!match || Number(match[2]) !== Number(match[1]) + 1) throw new Error("Enter consecutive academic years, such as 2027-2028.");
+    var match = normalizeAcademicYear(year).match(/^(\d{4})-(\d{4})$/);
     return items.filter(function (event) { var key = calendarYearKey(event, timeZone); return key >= match[1] + "-08-01" && key < match[2] + "-08-01"; });
   }
 
   function fictionalCalendarFeed(year) {
-    eventsForAcademicYear([], year);
+    year = normalizeAcademicYear(year);
     var startYear = Number(year.slice(0, 4));
     return { generatedAt: new Date().toISOString(), calendarName: "Fictional rehearsal — local only", timeZone: "America/New_York", sourceUrl: "", events: [
       { id: "fictional-fall-" + year, title: "TEST ONLY — Fall workshop — DO NOT SEND", start: startYear + "-09-15T22:00:00.000Z", end: startYear + "-09-15T23:00:00.000Z", location: "Fictional training room", description: "Fictional local rehearsal. No Google event or guest invitation was created.", url: "", updated: "" },
@@ -245,6 +252,7 @@
     createDraftDocument: createDraftDocument,
     readDraftDocument: readDraftDocument,
     sanitizeCalendarEvent: sanitizeCalendarEvent,
+    normalizeAcademicYear: normalizeAcademicYear,
     eventsForAcademicYear: eventsForAcademicYear,
     fictionalCalendarFeed: fictionalCalendarFeed,
     calendarEventSourceKey: calendarEventSourceKey,
