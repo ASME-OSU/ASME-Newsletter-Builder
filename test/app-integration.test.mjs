@@ -122,10 +122,12 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.document.querySelector(".pv-feat-bar"), null);
   assert.doesNotMatch(window.generateHTML(), /<td width="6" style="background:/);
   const themeButton = window.document.getElementById("editor-theme-btn");
-  assert.equal(themeButton.textContent, "☾");
+  assert.equal(themeButton.querySelector("#editor-theme-icon").textContent, "☾");
+  assert.equal(themeButton.querySelector("#editor-theme-text").textContent, "Dark");
   themeButton.click();
   assert.equal(themeButton.getAttribute("aria-pressed"), "true");
-  assert.equal(themeButton.textContent, "☀");
+  assert.equal(themeButton.querySelector("#editor-theme-icon").textContent, "☀");
+  assert.equal(themeButton.querySelector("#editor-theme-text").textContent, "Light");
   assert.equal(themeButton.getAttribute("aria-label"), "Switch to light editor mode");
   assert.equal(window.document.documentElement.dataset.editorTheme, "dark");
   assert.equal(window.localStorage.getItem("asme_nl_editor_theme"), "dark");
@@ -157,11 +159,13 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.match(window.generateHTML(), /https:\/\/groupme\.com\/join_group\/95825283\/iaBgk5Ld/);
 
   const topLinks = window.document.querySelectorAll(".top-link-btn");
-  assert.equal(topLinks.length, 2);
-  assert.equal(topLinks[0].textContent.trim(), "Brevo ↗");
-  assert.equal(topLinks[0].href, "https://app.brevo.com/campaigns/listing");
-  assert.equal(topLinks[1].textContent.trim(), "Builder ↗");
-  assert.equal(topLinks[1].href, "https://asme-osu.github.io/ASME-Newsletter-Builder/");
+  assert.equal(topLinks.length, 3);
+  assert.equal(topLinks[0].textContent.trim(), "ASME Hub ↗");
+  assert.equal(topLinks[0].href, "https://asme-osu.github.io/ASME-HUB/");
+  assert.equal(topLinks[1].textContent.trim(), "Brevo ↗");
+  assert.equal(topLinks[1].href, "https://app.brevo.com/campaigns/listing");
+  assert.equal(topLinks[2].textContent.trim(), "Builder ↗");
+  assert.equal(topLinks[2].href, "https://asme-osu.github.io/ASME-Newsletter-Builder/");
   for (const link of topLinks) {
     assert.equal(link.target, "_blank");
     assert.match(link.rel, /noopener/);
