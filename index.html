@@ -296,27 +296,91 @@
     :root[data-editor-theme="dark"] .accent-opt.selected { box-shadow:0 0 0 2px var(--surface) inset; }
     :root[data-editor-theme="dark"] #subject-toast { background:var(--surface) !important; border-color:var(--border) !important; color:var(--ink) !important; }
     :root[data-editor-theme="dark"] #subject-toast strong, :root[data-editor-theme="dark"] #subject-toast-text { color:var(--ink) !important; }
-    @media (max-width:720px) {
-      #app { height:auto; min-height:100vh; }
-      #main { display:block; overflow:visible; }
-      #editor { width:100%; min-width:0; max-height:none; overflow-y:visible; scrollbar-gutter:auto; border-right:0; border-bottom:1px solid var(--border); }
-      #preview-panel { overflow:visible; padding:14px 8px; }
-      #topbar { position:sticky; top:0; z-index:900; }
-      .topbar-left { width:100%; }
-      .topbar-shortcuts { flex:1; }
-      .topbar-right { width:100%; }
-      .top-link-btn, #copy-btn, #download-btn, #fullscreen-btn, #new-issue-btn { flex:1; padding-left:8px; padding-right:8px; text-align:center; }
-      .draft-actions { grid-template-columns:1fr; }
-      .preview-tools { align-items:flex-start; }
+    /* Workspace and toolbar adapt without rebuilding the draft's form fields. */
+    body { min-height:100dvh; }
+    #app { height:100dvh; min-height:0; }
+    #main { min-height:0; }
+    [hidden] { display:none !important; }
+    #preview-panel, #preview-inner, .pv-ql, .field-row .field { min-width:0; }
+    .pv-ql-title, .pv-ql-sub, .pv-ql-btn { overflow-wrap:anywhere; }
+    #preview-shell { container-type:inline-size; }
+    #preview-inner { overflow-wrap:anywhere; }
+    @container (max-width:500px) {
+      .pv-quicklinks { flex-direction:column; }
       .pv-event-date-block { width:72px; flex-basis:72px; padding-left:10px; padding-right:8px; }
       .pv-event-day { font-size:39px; }
-      .pv-event-content { padding-left:8px; }
+      .pv-event-content { min-width:0; padding-left:8px; overflow-wrap:anywhere; }
       .pv-event-type { min-width:88px; padding-left:10px; padding-right:10px; letter-spacing:1px; }
+    }
+    .toolbar-menu { position:relative; font:700 13px Arial,sans-serif; }
+    .toolbar-menu > summary { display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 14px; border:1px solid var(--border-strong); border-radius:7px; background:var(--surface); color:var(--ink); cursor:pointer; list-style:none; }
+    .toolbar-menu > summary::-webkit-details-marker { display:none; }
+    .export-menu > summary { background:var(--scarlet); color:#fff; border-color:var(--scarlet); }
+    .toolbar-popover { position:absolute; right:0; top:calc(100% + 8px); z-index:1100; width:240px; max-width:calc(100vw - 24px); padding:10px; display:grid; gap:8px; border:1px solid var(--border-strong); border-radius:10px; background:var(--surface); box-shadow:var(--shadow-lg); }
+    .toolbar-popover nav { display:grid; gap:8px; }
+    .toolbar-popover a, .toolbar-popover button { width:100%; min-height:44px; display:flex; align-items:center; justify-content:center; text-align:center; margin:0; white-space:normal; }
+    .toolbar-popover > button { font:700 12px Arial,sans-serif; border:1px solid var(--border); border-radius:7px; color:var(--ink); background:var(--surface-soft); padding:9px; cursor:pointer; }
+    #topbar { position:relative; z-index:900; }
+    .settings-disclosure { margin:10px 0; }
+    .settings-disclosure > summary { min-height:44px; padding:12px 0; color:var(--ink); font:700 13px Arial,sans-serif; cursor:pointer; }
+    .workspace-switch, .section-picker { display:none; }
+    .readiness-top { cursor:pointer; margin-bottom:0; min-height:30px; }
+    .readiness-card[open] .readiness-top { margin-bottom:7px; }
+    #readiness-count { font-weight:400; letter-spacing:0; text-transform:none; }
+    button:focus-visible, summary:focus-visible, select:focus-visible, a:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+    :root[data-editor-theme="dark"] .brand-label { color:#ff9aae; }
+    @media (max-width:1199px) {
+      #topbar { padding:8px 12px; gap:8px; }
+      .topbar-left { flex:1; min-width:0; }
+      .builder-brand { gap:8px; }
+      .builder-badge { width:42px; height:42px; }
+      .brand-label { font-size:9px; letter-spacing:1px; }
+      .brand-title { font-size:16px; }
+      .topbar-right { gap:6px; }
+      #fullscreen-btn { display:none; }
+      #save-indicator { font-size:10px; }
+      .workspace-switch { display:flex; width:100%; gap:6px; }
+      .workspace-switch button { flex:1; min-height:44px; border:1px solid var(--border-strong); border-radius:7px; color:var(--ink); background:var(--surface-soft); font:700 14px Arial,sans-serif; cursor:pointer; }
+      .workspace-switch button[aria-pressed="true"] { color:#fff; background:var(--scarlet); border-color:var(--scarlet); }
+      #editor { width:100%; min-width:0; border:0; padding:12px; }
+      #preview-panel { padding:14px 10px; }
+      #app[data-workspace-view="edit"] #preview-panel:not(.fullscreen), #app[data-workspace-view="preview"] #editor { display:none; }
+      .tabs, .editor-nav-heading { display:none; }
+      #editor > .tab-panel, #editor > .section-picker, #editor > .readiness-card { max-width:800px; margin-left:auto; margin-right:auto; }
+      .section-picker { display:block; margin-bottom:10px; color:var(--ink-muted); font:700 12px Arial,sans-serif; }
+      .section-picker select { display:block; width:100%; margin-top:5px; padding:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--surface); color:var(--ink); font:16px Arial,sans-serif; min-height:44px; }
+      .field input, .field textarea, .field select { font-size:16px; min-height:44px; }
+      .btn, .btn-sm, .preset-btn, .preset-fill, #info-btn { min-height:44px; min-width:44px; }
+      .preset-row { gap:8px; }
+      .accent-opt { width:44px; height:44px; }
+      .calendar-toolbar input { min-height:44px; max-width:100%; font-size:16px; }
+      .calendar-toolbar a.btn { display:inline-flex; align-items:center; }
+      .preset-btn { font-size:12px; }
+      .row-gap { flex-wrap:wrap; gap:6px; }
+      .readiness-card { padding:8px 12px; margin-bottom:12px; }
+      .readiness-top { min-height:36px; }
+      .draft-actions { grid-template-columns:1fr; }
+      .preview-tools { align-items:flex-start; }
+      #preview-panel.fullscreen { padding:12px 10px; }
+    }
+    @media (max-width:599px) {
+      #topbar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; padding:8px 10px; }
+      .topbar-left { grid-column:1 / -1; }
+      .topbar-right { grid-row:2; grid-column:2; gap:4px; }
+      #save-indicator { position:absolute; right:12px; top:20px; font-size:9px; }
+      #editor-theme-text { display:none; }
+      #editor-theme-btn { min-width:40px; padding:6px 8px; }
+      .toolbar-menu > summary { padding:8px; gap:4px; font-size:12px; }
+      .builder-badge { width:34px; height:34px; }
+      .brand-title { font-size:15px; }
+      .brand-label { font-size:8px; }
+      .workspace-switch { grid-row:2; grid-column:1; gap:4px; }
+      .workspace-switch button { min-height:44px; min-width:0; font-size:12px; padding:4px; }
     }
   </style>
 </head>
 <body>
-<div id="app">
+<div id="app" data-workspace-view="edit">
   <div id="topbar">
     <div class="topbar-left">
       <div class="builder-brand">
@@ -326,19 +390,34 @@
           <div class="brand-title">Newsletter Builder</div>
         </div>
       </div>
-      <nav class="topbar-shortcuts" aria-label="External tools">
-        <a id="hub-shortcut" class="top-link-btn builder" href="https://asme-osu.github.io/ASME-HUB/" target="_blank" rel="noopener noreferrer">ASME Hub &#8599;</a>
-        <a class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo &#8599;</a>
-        <a id="builder-shortcut" class="top-link-btn builder" href="https://asme-osu.github.io/ASME-Newsletter-Builder/" target="_blank" rel="noopener noreferrer">Builder &#8599;</a>
-      </nav>
     </div>
     <div class="topbar-right">
       <span id="save-indicator">&#9679; Auto-saved</span>
       <button id="editor-theme-btn" type="button" aria-pressed="false" aria-label="Switch to dark editor mode" title="Switch to dark editor mode" onclick="toggleEditorTheme()"><span id="editor-theme-icon" aria-hidden="true">☾</span><span id="editor-theme-text">Dark</span></button>
-      <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
       <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
-      <button id="download-btn" onclick="downloadHTML()">Download .html</button>
-      <button id="copy-btn" onclick="checklistThenCopy()">Copy HTML for Brevo</button>
+      <details class="toolbar-menu" id="tools-menu">
+        <summary>Tools <span aria-hidden="true">⌄</span></summary>
+        <div class="toolbar-popover">
+          <nav class="topbar-shortcuts" aria-label="External tools">
+            <a id="hub-shortcut" class="top-link-btn builder" href="https://asme-osu.github.io/ASME-HUB/" target="_blank" rel="noopener noreferrer">ASME Hub &#8599;</a>
+            <a class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo &#8599;</a>
+            <a id="builder-shortcut" class="top-link-btn builder" href="https://asme-osu.github.io/ASME-Newsletter-Builder/" target="_blank" rel="noopener noreferrer">Builder &#8599;</a>
+          </nav>
+          <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
+          <button type="button" onclick="openInfoDialog()">How to use the builder</button>
+        </div>
+      </details>
+      <details class="toolbar-menu export-menu" id="export-menu">
+        <summary>Export <span aria-hidden="true">⌄</span></summary>
+        <div class="toolbar-popover">
+          <button id="copy-btn" onclick="checklistThenCopy()">Copy HTML for Brevo</button>
+          <button id="download-btn" onclick="downloadHTML()">Download .html</button>
+        </div>
+      </details>
+    </div>
+    <div class="workspace-switch" role="group" aria-label="Workspace view">
+      <button id="workspace-edit" type="button" aria-pressed="true" aria-controls="editor" onclick="setWorkspaceView('edit')">Edit</button>
+      <button id="workspace-preview" type="button" aria-pressed="false" aria-controls="preview-panel" onclick="setWorkspaceView('preview')">Preview</button>
     </div>
   </div>
   <div id="main">
@@ -347,6 +426,13 @@
         <span class="editor-nav-title">Newsletter sections</span>
         <button id="info-btn" type="button" aria-label="Open newsletter builder instructions" aria-haspopup="dialog" onclick="openInfoDialog()" title="How to use the builder">i</button>
       </div>
+      <label class="section-picker" for="section-select">Editing section
+        <select id="section-select" onchange="switchTabByName(this.value)">
+          <optgroup label="Content"><option value="events">Events</option><option value="featured">Featured</option><option value="announce">Announcement</option><option value="links">Quick links</option></optgroup>
+          <optgroup label="Tools"><option value="calendar">Import from calendar</option><option value="templates">Templates</option></optgroup>
+          <optgroup label="Setup"><option value="settings">Issue &amp; organization settings</option><option value="design">Design</option></optgroup>
+        </select>
+      </label>
       <div class="tabs" role="tablist" aria-label="Newsletter sections">
         <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-events" onclick="switchTab('events',this)">Events</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-calendar" onclick="switchTab('calendar',this)">Calendar</button>
@@ -357,13 +443,13 @@
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-settings" onclick="switchTab('settings',this)">Settings</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-templates" onclick="switchTab('templates',this)">Templates</button>
       </div>
-      <div class="readiness-card" aria-live="polite">
-        <div class="readiness-top"><span class="readiness-title">Live readiness</span><span id="readiness-score">0%</span></div>
+      <details class="readiness-card">
+        <summary class="readiness-top"><span class="readiness-title">Readiness <span id="readiness-count" aria-live="polite"></span></span><span id="readiness-score">0%</span></summary>
         <div class="readiness-track"><div id="readiness-fill"></div></div>
         <div id="readiness-summary">Add content to see send-readiness guidance.</div>
         <div style="display:flex;gap:6px;"><button class="btn btn-ghost btn-sm" onclick="openReadinessChecklist()" style="flex:1;">View Checks</button><button class="btn btn-ghost btn-sm" onclick="checkAllLinks()" style="flex:1;">Check Links</button></div>
         <div id="link-check-results" class="link-results" role="status"></div>
-      </div>
+      </details>
       <div id="tab-events" class="tab-panel active" role="tabpanel">
         <div class="row">
           <span id="event-count" style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;"></span>
@@ -381,6 +467,7 @@
           <a class="btn btn-ghost" href="https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&amp;ctz=America%2FNew_York" target="_blank" rel="noopener" style="text-decoration:none;">Open Calendar</a>
           <a class="btn btn-ghost" href="https://calendar.google.com/calendar/r" target="_blank" rel="noopener">Open event editor</a>
         </div>
+        <details class="settings-disclosure"><summary>Academic year &amp; rehearsal tools</summary>
         <div class="calendar-toolbar">
           <label for="calendar-preview-year">Academic year (August–July)</label>
           <input id="calendar-preview-year" placeholder="2027-2028" pattern="[0-9]{4}(-[0-9]{4})?" aria-describedby="calendar-preview-help">
@@ -390,6 +477,7 @@
           <button id="clear-fictional-calendar" class="btn btn-ghost" onclick="clearFictionalCalendar()" hidden>Remove fictional events</button>
         </div>
         <p id="calendar-preview-help" class="calendar-status">Enter 2027 or 2027-2028 for the same academic year. Preview changes only this browser. Remove fictional events restores the chapter snapshot. Refresh rereads generated JSON; the hourly job reads Google. Fictional rehearsal creates no Google events. Verify the selected calendar before saving an event and keep rehearsal guests empty.</p>
+        </details>
         <div id="calendar-status" class="calendar-status" role="status" aria-live="polite">Loading public calendar…</div>
         <div id="calendar-list"></div>
       </div>
@@ -469,7 +557,7 @@
           <div class="field"><label>Email Subject Line</label><input id="s-subject" maxlength="120" placeholder="ASME OSU Newsletter — May 2026" oninput="render()"/><div id="subject-count" class="count-line">0 / 65 recommended</div></div>
           <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:0.6;">(preview line in inbox)</span></label><input id="s-preheader" maxlength="180" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/><div id="preheader-count" class="count-line">0 / 100 recommended</div></div>
           <div class="section-divider"></div>
-          <div style="font:800 10px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Organization defaults</div>
+          <details class="settings-disclosure"><summary>Organization defaults</summary>
           <div style="font:11px/1.5 Arial,sans-serif;color:var(--ink-muted);margin-bottom:10px;">These branding and contact values can be saved once for every new issue on this browser.</div>
           <div class="field"><label>Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/></div>
           <div class="field"><label>Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/></div>
@@ -481,6 +569,7 @@
           <div class="field"><label>Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
           <div style="display:flex;gap:6px;margin-top:10px;"><button class="btn btn-blue btn-sm" onclick="saveOrganizationDefaults()" style="flex:1;">Save as Defaults</button><button class="btn btn-ghost btn-sm" onclick="restoreAsmeDefaults()" style="flex:1;">Restore ASME Defaults</button></div>
           <div class="section-divider"></div>
+          </details>
           <button class="btn btn-danger" style="width:100%;" onclick="if(confirm('Clear saved draft from this browser?')){localStorage.removeItem('asme_nl_draft');alert('Draft cleared. Refresh to reset to defaults.');}">Clear Saved Draft</button>
         </div>
       </div>
@@ -657,6 +746,7 @@ window.onload=function(){
   renderTemplateList();
   renderRevisionHistory();
   loadCalendarEvents(false);
+  syncWorkspace();
   document.addEventListener("keydown",function(event){
     var modal=document.querySelector(".modal-overlay.open");
     if(!modal)return;
@@ -676,6 +766,8 @@ window.onload=function(){
 
 function openInfoDialog(){
   lastFocusedBeforeModal=document.activeElement;
+  var toolbar=lastFocusedBeforeModal&&lastFocusedBeforeModal.closest(".toolbar-menu");
+  if(toolbar)lastFocusedBeforeModal=toolbar.querySelector("summary");
   document.getElementById("info-modal").classList.add("open");
   setTimeout(function(){document.getElementById("info-close").focus();},0);
 }
@@ -703,11 +795,47 @@ function buildThemeChips(){
 }
 function setTheme(k){if(k!=="light"&&k!=="navy")return;activeTheme=k;buildThemeChips();render();}
 
+var workspaceView="edit",workspaceScroll={edit:0,preview:0};
+var compactWorkspace=window.matchMedia("(max-width:1199px)");
+function syncWorkspace(){
+  document.getElementById("app").dataset.workspaceView=workspaceView;
+  document.getElementById("preview-desktop-btn").textContent=compactWorkspace.matches?"Fit width":"Desktop";
+  document.getElementById("workspace-edit").setAttribute("aria-pressed",String(workspaceView==="edit"));
+  document.getElementById("workspace-preview").setAttribute("aria-pressed",String(workspaceView==="preview"));
+  document.getElementById("topbar").inert=!!isFullscreen;
+  document.getElementById("editor").inert=!!isFullscreen||(compactWorkspace.matches&&workspaceView!=="edit");
+  document.getElementById("preview-panel").inert=compactWorkspace.matches&&workspaceView!=="preview"&&!isFullscreen;
+}
+function setWorkspaceView(view){
+  if(view!=="edit"&&view!=="preview")return;
+  var previous=document.getElementById(workspaceView==="edit"?"editor":"preview-panel");
+  workspaceScroll[workspaceView]=previous.scrollTop;
+  workspaceView=view;
+  syncWorkspace();
+  document.getElementById(view==="edit"?"editor":"preview-panel").scrollTop=workspaceScroll[view];
+}
+compactWorkspace.addEventListener("change",function(){
+  var leavingFullscreen=isFullscreen;
+  if(isFullscreen){isFullscreen=false;document.getElementById("preview-panel").classList.remove("fullscreen");document.getElementById("fullscreen-btn").textContent="Full Preview";workspaceView="preview";}
+  syncWorkspace();
+  if(leavingFullscreen&&compactWorkspace.matches)document.getElementById("workspace-preview").focus();
+});
+function closeToolbarMenus(focus){
+  document.querySelectorAll(".toolbar-menu[open]").forEach(function(menu){menu.open=false;if(focus)menu.querySelector("summary").focus();});
+}
+document.addEventListener("click",function(event){
+  var menu=event.target.closest(".toolbar-menu");
+  document.querySelectorAll(".toolbar-menu[open]").forEach(function(other){if(other!==menu)other.open=false;});
+  if(menu&&event.target.closest("button,a")){menu.open=false;if(event.target.closest("button")&&!document.querySelector(".modal-overlay.open"))menu.querySelector("summary").focus();}
+});
+document.addEventListener("keydown",function(event){if(event.key==="Escape"){closeToolbarMenus(true);if(isFullscreen)toggleFullscreen();}});
+
 function switchTab(name,btn){
   document.querySelectorAll(".tab-panel").forEach(function(p){p.classList.remove("active");});
   document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false");});
   document.getElementById("tab-"+name).classList.add("active");
   btn.classList.add("active"); btn.setAttribute("aria-selected","true");
+  document.getElementById("section-select").value=name;
 }
 function switchTabByName(name){
   var btn=document.querySelector('.tab-btn[aria-controls="tab-'+name+'"]');
@@ -808,11 +936,11 @@ function renderEventList(){
     return '<div class="editor-card" style="margin-bottom:10px;">'+
       '<div class="row">'+
         '<div class="row-gap">'+
-          '<button class="btn btn-ghost btn-sm" onclick="moveEvent('+ev.id+',\'up\')"'+(i===0?' disabled':'')+'>&#8593;</button>'+
-          '<button class="btn btn-ghost btn-sm" onclick="moveEvent('+ev.id+',\'down\')"'+(i===events.length-1?' disabled':'')+'>&#8595;</button>'+
+          '<button class="btn btn-ghost btn-sm" aria-label="Move event up" onclick="moveEvent('+ev.id+',\'up\')"'+(i===0?' disabled':'')+'>&#8593;</button>'+
+          '<button class="btn btn-ghost btn-sm" aria-label="Move event down" onclick="moveEvent('+ev.id+',\'down\')"'+(i===events.length-1?' disabled':'')+'>&#8595;</button>'+
         '</div>'+
         '<div class="row-gap">'+
-          '<button class="btn btn-ghost btn-sm" onclick="duplicateEvent('+ev.id+')" title="Duplicate">&#10064;</button>'+
+          '<button class="btn btn-ghost btn-sm" onclick="duplicateEvent('+ev.id+')" title="Duplicate" aria-label="Duplicate event">&#10064;</button>'+
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
       '</div>'+
@@ -1659,11 +1787,14 @@ function applyPreset(id,key){
 /* ── FULLSCREEN PREVIEW ── */
 var isFullscreen=false;
 function toggleFullscreen(){
+  if(compactWorkspace.matches){setWorkspaceView(workspaceView==="preview"?"edit":"preview");return;}
   isFullscreen=!isFullscreen;
   var panel=document.getElementById("preview-panel");
   var btn=document.getElementById("fullscreen-btn");
   if(isFullscreen){panel.classList.add("fullscreen");btn.textContent="Exit Full Preview";}
   else{panel.classList.remove("fullscreen");btn.textContent="Full Preview";}
+  syncWorkspace();
+  (isFullscreen?document.getElementById("fullscreen-exit"):btn).focus();
 }
 
 /* ── PRE-SEND CHECKLIST ── */
@@ -1715,6 +1846,7 @@ function renderReadiness(){
   var issues=getReadinessChecks(),score=readinessScore(issues),open=issues.filter(function(item){return!item.ok;});
   var scoreEl=document.getElementById("readiness-score"),fill=document.getElementById("readiness-fill"),summary=document.getElementById("readiness-summary");
   if(scoreEl)scoreEl.textContent=score+"%";
+  document.getElementById("readiness-count").textContent=open.length?"· "+open.length+" to review":"· Ready";
   if(fill){fill.style.width=score+"%";fill.style.background=score>=90?"#267044":score>=70?"#a87300":"#ba0c2f";}
   if(summary)summary.textContent=open.length?(open.length+" item"+(open.length===1?"":"s")+" need attention · "+open[0].label):"All live checks pass. Run the link checker before export.";
 }
@@ -1739,6 +1871,8 @@ function showReadinessChecklist(copyMode){
   document.getElementById("checklist-primary").textContent=copyMode?(hasIssues?"Copy Anyway":"Copy HTML"):"Close";
   document.getElementById("checklist-modal").classList.add("open");
   lastFocusedBeforeModal=document.activeElement;
+  var toolbar=lastFocusedBeforeModal&&lastFocusedBeforeModal.closest(".toolbar-menu");
+  if(toolbar)lastFocusedBeforeModal=toolbar.querySelector("summary");
   setTimeout(function(){document.getElementById("checklist-primary").focus();},0);
 }
 function checklistThenCopy(){showReadinessChecklist(true);}
@@ -1775,6 +1909,7 @@ function probeLink(link){
   }).catch(function(){if(timer)clearTimeout(timer);return{label:link.label,status:"unverified",message:"Could not verify from this browser (the site may block automated checks)"};});
 }
 function checkAllLinks(){
+  document.querySelector(".readiness-card").open=true;
   var container=document.getElementById("link-check-results"),links=collectEnabledLinks();
   if(!links.length){container.innerHTML='<div class="link-result">No enabled links to check.</div>';return Promise.resolve([]);}
   container.innerHTML='<div class="link-result">Checking '+links.length+' links…</div>';
@@ -1900,7 +2035,7 @@ function downloadHTML(){
       <li><strong>Add events:</strong> Import upcoming items from <strong>Calendar</strong> or add them manually under <strong>Events</strong>. Auto-sort arranges recognizable dates; warning badges flag possible duplicates and identical start times.</li>
       <li><strong>Build content:</strong> Complete or turn off <strong>Featured</strong>, <strong>Announce</strong>, and <strong>Links</strong>. Add meaningful alt text whenever an image is enabled.</li>
       <li><strong>Write for the inbox:</strong> Add the subject and preheader in <strong>Settings</strong>. Use the character counters and inbox preview to keep both concise.</li>
-      <li><strong>Review:</strong> Watch the <strong>Live readiness</strong> score, run <strong>Check Links</strong>, and inspect Desktop, Mobile, and Email dark mode previews. Dark simulation is only an approximation because email apps render dark mode differently. Choose a desktop email width under <strong>Design</strong>; the exported email adapts to narrow screens. The sun/moon button in the top bar changes only the builder interface.</li>
+      <li><strong>Review:</strong> Expand the <strong>Readiness</strong> score, run <strong>Check Links</strong>, and inspect Desktop, Mobile, and Email dark mode previews. Dark simulation is only an approximation because email apps render dark mode differently. Choose a desktop email width under <strong>Design</strong>; the exported email adapts to narrow screens. The sun/moon button in the top bar changes only the builder interface.</li>
       <li><strong>Send:</strong> Select <strong>Copy HTML for Brevo</strong>, resolve the final checklist, then paste into Brevo → New campaign → Design → Code your own. Send yourself a Brevo test before the full list.</li>
     </ol>
     <div class="info-note"><strong>Recovery and handoff:</strong> Major actions create up to 20 snapshots in <strong>Templates → Revision History</strong>. Use <strong>Export Draft .json</strong> to continue on another computer. A downloaded HTML file is a finished preview, not an editable draft. Link results marked “could not verify” usually mean that site blocks browser-based checks; open those links manually.</div>

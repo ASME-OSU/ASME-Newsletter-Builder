@@ -13,7 +13,7 @@ A static newsletter builder for creating ASME at Ohio State campaigns and copyin
 3. Customize the featured event, announcement, quick links, design, subject, and preheader.
 4. Watch the live readiness score and inbox preview while editing.
 5. Check the Desktop, Mobile, and Email dark mode previews, then run **Check Links**.
-6. Click **Copy HTML for Brevo** and review the final checklist.
+6. Click **Export → Copy HTML for Brevo** and review the final checklist.
 7. In Brevo, choose **Design → Code your own**, paste the HTML, copy the subject line, and send a test email.
 
 The builder auto-saves in the current browser. Drafts are not automatically shared between computers.

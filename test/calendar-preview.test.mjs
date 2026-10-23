@@ -31,7 +31,7 @@ test('academic year boundaries use Eastern date for timed events and UTC for all
 
 test('full builder year preview and fictional Fall/Spring source preserve drafts/defaults/templates and refresh official JSON', async () => {
   let reads = 0;
-  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) { window.alert = () => {}; window.confirm = () => true; window.fetch = async () => { reads++; return { ok: true, json: async () => feed }; }; } });
+  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) { window.matchMedia = query => ({ media: query, matches: false, addEventListener() {}, removeEventListener() {} }); window.alert = () => {}; window.confirm = () => true; window.fetch = async () => { reads++; return { ok: true, json: async () => feed }; }; } });
   const { window } = dom;
   try {
     await new Promise(resolve => window.addEventListener('load', resolve, { once: true })); await wait();
@@ -86,7 +86,7 @@ test('full builder year preview and fictional Fall/Spring source preserve drafts
 
 test('late snapshot response cannot overwrite a newly selected fictional source', async () => {
   let answer;
-  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) { window.alert = () => {}; window.confirm = () => true; window.fetch = () => new Promise(resolve => { answer = resolve; }); } });
+  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) { window.matchMedia = query => ({ media: query, matches: false, addEventListener() {}, removeEventListener() {} }); window.alert = () => {}; window.confirm = () => true; window.fetch = () => new Promise(resolve => { answer = resolve; }); } });
   const { window } = dom;
   try {
     await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
@@ -100,7 +100,7 @@ test('late snapshot response cannot overwrite a newly selected fictional source'
 
 test('remove then Upcoming preserves loading, restores chapter source and handles failed refresh without fictional residue', async () => {
   let answer, fail = false;
-  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) {
+  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(window) { window.matchMedia = query => ({ media: query, matches: false, addEventListener() {}, removeEventListener() {} });
     window.alert = () => {}; window.confirm = () => true;
     window.fetch = () => new Promise((resolve, reject) => { answer = fail ? reject : resolve; });
     window.console.warn = () => {};
@@ -141,7 +141,7 @@ test('remove then Upcoming preserves loading, restores chapter source and handle
 });
 
 test('failed removal without an earlier chapter response remains an honest normal unavailable view', async () => {
-  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', beforeParse(window) {
+  const dom = new JSDOM(html, { url: 'https://isolated.invalid/', runScripts: 'dangerously', beforeParse(window) { window.matchMedia = query => ({ media: query, matches: false, addEventListener() {}, removeEventListener() {} });
     window.alert = () => {}; window.confirm = () => true; window.console.warn = () => {};
     window.fetch = async () => { throw new Error('Offline'); };
   } });

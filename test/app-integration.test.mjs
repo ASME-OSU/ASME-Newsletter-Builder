@@ -33,6 +33,7 @@ test("New Issue resets featured controls and image content while preserving defa
     runScripts: "dangerously",
     pretendToBeVisual: true,
     beforeParse(window) {
+      mockMatchMedia(window);
       window.alert = () => {};
       window.confirm = () => true;
       window.fetch = async () => ({ ok: true, json: async () => calendarFeed });
@@ -82,6 +83,127 @@ test("New Issue resets featured controls and image content while preserving defa
   }
 });
 
+// jsdom has no viewport media queries; default to the desktop workspace.
+function mockMatchMedia(window, matches = false) {
+  const queries = new Map();
+  window.matchMedia = query => {
+    if (!queries.has(query)) {
+      const result = new window.EventTarget();
+      result.media = query;
+      result.matches = matches;
+      result.setMatches = next => {
+        if (result.matches === next) return;
+        result.matches = next;
+        result.dispatchEvent(new window.Event("change"));
+      };
+      queries.set(query, result);
+    }
+    return queries.get(query);
+  };
+}
+
+async function responsiveFixture(compact = false) {
+  const dom = new JSDOM(html, {
+    url: "https://isolated.invalid/", runScripts: "dangerously", pretendToBeVisual: true,
+    beforeParse(window) {
+      mockMatchMedia(window, compact);
+      window.fetch = async () => ({ ok: true, json: async () => calendarFeed });
+    }
+  });
+  await new Promise(resolve => dom.window.addEventListener("load", resolve, { once: true }));
+  await waitFor(() => dom.window.calendarEvents.length === 1);
+  return dom;
+}
+
+test("compact workspace preserves editing nodes, draft state, section selection, and independent scroll positions", async () => {
+  const { window } = await responsiveFixture(true);
+  try {
+    const document = window.document;
+    const editor = document.getElementById("editor");
+    const preview = document.getElementById("preview-panel");
+    const picker = document.getElementById("section-select");
+    const subject = document.getElementById("s-subject");
+    subject.value = "Typing survives a workspace change";
+    subject.dispatchEvent(new window.Event("input", { bubbles: true }));
+    const title = document.querySelector('#event-list input[oninput*="title"]');
+    title.value = "A changed event title";
+    title.dispatchEvent(new window.Event("input", { bubbles: true }));
+    const state = JSON.stringify(window.collectState());
+    const defaults = window.localStorage.getItem("asme_nl_org_defaults");
+    const draft = window.localStorage.getItem("asme_nl_draft");
+
+    picker.value = "settings";
+    picker.dispatchEvent(new window.Event("change", { bubbles: true }));
+    assert.equal(document.getElementById("tab-settings").classList.contains("active"), true);
+    assert.equal(document.querySelector('.tab-btn[aria-selected="true"]').getAttribute("aria-controls"), "tab-settings");
+    editor.scrollTop = 431;
+    document.getElementById("workspace-preview").click();
+    assert.equal(editor.inert, true);
+    assert.equal(preview.inert, false);
+    assert.equal(document.getElementById("workspace-preview").getAttribute("aria-pressed"), "true");
+    preview.scrollTop = 278;
+    document.getElementById("workspace-edit").click();
+    assert.equal(editor.scrollTop, 431);
+    assert.equal(editor.inert, false);
+    assert.equal(preview.inert, true);
+    assert.equal(picker.value, "settings");
+    assert.equal(document.getElementById("s-subject"), subject);
+    assert.equal(document.querySelector('#event-list input[oninput*="title"]'), title);
+    assert.equal(JSON.stringify(window.collectState()), state);
+    assert.equal(window.localStorage.getItem("asme_nl_org_defaults"), defaults);
+    assert.equal(window.localStorage.getItem("asme_nl_draft"), draft);
+    document.getElementById("workspace-preview").click();
+    assert.equal(preview.scrollTop, 278);
+
+    const media = window.matchMedia("(max-width:1199px)");
+    media.setMatches(false);
+    assert.equal(editor.inert, false);
+    assert.equal(preview.inert, false);
+    media.setMatches(true);
+    assert.equal(editor.inert, true);
+    assert.equal(preview.inert, false);
+    assert.equal(window.workspaceView, "preview");
+    document.getElementById("workspace-edit").click();
+    document.querySelector('.tab-btn[aria-controls="tab-events"]').click();
+    assert.equal(picker.value, "events");
+    assert.equal(editor.scrollTop, 431);
+  } finally {
+    window.close();
+  }
+});
+
+test("toolbar disclosures close predictably and checklist returns focus to the visible export trigger", async () => {
+  const { window } = await responsiveFixture();
+  try {
+    const document = window.document;
+    const tools = document.getElementById("tools-menu");
+    const exports = document.getElementById("export-menu");
+    tools.open = true;
+    exports.querySelector("summary").click();
+    assert.equal(tools.open, false);
+    assert.equal(exports.open, true);
+    document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    assert.equal(exports.open, false);
+    assert.equal(document.activeElement, exports.querySelector("summary"));
+    tools.open = true;
+    document.getElementById("editor").click();
+    assert.equal(tools.open, false);
+
+    exports.open = true;
+    const copy = document.getElementById("copy-btn");
+    copy.focus();
+    copy.click();
+    assert.equal(exports.open, false);
+    assert.equal(document.getElementById("checklist-modal").classList.contains("open"), true);
+    await waitFor(() => document.activeElement === document.getElementById("checklist-primary"));
+    window.closeChecklist();
+    assert.equal(document.getElementById("checklist-modal").classList.contains("open"), false);
+    assert.equal(document.activeElement, exports.querySelector("summary"));
+  } finally {
+    window.close();
+  }
+});
+
 function waitFor(predicate, timeout = 2000) {
   return new Promise((resolve, reject) => {
     const started = Date.now();
@@ -100,6 +222,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
     runScripts: "dangerously",
     pretendToBeVisual: true,
     beforeParse(window) {
+      mockMatchMedia(window);
       window.alert = () => {};
       window.confirm = () => true;
       window.fetch = async () => ({ ok: true, json: async () => calendarFeed });
@@ -283,6 +406,7 @@ test("readiness, organization defaults, previews, event warnings, revisions, and
     runScripts: "dangerously",
     pretendToBeVisual: true,
     beforeParse(window) {
+      mockMatchMedia(window);
       window.alert = () => {};
       window.confirm = () => true;
       window.fetch = async (url, options = {}) => {
