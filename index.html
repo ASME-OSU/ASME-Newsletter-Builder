@@ -72,7 +72,8 @@
     #new-issue-btn { background: transparent; color: var(--ink-muted); border: 1px solid var(--border); border-radius: 7px; padding: 9px 14px; font-size: 12px; font-weight: 700; font-family: Arial,sans-serif; cursor: pointer; white-space: nowrap; }
     #new-issue-btn:hover { background: var(--surface-soft); color:var(--ink); }
     #editor-theme-btn { min-width:44px; min-height:44px; gap:6px; display:inline-flex; align-items:center; justify-content:center; background:var(--surface-muted); color:var(--ink); border:1px solid var(--border-strong); border-radius:7px; padding:6px 12px; font:600 12px/1 Arial,sans-serif; cursor:pointer; }
-    #editor-theme-icon { font-size:18px; font-weight:400; }
+    #editor-theme-icon, .download-icon { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+    #editor-theme-icon svg, .download-icon svg { display:block; }
     #editor-theme-btn:hover { background:var(--surface-soft); }
     #main { display: flex; flex: 1; overflow: hidden; }
     #editor { width: 390px; min-width: 320px; flex-shrink: 0; background: var(--surface-soft); border-right: 1px solid var(--border); overflow-y: auto; scrollbar-gutter: stable; padding: 16px 14px; }
@@ -393,7 +394,7 @@
     </div>
     <div class="topbar-right">
       <span id="save-indicator">&#9679; Auto-saved</span>
-      <button id="editor-theme-btn" type="button" aria-pressed="false" aria-label="Switch to dark editor mode" title="Switch to dark editor mode" onclick="toggleEditorTheme()"><span id="editor-theme-icon" aria-hidden="true">☾</span><span id="editor-theme-text">Dark</span></button>
+      <button id="editor-theme-btn" type="button" aria-pressed="false" aria-label="Switch to dark editor mode" title="Switch to dark editor mode" onclick="toggleEditorTheme()"><span id="editor-theme-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/></svg></span><span id="editor-theme-text">Dark</span></button>
       <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
       <details class="toolbar-menu" id="tools-menu">
         <summary>Tools <span aria-hidden="true">⌄</span></summary>
@@ -408,7 +409,7 @@
         </div>
       </details>
       <details class="toolbar-menu export-menu" id="export-menu">
-        <summary>Export <span aria-hidden="true">⌄</span></summary>
+        <summary><span class="download-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>Export</summary>
         <div class="toolbar-popover">
           <button id="copy-btn" onclick="checklistThenCopy()">Copy HTML for Brevo</button>
           <button id="download-btn" onclick="downloadHTML()">Download .html</button>
@@ -644,7 +645,7 @@ function setEditorTheme(theme){
   document.documentElement.dataset.editorTheme=dark?"dark":"light";
   var button=document.getElementById("editor-theme-btn");
   button.setAttribute("aria-pressed",String(dark));
-  document.getElementById("editor-theme-icon").textContent=dark?"☀":"☾";
+  document.getElementById("editor-theme-icon").innerHTML=dark?'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/></svg>';
   document.getElementById("editor-theme-text").textContent=dark?"Light":"Dark";
   button.setAttribute("aria-label",dark?"Switch to light editor mode":"Switch to dark editor mode");
   button.title=dark?"Switch to light editor mode":"Switch to dark editor mode";

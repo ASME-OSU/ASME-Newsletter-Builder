@@ -245,11 +245,11 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.document.querySelector(".pv-feat-bar"), null);
   assert.doesNotMatch(window.generateHTML(), /<td width="6" style="background:/);
   const themeButton = window.document.getElementById("editor-theme-btn");
-  assert.equal(themeButton.querySelector("#editor-theme-icon").textContent, "☾");
+  assert.equal(themeButton.querySelector("#editor-theme-icon path").getAttribute("d"), 'M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z');
   assert.equal(themeButton.querySelector("#editor-theme-text").textContent, "Dark");
   themeButton.click();
   assert.equal(themeButton.getAttribute("aria-pressed"), "true");
-  assert.equal(themeButton.querySelector("#editor-theme-icon").textContent, "☀");
+  assert.equal(themeButton.querySelector("#editor-theme-icon circle").getAttribute("r"), "4");
   assert.equal(themeButton.querySelector("#editor-theme-text").textContent, "Light");
   assert.equal(themeButton.getAttribute("aria-label"), "Switch to light editor mode");
   assert.equal(window.document.documentElement.dataset.editorTheme, "dark");
