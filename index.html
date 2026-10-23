@@ -239,6 +239,9 @@
     .check-label { font-family:Arial,sans-serif; font-size:13px; color:var(--ink); line-height:1.4; }
     .check-label small { display:block; color:var(--ink-soft); font-size:11px; margin-top:2px; }
     .modal-actions { display:flex; gap:8px; margin-top:20px; justify-content:flex-end; }
+    .info-heading { display:flex;align-items:flex-start;gap:12px; }
+    .info-heading h2 { flex:1; }
+    .info-dismiss { min-height:44px;min-width:44px;padding:8px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--ink);font:700 12px Arial,sans-serif;cursor:pointer; }
     .info-steps { margin:0; padding-left:22px; color:var(--ink); font-family:Arial,sans-serif; font-size:13px; line-height:1.55; }
     .info-steps li { padding:0 0 10px 4px; }
     .info-steps strong { color:var(--ink); }
@@ -438,6 +441,7 @@
     .event-editor[open] > summary { border-bottom:1px solid var(--border);padding-bottom:12px; }
 
     /* Compact utility rows let event content lead on touch screens. */
+    #info-btn { width:auto;height:auto;min-height:44px;min-width:60px;flex:0 0 auto;padding:8px 12px;border-radius:7px;font:700 13px Arial,sans-serif;color:var(--ink);border-color:var(--border-strong); }
     .editor-context { display:contents; }
     .mobile-readiness { display:none; }
     .event-list-toolbar { position:relative;display:flex;align-items:center;gap:8px;margin:0 0 12px; }
@@ -476,7 +480,8 @@
       #export-menu { grid-row:1;grid-column:5; }
       #tools-menu > summary,#export-menu > summary { width:44px;padding:8px; }
       .topbar-right .toolbar-label { display:none; }
-      .workspace-switch { grid-row:2;grid-column:1 / -1;width:100%; }
+      .workspace-switch { grid-row:2;grid-column:1 / 5;width:100%; }
+      #info-btn { grid-row:2;grid-column:5;min-width:44px;width:44px;padding:8px 2px;font-size:11px; }
       .workspace-switch button { font-size:14px; }
       .section-picker-label { display:none; }
       .section-picker select { margin-top:0; }
@@ -504,6 +509,7 @@
     </div>
     <div class="topbar-right">
       <button id="editor-theme-btn" type="button" aria-pressed="false" aria-label="Switch to dark editor mode" title="Switch to dark editor mode" onclick="toggleEditorTheme()"><span id="editor-theme-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/></svg></span><span id="editor-theme-text">Dark</span></button>
+      <button id="info-btn" type="button" aria-haspopup="dialog" aria-controls="info-modal" onclick="openInfoDialog()">Guide</button>
       <button id="fullscreen-btn" onclick="toggleFullscreen()">Full Preview</button>
       <details class="toolbar-menu" id="tools-menu">
         <summary aria-label="Tools" title="Tools"><span class="toolbar-label">Tools</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></summary>
@@ -514,7 +520,6 @@
           </nav>
           <button id="new-issue-btn" onclick="confirmNewIssue()" title="Clear and start a fresh issue">New Issue</button>
           <button type="button" onclick="reviewNewsletterLinks()">Check newsletter links</button>
-          <button type="button" onclick="openInfoDialog()">How to use the builder</button>
         </div>
       </details>
       <details class="toolbar-menu export-menu" id="export-menu">
@@ -534,7 +539,6 @@
     <div id="editor">
       <div class="editor-nav-heading">
         <span class="editor-nav-title">Newsletter sections</span>
-        <button id="info-btn" type="button" aria-label="Open newsletter builder instructions" aria-haspopup="dialog" onclick="openInfoDialog()" title="How to use the builder">i</button>
       </div>
       <div class="editor-context">
       <label class="section-picker" for="section-select"><span class="section-picker-label">Editing section</span>
@@ -888,7 +892,8 @@ function openInfoDialog(){
   var toolbar=lastFocusedBeforeModal&&lastFocusedBeforeModal.closest(".toolbar-menu");
   if(toolbar)lastFocusedBeforeModal=toolbar.querySelector("summary");
   document.getElementById("info-modal").classList.add("open");
-  setTimeout(function(){document.getElementById("info-close").focus();},0);
+  document.querySelector("#info-modal .modal").scrollTop=0;
+  setTimeout(function(){document.getElementById("info-title").focus();},0);
 }
 
 function closeInfoDialog(){
@@ -2314,7 +2319,7 @@ function downloadHTML(){
 <!-- INSTRUCTIONS MODAL -->
 <div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-subtitle">
   <div class="modal" tabindex="-1">
-    <h2 id="info-title">How to Use the Builder</h2>
+    <div class="info-heading"><h2 id="info-title" tabindex="-1">How to Use the Builder</h2><button type="button" class="info-dismiss" onclick="closeInfoDialog()">Close</button></div>
     <p class="modal-sub" id="info-subtitle">A new-officer guide to building, checking, and sending an ASME newsletter.</p>
     <ol class="info-steps">
       <li><strong>Set up once:</strong> Confirm standard links under <strong>Links</strong>, the footer under <strong>Design</strong>, and logos/contact destinations under <strong>Settings</strong>. Then select <strong>Save as Defaults</strong> in Settings so every new issue starts with them. <strong>Restore ASME Defaults</strong> returns to the official values.</li>
@@ -2322,7 +2327,7 @@ function downloadHTML(){
       <li><strong>Add events:</strong> Import upcoming items from <strong>Calendar</strong> or add them manually under <strong>Events</strong>. Auto-sort arranges recognizable dates; warning badges flag possible duplicates and identical start times.</li>
       <li><strong>Build content:</strong> Complete or turn off <strong>Featured</strong>, <strong>Announce</strong>, and <strong>Links</strong>. Add meaningful alt text whenever an image is enabled.</li>
       <li><strong>Write for the inbox:</strong> Add the subject and preheader in <strong>Settings</strong>. Use the character counters and inbox preview to keep both concise.</li>
-      <li><strong>Review:</strong> Expand the <strong>Readiness</strong> score, run <strong>Check Links</strong>, and inspect Desktop, Mobile, and Email dark mode previews. Dark simulation is only an approximation because email apps render dark mode differently. Choose a desktop email width under <strong>Design</strong>; the exported email adapts to narrow screens. The sun/moon button in the top bar changes only the builder interface.</li>
+      <li><strong>Review:</strong> Open the issue-count button beside the section selector on mobile, or expand <strong>Readiness</strong> on desktop. Run <strong>Tools → Check newsletter links</strong>, and inspect Desktop, Mobile, and Email dark mode previews. Dark simulation is only an approximation because email apps render dark mode differently. Choose a desktop email width under <strong>Design</strong>; the exported email adapts to narrow screens. The sun/moon button in the top bar changes only the builder interface.</li>
       <li><strong>Send:</strong> Select <strong>Copy HTML for Brevo</strong>, resolve the final checklist, then paste into Brevo → New campaign → Design → Code your own. Send yourself a Brevo test before the full list.</li>
     </ol>
     <div class="info-note"><strong>Recovery and handoff:</strong> Major actions create up to 20 snapshots in <strong>Templates → Revision History</strong>. Use <strong>Export Draft .json</strong> to continue on another computer. A downloaded HTML file is a finished preview, not an editable draft. Link results marked “could not verify” usually mean that site blocks browser-based checks; open those links manually.</div>

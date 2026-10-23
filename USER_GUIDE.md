@@ -4,7 +4,7 @@ Use the hosted [ASME at OSU Newsletter Builder](https://asme-osu.github.io/ASME-
 
 The top toolbar includes a **Brevo** shortcut. A **Builder** shortcut also appears when the app is embedded or opened outside the hosted builder, making it easy to open the full builder in a new tab.
 
-Select the circular **i** above the section tabs at any time to open the in-app instructions.
+Select **Guide** in the header at any time to open the in-app instructions. On phones, it sits beside **Edit** and **Preview**.
 
 ## 1. Set organization defaults (first-time setup)
 
