@@ -4,8 +4,8 @@ import test from 'node:test';
 import { JSDOM } from 'jsdom';
 const core=fs.readFileSync(new URL('../newsletter-core.js',import.meta.url),'utf8');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8').replace('<script src="newsletter-core.js"></script>',`<script>${core}</script>`);
-async function setup(){
- const dom=new JSDOM(html,{url:'https://isolated.invalid/',runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){w.matchMedia=()=>({matches:false,addEventListener(){}});w.fetch=async()=>({ok:true,json:async()=>({events:[]})});w.alert=()=>{};w.confirm=()=>true;}});
+async function setup(compact=false){
+ const dom=new JSDOM(html,{url:'https://isolated.invalid/',runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){w.matchMedia=()=>({matches:compact,addEventListener(){}});w.fetch=async()=>({ok:true,json:async()=>({events:[]})});w.alert=()=>{};w.confirm=()=>true;}});
  await new Promise(resolve=>dom.window.addEventListener('load',resolve,{once:true}));await new Promise(resolve=>dom.window.setTimeout(resolve,10));return dom;
 }
 const tick=w=>new Promise(resolve=>w.setTimeout(resolve,5));
@@ -41,8 +41,22 @@ test('event expansion survives rerenders and summaries retain collapsed event co
  try{
   w.events=[{...w.events[0],id:101,title:'First',date:'MAY 30'},{...w.events[0],id:102,title:'Second',date:'MAY 20'}];w.renderEventList();
   assert.equal(d.querySelector('[data-event-id="102"]').open,false);
-  assert.match(d.getElementById('event-102-summary').textContent,/Second.*MAY 20.*Manual event/);
-  w.expandAllEvents();w.renderEventList();assert.equal([...d.querySelectorAll('#event-list details')].every(card=>card.open),true);
+  assert.match(d.getElementById('event-102-summary').textContent,/Second.*MAY 20/);
+  w.expandAllEvents();w.renderEventList();assert.equal([...d.querySelectorAll('#event-list > details')].every(card=>card.open),true);
   d.querySelector('[data-event-id="101"]').open=false;w.renderEventList();assert.equal(d.querySelector('[data-event-id="101"]').open,false);
+ }finally{w.close();}
+});
+
+test('compact utilities preserve menu actions, focus and readiness access',async()=>{
+ const dom=await setup(true),w=dom.window,d=w.document;
+ try{
+  assert.equal([...d.querySelectorAll('#event-list > details')].every(card=>!card.open),true);
+  assert.equal(d.querySelector('.event-summary-status').textContent,'');
+  d.getElementById('mobile-readiness').click();assert.equal(d.getElementById('checklist-title').textContent,'Newsletter Readiness');w.closeChecklist();
+  const card=d.querySelector('#event-list > details');card.open=true;
+  const actions=card.querySelector('.event-actions-menu');actions.querySelector('summary').click();assert.equal(actions.open,true);
+  const count=w.events.length;actions.querySelector('[onclick^="duplicateEvent"]').click();assert.equal(w.events.length,count+1);assert.match(d.activeElement.id,/event-\d+-title/);
+  const menu=d.getElementById('list-options');menu.querySelector('summary').click();const before=w.autoSortEvents;d.getElementById('auto-sort-toggle').click();assert.equal(w.autoSortEvents,!before);assert.equal(menu.open,false);assert.equal(d.activeElement,menu.querySelector('summary'));
+  assert.equal(d.querySelector('#tools-menu [onclick="reviewNewsletterLinks()"]').textContent,'Check newsletter links');
  }finally{w.close();}
 });

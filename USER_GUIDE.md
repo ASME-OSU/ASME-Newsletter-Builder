@@ -95,7 +95,9 @@ Secretary: verify the official chapter postal/mailing address under Design befor
 
 Use **Edit** and **Preview** in the header to switch views. Each view keeps its scroll position, and switching never resets your draft. Choose a section from **Editing section**; content, calendar tools, templates, and setup are grouped there. On a wide desktop, the editor and preview appear side by side.
 
-Open **Export** for Copy HTML for Brevo or Download .html. Open **Tools** for the ASME Hub, Brevo, New Issue, and help. Expand **Readiness** for checks and link validation. Organization defaults and academic-year rehearsal controls are expandable to keep routine editing focused.
+Open **Export** (the download icon on phones) for Copy HTML for Brevo or Download .html. Open **Tools** (the three-dot icon) for the ASME Hub, Check newsletter links, New Issue, and help. On phones and tablets, the issue-count button beside the section selector opens readiness checks. Organization defaults and academic-year rehearsal controls are expandable to keep routine editing focused.
+
+Event cards start collapsed on phones and tablets. Open a card to edit it, use its up/down controls to reorder it, and open its three-dot menu for **Duplicate** or **Remove**. **List options** groups Sort by date, Auto-sort, and Expand all events beside **Add Event**.
 
 
 The dedicated **Brevo** button opens your campaign list in a new tab. In the copy checklist, **Copy and go to Brevo** copies the newsletter and then opens Brevo in the current tab; your browser draft remains saved. Choose **Copy HTML only** to stay in the builder. The checklist always opens at the heading, with its actions visible while the checks scroll.
