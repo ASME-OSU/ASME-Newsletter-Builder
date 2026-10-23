@@ -99,3 +99,13 @@ Open **Export** for Copy HTML for Brevo or Download .html. Open **Tools** for th
 
 
 The dedicated **Brevo** button opens your campaign list in a new tab. In the copy checklist, **Copy and go to Brevo** copies the newsletter and then opens Brevo in the current tab; your browser draft remains saved. Choose **Copy HTML only** to stay in the builder. The checklist always opens at the heading, with its actions visible while the checks scroll.
+
+## Reliable editing and calendar review
+
+- Event cards can be collapsed to a title/date/status summary. **Expand all events** opens every card; new and duplicated cards open automatically. Editing, sorting, and toggling options preserve keyboard focus.
+- Every field has an associated label. Desktop section tabs support Left/Right, Home, and End. JSON import controls work with keyboard activation.
+- The save indicator distinguishes unsaved changes, saving, saved, and failures. A storage failure keeps an **Export Draft** and **Retry saving** notice visible. Export a JSON backup if storage is unavailable. Pending changes are saved before leaving; Copy and go to Brevo stays in the builder if saving fails.
+- Draft imports assign unique event IDs, and editable exports preserve every event rather than silently truncating at 100. Backup warnings explain whether the previous-draft snapshot or only revision history could be saved.
+- Weekly calendar occurrences import as separate events. Rescheduled recurring occurrences retain their original identity, and content changes can be detected even when the upstream update timestamp stays unchanged. Recurring descriptions are preserved.
+- Readiness now flags missing calendar sources within verified snapshot coverage. A failed refresh or an event outside snapshot coverage is shown as unverified rather than canceled. Review the calendar, then remove the event or choose **Keep newsletter copy** to retain it as an independent authored event.
+- **View Checks** uses a review-only title and close action. When copying, expand **Subject and inbox preview for Brevo** to copy those fields before the final HTML copy. The final action always restores newsletter HTML to the clipboard; copy failures are reported.

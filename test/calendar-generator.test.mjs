@@ -54,3 +54,33 @@ test('production generator uses official public iCal, expands next Fall/Spring w
   assert.equal(unchanged.written.generatedAt, '2025-01-01T00:00:00Z');
   assert.ok(unchanged.written.checkedAt > unchanged.written.generatedAt, 'unchanged events still record the actual successful Google check');
 });
+
+test('recurring descriptions survive expansion and moved overrides retain original occurrence identity', async () => {
+  const result = await generate(`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:series-fixture
+DTSTART:20270915T220000Z
+DTEND:20270915T230000Z
+RRULE:FREQ=WEEKLY;COUNT=3
+SUMMARY:Series fixture
+DESCRIPTION:Bring your laptop and review the agenda.
+END:VEVENT
+BEGIN:VEVENT
+UID:series-fixture
+RECURRENCE-ID:20270922T220000Z
+DTSTART:20270923T220000Z
+DTEND:20270923T230000Z
+SUMMARY:Moved meeting
+DESCRIPTION:Updated occurrence agenda.
+END:VEVENT
+END:VCALENDAR`, { events: [] });
+  assert.equal(result.written.events.length, 3);
+  const ordinary = result.written.events.find(event => event.start === '2027-09-15T22:00:00.000Z');
+  assert.equal(ordinary.description, 'Bring your laptop and review the agenda.');
+  assert.equal(ordinary.recurring, true);
+  const moved = result.written.events.find(event => event.start === '2027-09-23T22:00:00.000Z');
+  assert.equal(moved.id, 'series-fixture::2027-09-22T22:00:00.000Z');
+  assert.equal(moved.recurrenceId, '2027-09-22T22:00:00.000Z');
+  assert.equal(moved.description, 'Updated occurrence agenda.');
+});

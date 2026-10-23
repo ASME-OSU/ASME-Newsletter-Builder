@@ -12,6 +12,8 @@ const html = fs.readFileSync(indexPath, "utf8")
 const calendarFeed = {
   generatedAt: "2026-07-13T12:00:00.000Z",
   calendarName: "ASME Public",
+  windowStart: "2099-08-01T00:00:00.000Z",
+  windowEnd: "2100-08-01T00:00:00.000Z",
   timeZone: "America/New_York",
   sourceUrl: "https://calendar.google.com/calendar/embed?src=public",
   events: [{

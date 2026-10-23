@@ -68,7 +68,7 @@
   function normalizeEvent(raw, fallbackId) {
     var source = raw && typeof raw === "object" ? raw : {};
     var numericId = Number(source.id);
-    var id = Number.isFinite(numericId) && numericId >= 0 ? Math.floor(numericId) : fallbackId;
+    var id = Number.isSafeInteger(numericId) && numericId >= 0 && numericId < Number.MAX_SAFE_INTEGER ? numericId : fallbackId;
     return {
       id: id,
       date: asString(source.date),
@@ -86,16 +86,24 @@
       linkText: asString(source.linkText, "Learn More"),
       sourceEventId: asString(source.sourceEventId),
       sourceUpdated: asString(source.sourceUpdated),
-      sourceStart: asString(source.sourceStart)
+      sourceStart: asString(source.sourceStart),
+      sourceFingerprint: asString(source.sourceFingerprint)
     };
   }
 
   function nextEventId(events, floor) {
     var minimum = Number.isFinite(Number(floor)) ? Number(floor) : 100;
-    return (Array.isArray(events) ? events : []).reduce(function (next, event) {
+    var list = Array.isArray(events) ? events : [];
+    var next = list.reduce(function (candidate, event) {
       var id = Number(event && event.id);
-      return Number.isFinite(id) ? Math.max(next, Math.floor(id) + 1) : next;
+      return Number.isSafeInteger(id) ? Math.max(candidate, id + 1) : candidate;
     }, minimum);
+    if (next >= Number.MAX_SAFE_INTEGER - 1) {
+      var used = new Set(list.map(function (event) { return Number(event && event.id); }));
+      next = minimum;
+      while (used.has(next)) next++;
+    }
+    return next;
   }
 
   function sanitizeFields(fields) {
@@ -108,8 +116,24 @@
 
   function sanitizeState(raw) {
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("Draft state must be an object.");
-    var rawEvents = Array.isArray(raw.events) ? raw.events.slice(0, 100) : [];
-    var events = rawEvents.map(function (event, index) { return normalizeEvent(event, 100 + index); });
+    var rawEvents = Array.isArray(raw.events) ? raw.events : [];
+    // Reserve supplied IDs before filling gaps so a missing ID never steals a later valid ID.
+    var reserved = new Set();
+    rawEvents.forEach(function (event) {
+      var id = Number(event && event.id);
+      if (event && event.id !== undefined && event.id !== null && event.id !== "" && Number.isSafeInteger(id) && id >= 0 && id < Number.MAX_SAFE_INTEGER) reserved.add(id);
+    });
+    var used = new Set(), fallbackId = 100;
+    var events = rawEvents.map(function (event) {
+      var id = Number(event && event.id);
+      var valid = event && event.id !== undefined && event.id !== null && event.id !== "" && reserved.has(id) && !used.has(id);
+      if (!valid) {
+        while (reserved.has(fallbackId) || used.has(fallbackId)) fallbackId++;
+        id = fallbackId++;
+      }
+      used.add(id);
+      return normalizeEvent(Object.assign({}, event, { id: id }), id);
+    });
     return {
       schemaVersion: SCHEMA_VERSION,
       events: events,
@@ -157,7 +181,9 @@
       location: asString(raw.location),
       description: asString(raw.description),
       url: safeUrl(raw.url),
-      updated: asString(raw.updated)
+      updated: asString(raw.updated),
+      recurring: Boolean(raw.recurring),
+      recurrenceId: asString(raw.recurrenceId)
     };
   }
 
@@ -196,6 +222,16 @@
     return separator > 0 ? id.slice(0, separator) : id;
   }
 
+  // Record source content rather than authored fields so local edits are not mistaken for upstream changes.
+  function calendarEventFingerprint(raw) {
+    var event = sanitizeCalendarEvent(raw);
+    if (!event) return "";
+    var content = JSON.stringify([event.title, event.start, event.end, event.allDay, event.location, event.description, event.url]);
+    var hash = 2166136261;
+    for (var i = 0; i < content.length; i++) hash = Math.imul(hash ^ content.charCodeAt(i), 16777619);
+    return "v1:" + content.length + ":" + (hash >>> 0).toString(16);
+  }
+
   function calendarEventToNewsletter(raw, id, timeZone) {
     var event = sanitizeCalendarEvent(raw);
     if (!event) throw new Error("Calendar event is invalid.");
@@ -230,7 +266,8 @@
       linkText: "View Event",
       sourceEventId: event.id,
       sourceUpdated: event.updated,
-      sourceStart: event.start
+      sourceStart: event.start,
+      sourceFingerprint: calendarEventFingerprint(event)
     }, id);
   }
 
@@ -256,6 +293,7 @@
     eventsForAcademicYear: eventsForAcademicYear,
     fictionalCalendarFeed: fictionalCalendarFeed,
     calendarEventSourceKey: calendarEventSourceKey,
+    calendarEventFingerprint: calendarEventFingerprint,
     calendarEventToNewsletter: calendarEventToNewsletter
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);

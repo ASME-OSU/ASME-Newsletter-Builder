@@ -40,13 +40,16 @@ function serializeInstance(instance, base) {
   const start = eventDateIso(instance.start, allDay);
   const uid = text(event.uid);
   return {
-    id: `${uid}::${start}`,
+    // RECURRENCE-ID stays stable when one occurrence is moved.
+    id: `${uid}::${instance.isOverride && event.recurrenceid ? iso(event.recurrenceid) : start}`,
+    recurring: Boolean(instance.isRecurring),
+    recurrenceId: instance.isRecurring ? (iso(event.recurrenceid) || start) : "",
     title: text(instance.summary || event.summary) || "Untitled Event",
     start,
     end: allDay ? eventDateIso(instance.end, true) : iso(instance.end),
     allDay,
     location: text(event.location),
-    description: instance.isRecurring && !instance.isOverride ? "" : text(event.description),
+    description: text(event.description === undefined ? base.description : event.description),
     url: publicEventUrl(event),
     updated: iso(event.lastmodified || event.dtstamp)
   };

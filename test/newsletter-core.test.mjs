@@ -83,3 +83,20 @@ test("extracts a stable source key when a calendar occurrence changes time", () 
   assert.equal(Core.calendarEventSourceKey({ id: "plain-event-id" }), "plain-event-id");
   assert.equal(Core.calendarEventSourceKey(null), "");
 });
+
+test('normalizes duplicate and missing IDs without stealing supplied IDs', () => {
+  const state=Core.sanitizeState({events:[{}, {id:100}, {id:100}, {id:102}, {id:null}, {id:Number.MAX_SAFE_INTEGER}, {id:1.5}]});
+  assert.equal(new Set(state.events.map(event=>event.id)).size,7);
+  assert.equal(state.events[1].id,100);
+  assert.equal(state.events[3].id,102);
+  assert.ok(state.events.every(event=>Number.isSafeInteger(event.id)));
+  const restored=Core.readDraftDocument(JSON.stringify(Core.createDraftDocument(state)));
+  assert.deepEqual(Array.from(restored.events,event=>event.id),Array.from(state.events,event=>event.id));
+});
+
+for(const count of [99,100,101])test(`preserves all ${count} events through an editable draft round trip`,()=>{
+  const events=Array.from({length:count},(_,i)=>({id:100+i,title:`Event ${i}`}));
+  const restored=Core.readDraftDocument(JSON.stringify(Core.createDraftDocument({events,fields:{}})));
+  assert.equal(restored.events.length,count);
+  assert.equal(restored.events[count-1].title,`Event ${count-1}`);
+});

@@ -200,6 +200,10 @@
     /* Autosave indicator */
     #save-indicator { font-family:Arial,sans-serif; font-size:11px; color:var(--ink-soft); align-self:center; white-space:nowrap; transition:color 0.3s; }
     #save-indicator.saved { color:#267044; }
+    #storage-warning { padding:12px 18px; background:var(--surface); color:var(--ink); border-bottom:2px solid var(--ink-muted); font:14px/1.5 Arial,sans-serif; flex-shrink:0; }
+    #storage-warning[hidden] { display:none; }
+    #storage-warning .btn { margin:4px; }
+    #save-indicator[data-status="error"] { font-weight:700; }
 
     /* Preset buttons */
     .preset-row { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
@@ -404,6 +408,8 @@
     #checklist-title { flex-shrink:0; outline:none; }
     #checklist-modal .modal-sub { font-size:14px; line-height:1.5; flex-shrink:0; margin-bottom:12px; }
     #checklist-items { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding-right:10px; }
+    #checklist-copy-guidance { flex-shrink:0; max-height:28dvh; overflow-y:auto; margin-top:10px; padding:8px 10px; border:1px solid var(--border-strong); border-radius:8px; color:var(--ink); font:13px/1.5 Arial,sans-serif; }
+    #checklist-copy-guidance > summary { cursor:pointer; min-height:36px; font-weight:700; }
     #checklist-modal .modal-actions { flex-shrink:0; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:16px; margin-top:12px; }
     #checklist-modal .modal-actions button { min-height:44px; font-size:13px; }
     @media (max-width:599px) {
@@ -415,10 +421,27 @@
       #checklist-modal .modal { padding:18px; max-height:calc(100dvh - 16px); }
       #checklist-modal .modal-actions button { flex:1 1 100%; }
     }
-  </style>
+      .event-editor > summary { cursor:pointer;min-height:44px;padding:4px 2px; }
+    .event-summary-title { font:700 14px/1.5 Arial,sans-serif;color:var(--ink);overflow-wrap:anywhere; }
+    .event-summary-meta,.event-summary-status { display:block;margin:4px 0 0;font:12px/1.5 Arial,sans-serif;color:var(--ink-muted);overflow-wrap:anywhere; }
+    .event-editor > summary { list-style:none;position:relative;padding-right:28px; }
+    .event-editor > summary::-webkit-details-marker, #checklist-copy-guidance > summary::-webkit-details-marker { display:none; }
+    .event-editor > summary::after { content:"";position:absolute;right:2px;top:8px;width:18px;height:18px;background:var(--select-arrow) center / 18px no-repeat; }
+    .event-editor[open] > summary::after { transform:rotate(180deg); }
+    #checklist-copy-guidance > summary { list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+    #checklist-copy-guidance > summary::after { content:"";flex:0 0 18px;width:18px;height:18px;background:var(--select-arrow) center / 18px no-repeat; }
+    #checklist-copy-guidance[open] > summary::after { transform:rotate(180deg); }
+    .event-editor-body { padding-top:14px; }
+    .event-editor[open] > summary { border-bottom:1px solid var(--border);padding-bottom:12px; }
+</style>
 </head>
 <body>
 <div id="app" data-workspace-view="edit">
+<div id="storage-warning" role="status" aria-live="polite" hidden>
+  <span id="storage-warning-message"></span>
+  <button class="btn btn-ghost btn-sm" type="button" onclick="exportDraft()">Export Draft</button>
+  <button class="btn btn-ghost btn-sm" type="button" onclick="draftSavePending=true;flushDraftSave()">Retry saving</button>
+</div>
   <div id="topbar">
     <div class="topbar-left">
       <div class="builder-brand">
@@ -426,7 +449,7 @@
         <div>
           <div class="brand-label">ASME at OSU</div>
           <div class="brand-title">Newsletter Builder</div>
-          <span id="save-indicator">&#9679; Auto-saved</span>
+          <span id="save-indicator" role="status" aria-live="polite">Draft ready</span>
         </div>
       </div>
       <a id="brevo-shortcut" class="top-link-btn brevo" href="https://app.brevo.com/campaigns/listing" target="_blank" rel="noopener noreferrer">Brevo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg></a>
@@ -494,8 +517,9 @@
           <button class="btn btn-blue" onclick="addEvent()">+ Add Event</button>
         </div>
         <div class="editor-card" style="padding:10px 12px;">
-          <div class="row" style="margin:0;"><button class="btn btn-ghost btn-sm" onclick="sortEventsChronologically(true)">Sort by date</button><div style="display:flex;align-items:center;gap:7px;font:11px Arial,sans-serif;color:var(--ink-muted);"><span>Auto-sort</span><button id="auto-sort-toggle" class="btn btn-toggle on btn-sm" aria-pressed="true" onclick="toggleAutoSort()">On</button></div></div>
+          <div class="row" style="margin:0;"><button class="btn btn-ghost btn-sm" onclick="sortEventsChronologically(true)">Sort by date</button><div style="display:flex;align-items:center;gap:7px;font:11px Arial,sans-serif;color:var(--ink-muted);"><span>Auto-sort</span><button id="auto-sort-toggle" aria-label="Automatically sort events by date" class="btn btn-toggle on btn-sm" aria-pressed="true" onclick="toggleAutoSort()">On</button></div></div>
         </div>
+        <button id="expand-events" class="btn btn-ghost btn-sm" onclick="expandAllEvents()" style="margin-bottom:10px;">Expand all events</button>
         <div id="event-list"></div>
       </div>
       <div id="tab-calendar" class="tab-panel" role="tabpanel">
@@ -523,55 +547,55 @@
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Featured Event</span>
-            <button id="toggle-featured" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('featured')">On</button>
+            <button id="toggle-featured" aria-label="Include featured event" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('featured')">On</button>
           </div>
         </div>
         <div id="featured-fields" class="editor-card">
-          <div class="field"><label>Event Title</label><input id="feat-title" oninput="render()"/></div>
-          <div class="field"><label>Date &amp; Time</label><input id="feat-date" oninput="render()"/></div>
-          <div class="field"><label>Location</label><input id="feat-location" oninput="render()"/></div>
-          <div class="field"><label>Description</label><textarea id="feat-desc" oninput="render()"></textarea></div>
+          <div class="field"><label for="feat-title">Event Title</label><input id="feat-title" oninput="render()"/></div>
+          <div class="field"><label for="feat-date">Date &amp; Time</label><input id="feat-date" oninput="render()"/></div>
+          <div class="field"><label for="feat-location">Location</label><input id="feat-location" oninput="render()"/></div>
+          <div class="field"><label for="feat-desc">Description</label><textarea id="feat-desc" oninput="render()"></textarea></div>
           <div class="img-toggle-row">
             <span style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#a8c4e0;">Event Image</span>
-            <button id="toggle-feat-img" class="btn btn-sm btn-toggle off" aria-pressed="false" onclick="toggleFeatImg()">Off</button>
+            <button id="toggle-feat-img" aria-label="Include featured image" class="btn btn-sm btn-toggle off" aria-pressed="false" onclick="toggleFeatImg()">Off</button>
           </div>
           <div id="feat-img-fields" class="img-fields" style="display:none;">
-            <div class="field"><label>Image URL</label><input id="feat-img-url" placeholder="https://..." oninput="render()"/></div>
-            <div class="field"><label>Alt Text</label><input id="feat-img-alt" placeholder="Event photo" oninput="render()"/></div>
+            <div class="field"><label for="feat-img-url">Image URL</label><input id="feat-img-url" placeholder="https://..." oninput="render()"/></div>
+            <div class="field"><label for="feat-img-alt">Alt Text</label><input id="feat-img-alt" placeholder="Event photo" oninput="render()"/></div>
           </div>
           <div class="section-divider"></div>
           <div class="row" style="margin-bottom:10px;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show RSVP Button</span>
-            <button id="toggle-feat-btn" class="btn btn-toggle on" aria-pressed="true" onclick="toggleFeatButton()">On</button>
+            <button id="toggle-feat-btn" aria-label="Include featured button" class="btn btn-toggle on" aria-pressed="true" onclick="toggleFeatButton()">On</button>
           </div>
-          <div class="field"><label>Button Text</label><input id="feat-btn-text" oninput="render()"/></div>
-          <div class="field"><label>Button URL</label><input id="feat-btn-url" oninput="render()"/></div>
+          <div class="field"><label for="feat-btn-text">Button Text</label><input id="feat-btn-text" oninput="render()"/></div>
+          <div class="field"><label for="feat-btn-url">Button URL</label><input id="feat-btn-url" oninput="render()"/></div>
         </div>
       </div>
       <div id="tab-announce" class="tab-panel">
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Announcement</span>
-            <button id="toggle-announce" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('announce')">On</button>
+            <button id="toggle-announce" aria-label="Include announcement" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('announce')">On</button>
           </div>
         </div>
         <div id="announce-fields" class="editor-card">
-          <div class="field"><label>Section Title</label><input id="ann-title" oninput="render()"/></div>
-          <div class="field"><label>Quote / Message</label><textarea id="ann-quote" style="min-height:90px;" oninput="render()"></textarea></div>
-          <div class="field"><label>Author Attribution</label><input id="ann-author" oninput="render()"/></div>
+          <div class="field"><label for="ann-title">Section Title</label><input id="ann-title" oninput="render()"/></div>
+          <div class="field"><label for="ann-quote">Quote / Message</label><textarea id="ann-quote" style="min-height:90px;" oninput="render()"></textarea></div>
+          <div class="field"><label for="ann-author">Author Attribution</label><input id="ann-author" oninput="render()"/></div>
         </div>
       </div>
       <div id="tab-links" class="tab-panel">
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:Arial,sans-serif;font-size:13px;color:#d8e2ee;">Show Quick Links</span>
-            <button id="toggle-links" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('links')">On</button>
+            <button id="toggle-links" aria-label="Include quick links" class="btn btn-toggle on" aria-pressed="true" onclick="toggleSection('links')">On</button>
           </div>
         </div>
         <div id="links-fields">
-          <div class="ql-card"><div class="ql-card-header">Link 1</div><div class="field"><label>Title</label><input id="ql1-title" oninput="render()"/></div><div class="field"><label>Subtitle</label><input id="ql1-sub" oninput="render()"/></div><div class="field"><label>Button Text</label><input id="ql1-btn" oninput="render()"/></div><div class="field"><label>URL</label><input id="ql1-url" oninput="render()"/></div></div>
-          <div class="ql-card"><div class="ql-card-header">Link 2</div><div class="field"><label>Title</label><input id="ql2-title" oninput="render()"/></div><div class="field"><label>Subtitle</label><input id="ql2-sub" oninput="render()"/></div><div class="field"><label>Button Text</label><input id="ql2-btn" oninput="render()"/></div><div class="field"><label>URL</label><input id="ql2-url" oninput="render()"/></div></div>
-          <div class="ql-card"><div class="ql-card-header">Link 3</div><div class="field"><label>Title</label><input id="ql3-title" oninput="render()"/></div><div class="field"><label>Subtitle</label><input id="ql3-sub" oninput="render()"/></div><div class="field"><label>Button Text</label><input id="ql3-btn" oninput="render()"/></div><div class="field"><label>URL</label><input id="ql3-url" oninput="render()"/></div></div>
+          <div class="ql-card"><div class="ql-card-header">Link 1</div><div class="field"><label for="ql1-title">Title</label><input id="ql1-title" oninput="render()"/></div><div class="field"><label for="ql1-sub">Subtitle</label><input id="ql1-sub" oninput="render()"/></div><div class="field"><label for="ql1-btn">Button Text</label><input id="ql1-btn" oninput="render()"/></div><div class="field"><label for="ql1-url">URL</label><input id="ql1-url" oninput="render()"/></div></div>
+          <div class="ql-card"><div class="ql-card-header">Link 2</div><div class="field"><label for="ql2-title">Title</label><input id="ql2-title" oninput="render()"/></div><div class="field"><label for="ql2-sub">Subtitle</label><input id="ql2-sub" oninput="render()"/></div><div class="field"><label for="ql2-btn">Button Text</label><input id="ql2-btn" oninput="render()"/></div><div class="field"><label for="ql2-url">URL</label><input id="ql2-url" oninput="render()"/></div></div>
+          <div class="ql-card"><div class="ql-card-header">Link 3</div><div class="field"><label for="ql3-title">Title</label><input id="ql3-title" oninput="render()"/></div><div class="field"><label for="ql3-sub">Subtitle</label><input id="ql3-sub" oninput="render()"/></div><div class="field"><label for="ql3-btn">Button Text</label><input id="ql3-btn" oninput="render()"/></div><div class="field"><label for="ql3-url">URL</label><input id="ql3-url" oninput="render()"/></div></div>
         </div>
       </div>
       <div id="tab-design" class="tab-panel">
@@ -584,27 +608,27 @@
           <div class="section-divider"></div>
           <div class="field"><label for="email-width">Email width</label><select id="email-width" onchange="render()"><option value="600">600 px · Brevo default</option><option value="680" selected>680 px · Balanced</option><option value="760">760 px · Wide</option></select><div class="theme-mode-note">Desktop maximum; the email fills the available width on mobile. Brevo supports HTML templates from 600 to 800 px.</div></div>
           <div class="section-divider"></div>
-          <div class="field"><label>Issue Bar Text</label><input id="issue-bar-text" oninput="render()" placeholder="Biweekly Newsletter · May 2026"/></div>
+          <div class="field"><label for="issue-bar-text">Issue Bar Text</label><input id="issue-bar-text" oninput="render()" placeholder="Biweekly Newsletter · May 2026"/></div>
           <div class="section-divider"></div>
-          <div class="field"><label>Footer Org Name</label><input id="footer-name" oninput="render()"/></div>
-          <div class="field"><label>Footer Address Line</label><input aria-describedby="footer-address-review" id="footer-addr" oninput="render()"/><p id="footer-address-review" class="calendar-status">Secretary: verify the official chapter mailing address before saving organization defaults or sending. Keep the readiness warning until a verified postal address is entered.</p></div>
+          <div class="field"><label for="footer-name">Footer Org Name</label><input id="footer-name" oninput="render()"/></div>
+          <div class="field"><label for="footer-addr">Footer Address Line</label><input aria-describedby="footer-address-review" id="footer-addr" oninput="render()"/><p id="footer-address-review" class="calendar-status">Secretary: verify the official chapter mailing address before saving organization defaults or sending. Keep the readiness warning until a verified postal address is entered.</p></div>
         </div>
       </div>
       <div id="tab-settings" class="tab-panel">
         <div class="editor-card">
-          <div class="field"><label>Email Subject Line</label><input id="s-subject" maxlength="120" placeholder="ASME OSU Newsletter — May 2026" oninput="render()"/><div id="subject-count" class="count-line">0 / 65 recommended</div></div>
-          <div class="field"><label>Preheader Text <span style="font-weight:400;opacity:1;">(preview line in inbox)</span></label><input id="s-preheader" maxlength="180" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/><div id="preheader-count" class="count-line">0 / 100 recommended</div></div>
+          <div class="field"><label for="s-subject">Email Subject Line</label><input id="s-subject" maxlength="120" placeholder="ASME OSU Newsletter — May 2026" oninput="render()"/><div id="subject-count" class="count-line">0 / 65 recommended</div></div>
+          <div class="field"><label for="s-preheader">Preheader Text <span style="font-weight:400;opacity:1;">(preview line in inbox)</span></label><input id="s-preheader" maxlength="180" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/><div id="preheader-count" class="count-line">0 / 100 recommended</div></div>
           <div class="section-divider"></div>
           <details class="settings-disclosure"><summary>Organization defaults</summary>
           <div style="font:11px/1.5 Arial,sans-serif;color:var(--ink-muted);margin-bottom:10px;">These branding and contact values can be saved once for every new issue on this browser.</div>
-          <div class="field"><label>Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/></div>
-          <div class="field"><label>Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/></div>
-          <div class="field"><label>Website URL</label><input id="s-website" oninput="render()"/></div>
-          <div class="field"><label>Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
-          <div class="field"><label>Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
-          <div class="field"><label>LinkedIn URL</label><input id="s-li-url" oninput="render()" placeholder="https://linkedin.com/company/..."/></div>
-          <div class="field"><label>GroupMe Invite URL</label><input id="s-gm-url" oninput="render()" placeholder="https://groupme.com/join_group/..."/></div>
-          <div class="field"><label>Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
+          <div class="field"><label for="s-logo">Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/></div>
+          <div class="field"><label for="s-logo-light">Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/></div>
+          <div class="field"><label for="s-website">Website URL</label><input id="s-website" oninput="render()"/></div>
+          <div class="field"><label for="s-ig-url">Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
+          <div class="field"><label for="s-ig-handle">Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
+          <div class="field"><label for="s-li-url">LinkedIn URL</label><input id="s-li-url" oninput="render()" placeholder="https://linkedin.com/company/..."/></div>
+          <div class="field"><label for="s-gm-url">GroupMe Invite URL</label><input id="s-gm-url" oninput="render()" placeholder="https://groupme.com/join_group/..."/></div>
+          <div class="field"><label for="s-unsub">Unsubscribe Variable</label><input id="s-unsub" oninput="render()"/></div>
           <div style="display:flex;gap:6px;margin-top:10px;"><button class="btn btn-blue btn-sm" onclick="saveOrganizationDefaults()" style="flex:1;">Save as Defaults</button><button class="btn btn-ghost btn-sm" onclick="restoreAsmeDefaults()" style="flex:1;">Restore ASME Defaults</button></div>
           <div class="section-divider"></div>
           </details>
@@ -629,12 +653,12 @@
         <div class="editor-card">
           <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:10px;line-height:1.5;">Save the current issue as a reusable template. Stored in your browser.</div>
           <div class="field-row" style="margin-bottom:8px;">
-            <div class="field" style="margin-bottom:0;"><label>Template Name</label><input id="template-name-input" placeholder="e.g. Spring GBM Format"/></div>
+            <div class="field" style="margin-bottom:0;"><label for="template-name-input">Template Name</label><input id="template-name-input" placeholder="e.g. Spring GBM Format"/></div>
             <div style="display:flex;align-items:flex-end;"><button class="btn btn-blue" style="white-space:nowrap;" onclick="saveTemplate()">Save</button></div>
           </div>
           <div style="display:flex;gap:6px;">
             <button class="btn btn-ghost btn-sm" onclick="exportTemplates()" style="flex:1;">Export .json</button>
-            <label class="btn btn-ghost btn-sm" style="flex:1;cursor:pointer;text-align:center;">Import .json<input type="file" accept=".json" onchange="importTemplates(event)" style="display:none;"/></label>
+            <button type="button" class="btn btn-ghost btn-sm" style="flex:1;cursor:pointer;text-align:center;" onclick="document.getElementById('import-templates-file').click()">Import .json</button><input id="import-templates-file" type="file" accept=".json" onchange="importTemplates(event)" hidden/>
           </div>
         </div>
         <div class="template-list" id="template-list"></div>
@@ -644,7 +668,7 @@
           <div style="font-family:Arial,sans-serif;font-size:12px;color:#a8c4e0;margin-bottom:10px;line-height:1.5;">Export the current issue so another officer can import it and continue editing.</div>
           <div class="draft-actions">
             <button class="btn btn-blue" onclick="exportDraft()">Export Draft .json</button>
-            <label class="btn btn-ghost" style="cursor:pointer;text-align:center;">Import Draft .json<input type="file" accept=".json,application/json" onchange="importDraft(event)" style="display:none;"/></label>
+            <button type="button" class="btn btn-ghost" style="cursor:pointer;text-align:center;" onclick="document.getElementById('import-draft-file').click()">Import Draft .json</button><input id="import-draft-file" type="file" accept=".json,application/json" onchange="importDraft(event)" hidden/>
             <button class="btn btn-ghost" onclick="restorePreviousDraft()">Undo Last Major Change</button>
           </div>
         </div>
@@ -762,6 +786,7 @@ function restoreAsmeDefaults(){
 }
 
 window.onload=function(){
+  initializeSectionTabs();
   updateBuilderShortcutVisibility();
   document.getElementById("feat-title").value="Industry Night: Meet Top Engineering Employers";
   document.getElementById("feat-date").value="Thursday, May 29th \u00b7 6:00\u20138:30 PM";
@@ -868,11 +893,29 @@ document.addEventListener("click",function(event){
 });
 document.addEventListener("keydown",function(event){if(event.key==="Escape"){closeToolbarMenus(true);if(isFullscreen)toggleFullscreen();}});
 
+function initializeSectionTabs(){
+  var tabs=Array.from(document.querySelectorAll('.tab-btn'));
+  tabs.forEach(function(tab,index){
+    tab.id='section-tab-'+index;tab.tabIndex=tab.classList.contains('active')?0:-1;
+    var panel=document.getElementById(tab.getAttribute('aria-controls'));
+    panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);
+    tab.addEventListener('keydown',function(event){
+      var next=index;
+      if(event.key==='ArrowRight')next=(index+1)%tabs.length;
+      else if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;
+      else if(event.key==='Home')next=0;
+      else if(event.key==='End')next=tabs.length-1;
+      else return;
+      event.preventDefault();var target=tabs[next];switchTab(target.getAttribute('aria-controls').slice(4),target);target.focus();
+    });
+  });
+}
+
 function switchTab(name,btn){
   document.querySelectorAll(".tab-panel").forEach(function(p){p.classList.remove("active");});
-  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false");});
+  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");b.setAttribute("aria-selected","false");b.tabIndex=-1;});
   document.getElementById("tab-"+name).classList.add("active");
-  btn.classList.add("active"); btn.setAttribute("aria-selected","true");
+  btn.classList.add("active"); btn.setAttribute("aria-selected","true");btn.tabIndex=0;
   document.getElementById("section-select").value=name;
 }
 function switchTabByName(name){
@@ -910,12 +953,28 @@ function toggleFeatButton(){
   render();
 }
 
+var eventExpansion={};
+function allocateEventId(){
+  var used=new Set(events.map(function(event){return event.id;}));
+  if(!Number.isSafeInteger(nextId)||nextId<100||nextId>=Number.MAX_SAFE_INTEGER-1)nextId=100;
+  while(used.has(nextId)){
+    nextId++;
+    if(nextId>=Number.MAX_SAFE_INTEGER-1)nextId=100;
+  }
+  var id=nextId;nextId++;return id;
+}
 function addEvent(){
   backupCurrentDraft("Before adding event");
-  events.push({id:nextId++,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
-  renderEventList(); render();
+  var addedId=allocateEventId();eventExpansion[addedId]=true;
+  events.push({id:addedId,date:"MON DD",title:"New Event",time:"",location:"",description:"Event description goes here.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:"",showLink:false,linkUrl:"",linkText:"Learn More"});
+  renderEventList(); render();document.getElementById("event-"+addedId+"-title").focus();
 }
-function removeEvent(id){backupCurrentDraft("Before removing event");events=events.filter(function(e){return e.id!==id;});renderEventList();renderCalendarList();render();}
+function removeEvent(id){
+  var index=events.findIndex(function(e){return e.id===id;});
+  backupCurrentDraft("Before removing event");events=events.filter(function(e){return e.id!==id;});delete eventExpansion[id];renderEventList();renderCalendarList();render();
+  var next=events[Math.min(index,events.length-1)];
+  var target=next?document.getElementById("event-"+next.id+"-summary"):document.querySelector('[onclick="addEvent()"]');if(target)target.focus();
+}
 function moveEvent(id,dir){
   var idx=events.findIndex(function(e){return e.id===id;});
   if(dir==="up"&&idx===0) return; if(dir==="down"&&idx===events.length-1) return;
@@ -945,12 +1004,21 @@ function eventWarnings(event){
   return{duplicate:duplicate,conflict:conflict};
 }
 function sortEventsChronologically(showNotice){
-  if(events.length<2)return;
   if(showNotice)backupCurrentDraft("Before sorting events");
   events=events.map(function(event,index){return{event:event,index:index};}).sort(function(a,b){var diff=eventDateValue(a.event)-eventDateValue(b.event);return Number.isNaN(diff)||diff===0?a.index-b.index:diff;}).map(function(item){return item.event;});
   renderEventList();render();
 }
-function sortAfterEventEdit(){if(autoSortEvents)sortEventsChronologically(false);else renderEventList();}
+var eventEditRefreshTimer,eventPointerActive=false,pendingEventRefresh=null;
+document.addEventListener('pointerdown',function(){eventPointerActive=true;},true);
+function finishEventPointer(){eventPointerActive=false;if(pendingEventRefresh!==null){var sort=pendingEventRefresh;pendingEventRefresh=null;sortAfterEventEdit(sort);}}
+document.addEventListener('pointerup',finishEventPointer,true);
+document.addEventListener('pointercancel',finishEventPointer,true);
+function sortAfterEventEdit(sortByDate){
+  // Let Tab and pointer activation finish before replacing their destination.
+  clearTimeout(eventEditRefreshTimer);
+  if(eventPointerActive){pendingEventRefresh=sortByDate!==false;return;}
+  eventEditRefreshTimer=setTimeout(function(){if(autoSortEvents&&sortByDate!==false)sortEventsChronologically(false);else renderEventList();},0);
+}
 function syncAutoSortButton(){var btn=document.getElementById("auto-sort-toggle");if(btn){btn.textContent=autoSortEvents?"On":"Off";btn.className="btn btn-toggle "+(autoSortEvents?"on":"off")+" btn-sm";btn.setAttribute("aria-pressed",String(autoSortEvents));}}
 function toggleAutoSort(){autoSortEvents=!autoSortEvents;try{localStorage.setItem("asme_nl_auto_sort",String(autoSortEvents));}catch(error){}syncAutoSortButton();if(autoSortEvents)sortEventsChronologically(true);}
 function toggleEventLink(id){
@@ -964,14 +1032,24 @@ function toggleEventImg(id){
 
 function renderEventList(){
   var list=document.getElementById("event-list");
+  var active=document.activeElement,focusId=list.contains(active)?active.id:null;
+  var selection=focusId&&typeof active.selectionStart==='number'?[active.selectionStart,active.selectionEnd]:null;
+  list.querySelectorAll('details[data-event-id]').forEach(function(card){eventExpansion[card.dataset.eventId]=card.open;});
   document.getElementById("event-count").textContent=events.length+" event"+(events.length!==1?"s":"");
   list.innerHTML=events.map(function(ev,i){
     var eventType=EVENT_TYPES[ev.eventType]?ev.eventType:"event";
     var warnings=eventWarnings(ev);
     var calendarSource=calendarFeedLoaded&&ev.sourceEventId?findCalendarEventForImported(ev):null;
     var calendarUpdate=calendarSource&&calendarImportNeedsUpdate(ev,calendarSource);
-    var calendarMissing=calendarFeedLoaded&&ev.sourceEventId&&!calendarSource;
-    return '<div class="editor-card" style="margin-bottom:10px;">'+
+    var sourceStatus=calendarSourceStatus(ev);
+    var calendarMissing=sourceStatus==="missing";
+    var calendarUnverified=sourceStatus==="unavailable"||sourceStatus==="outside-coverage";
+    var sourceStatusLabel=sourceStatus==="outside-coverage"?"Outside Calendar coverage":sourceStatus==="unavailable"?"Calendar not verified":"";
+    var open=Object.prototype.hasOwnProperty.call(eventExpansion,ev.id)?eventExpansion[ev.id]:i===0;
+    var status=calendarUpdate?'Calendar update available':calendarMissing?'No longer on Calendar':calendarUnverified?sourceStatusLabel:ev.sourceEventId?'From Calendar':'Manual event';
+    if(warnings.duplicate)status+=' · Possible duplicate';if(warnings.conflict)status+=' · Schedule conflict';
+    return '<details class="editor-card event-editor" data-event-id="'+ev.id+'"'+(open?' open':'')+' ontoggle="eventExpansion[this.dataset.eventId]=this.open">'+
+      '<summary id="event-'+ev.id+'-summary"><span class="event-summary-title">'+escHtml(ev.title||'Untitled event')+'</span><span class="event-summary-meta">'+escHtml([ev.date,ev.time].filter(Boolean).join(' · '))+'</span><span class="event-summary-status">'+escHtml(status)+'</span></summary><div class="event-editor-body">'+
       '<div class="row">'+
         '<div class="row-gap">'+
           '<button class="btn btn-ghost btn-sm" aria-label="Move event up" onclick="moveEvent('+ev.id+',\'up\')"'+(i===0?' disabled':'')+'>&#8593;</button>'+
@@ -982,7 +1060,8 @@ function renderEventList(){
           '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">Remove</button>'+
         '</div>'+
       '</div>'+
-      ((ev.sourceEventId||warnings.duplicate||warnings.conflict)?'<div style="margin:-3px 0 9px;">'+(calendarUpdate?'<span class="warning-badge">Calendar update available</span> ':calendarMissing?'<span class="warning-badge">No longer on Calendar</span> ':ev.sourceEventId?'<span class="source-badge">Synced from Calendar</span> ':'')+(warnings.duplicate?'<span class="warning-badge">Possible duplicate</span>':'')+(warnings.conflict?'<span class="warning-badge">Schedule conflict</span>':'')+'</div>':'')+
+      ((ev.sourceEventId||warnings.duplicate||warnings.conflict)?'<div style="margin:-3px 0 9px;">'+(calendarUpdate?'<span class="warning-badge">Calendar update available</span> ':calendarMissing?'<span class="warning-badge">No longer on Calendar</span> ':calendarUnverified?'<span class="source-badge">'+sourceStatusLabel+'</span> ':ev.sourceEventId?'<span class="source-badge">Synced from Calendar</span> ':'')+(warnings.duplicate?'<span class="warning-badge">Possible duplicate</span>':'')+(warnings.conflict?'<span class="warning-badge">Schedule conflict</span>':'')+'</div>':'')+
+      ((calendarMissing||calendarUnverified)?'<button class="btn btn-ghost btn-sm" onclick="keepCalendarEvent('+ev.id+')" style="margin-bottom:10px;">Keep newsletter copy</button>':'')+
       '<div class="field"><label>Event Type</label><div class="preset-row">'+
         Object.keys(EVENT_TYPES).map(function(key){
           var type=EVENT_TYPES[key],selected=key===eventType;
@@ -993,7 +1072,7 @@ function renderEventList(){
         '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" oninput="updateEvent('+ev.id+',\'date\',this.value)" onchange="sortAfterEventEdit()" placeholder="MAY 28"/></div>'+
         '<div class="field"><label>Time</label><input value="'+escHtml(ev.time)+'" oninput="updateEvent('+ev.id+',\'time\',this.value)" onchange="sortAfterEventEdit()" placeholder="6:00 PM"/></div>'+
       '</div>'+
-      '<div class="field"><label>Event Title</label><input value="'+escHtml(ev.title)+'" oninput="updateEvent('+ev.id+',\'title\',this.value)" onchange="renderEventList()"/></div>'+
+      '<div class="field"><label>Event Title</label><input value="'+escHtml(ev.title)+'" oninput="updateEvent('+ev.id+',\'title\',this.value)" onchange="sortAfterEventEdit(false)"/></div>'+
       '<div class="field"><label>Location</label><input value="'+escHtml(ev.location)+'" oninput="updateEvent('+ev.id+',\'location\',this.value)" placeholder="Hitchcock 035"/></div>'+
       '<div class="field"><label>Description</label><textarea oninput="updateEvent('+ev.id+',\'description\',this.value)">'+escHtml(ev.description)+'</textarea></div>'+
       '<div class="img-toggle-row">'+
@@ -1007,10 +1086,10 @@ function renderEventList(){
         '</div>':"")+
       '<div class="field" style="margin-top:10px;"><label>Accent Color</label>'+
         '<div class="accent-row">'+
-          '<div class="accent-opt c-blue '+(ev.accent==="blue"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'blue\')">Blue</div>'+
-          '<div class="accent-opt c-red '+(ev.accent==="red"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'red\')">Red</div>'+
-          '<div class="accent-opt c-green '+(ev.accent==="green"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'green\')">Green</div>'+
-          '<div class="accent-opt c-gold '+(ev.accent==="gold"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'gold\')">Gold</div>'+
+          '<button type="button" class="accent-opt c-blue '+(ev.accent==="blue"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'blue\')">Blue</button>'+
+          '<button type="button" class="accent-opt c-red '+(ev.accent==="red"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'red\')">Red</button>'+
+          '<button type="button" class="accent-opt c-green '+(ev.accent==="green"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'green\')">Green</button>'+
+          '<button type="button" class="accent-opt c-gold '+(ev.accent==="gold"?"selected":"")+'" onclick="updateEvent('+ev.id+',\'accent\',\'gold\')">Gold</button>'+
         '</div>'+
       '</div>'+
       '<div class="section-divider" style="margin:10px 0;"></div>'+
@@ -1023,9 +1102,26 @@ function renderEventList(){
           '<div class="field"><label>Button Text</label><input value="'+escHtml(ev.linkText||'Learn More')+'" oninput="updateEvent('+ev.id+',\'linkText\',this.value)" placeholder="RSVP, Sign Up, Learn More..."/></div>'+
           '<div class="field"><label>URL</label><input value="'+escHtml(ev.linkUrl)+'" oninput="updateEvent('+ev.id+',\'linkUrl\',this.value)" placeholder="https://..."/></div>'+
         '</div>':"")+
-    '</div>';
+    '</div></details>';
   }).join("");
+  list.querySelectorAll('[data-event-id]').forEach(function(card){
+    var id=card.dataset.eventId;
+    card.querySelectorAll('input,textarea').forEach(function(input){
+      var match=(input.getAttribute('oninput')||'').match(/updateEvent\([^,]+,'([^']+)'/);
+      if(!match)return;input.id='event-'+id+'-'+match[1];
+      var label=input.closest('.field').querySelector('label');if(label)label.htmlFor=input.id;
+    });
+    card.querySelectorAll('button').forEach(function(button,index){var action=(button.getAttribute('onclick')||String(index)).replace(/[^a-zA-Z0-9]+/g,'-');button.id='event-'+id+'-action-'+action;});
+    card.querySelectorAll('.img-toggle-row').forEach(function(row){var button=row.querySelector('button');button.setAttribute('aria-label','Include '+row.querySelector('span').textContent.toLowerCase()+' for '+(events.find(function(ev){return String(ev.id)===id;}).title||'untitled event'));});
+    card.querySelectorAll('.accent-opt').forEach(function(button){button.setAttribute('aria-pressed',String(button.classList.contains('selected')));button.setAttribute('aria-label',button.textContent+' accent color');});
+    card.querySelectorAll('.field > label').forEach(function(label){if(!label.htmlFor){var group=label.nextElementSibling;if(group){label.id='event-'+id+'-group-'+Array.from(card.querySelectorAll('.field > label')).indexOf(label);group.setAttribute('role','group');group.setAttribute('aria-labelledby',label.id);}}});
+  });
+  if(focusId){var replacement=document.getElementById(focusId);if(!replacement){var eventId=focusId.match(/^event-(\d+)-/);if(eventId)replacement=document.getElementById('event-'+eventId[1]+'-summary');}if(replacement){var card=replacement.closest('details');if(card)card.open=true;if(replacement.disabled&&card)replacement=card.querySelector('summary');replacement.focus({preventScroll:true});if(selection&&typeof replacement.setSelectionRange==='function')replacement.setSelectionRange(selection[0],selection[1]);}}
 }
+function expandAllEvents(){
+  document.querySelectorAll('#event-list details').forEach(function(card){card.open=true;eventExpansion[card.dataset.eventId]=true;});
+}
+
 
 function g(id){var el=document.getElementById(id);return el?el.value:"";}
 function escHtml(s){return Core.escapeHtml(s);}
@@ -1052,29 +1148,46 @@ function calendarDateParts(event){
 }
 
 function closestCalendarMatch(items,targetStart,getStart){
-  if(items.length===1)return items[0];
   var target=new Date(targetStart).getTime();if(Number.isNaN(target))return null;
-  var closest=null,closestDistance=Number.POSITIVE_INFINITY;
-  items.forEach(function(item){var time=new Date(getStart(item)).getTime(),distance=Math.abs(time-target);if(!Number.isNaN(time)&&distance<closestDistance){closest=item;closestDistance=distance;}});
-  return closestDistance<=48*60*60*1000?closest:null;
+  var plausible=items.filter(function(item){var time=new Date(getStart(item)).getTime();return !Number.isNaN(time)&&Math.abs(time-target)<=48*60*60*1000;});
+  // Ambiguous replacements need a new import rather than silently choosing another occurrence.
+  return plausible.length===1?plausible[0]:null;
 }
 
 function findCalendarEventForImported(imported){
   var exact=calendarAllEvents.find(function(source){return source.id===imported.sourceEventId;});if(exact)return exact;
   var key=Core.calendarEventSourceKey(imported.sourceEventId);if(!key)return null;
-  var candidates=calendarAllEvents.filter(function(source){return Core.calendarEventSourceKey(source)===key;});
-  return closestCalendarMatch(candidates,imported.sourceStart,function(source){return source.start;});
+  var candidates=calendarAllEvents.filter(function(source){return !source.recurring&&Core.calendarEventSourceKey(source)===key&&!events.some(function(other){return other.sourceEventId===source.id;});});
+  var match=closestCalendarMatch(candidates,imported.sourceStart,function(source){return source.start;});
+  if(!match)return null;
+  var unmatched=events.filter(function(other){return other.sourceEventId&&Core.calendarEventSourceKey(other.sourceEventId)===key&&!calendarAllEvents.some(function(source){return source.id===other.sourceEventId;});});
+  return closestCalendarMatch(unmatched,match.start,function(other){return other.sourceStart;})===imported?match:null;
 }
 
 function findImportedEventForCalendar(source){
   var exact=events.find(function(imported){return imported.sourceEventId===source.id;});if(exact)return exact;
-  var key=Core.calendarEventSourceKey(source);if(!key)return null;
-  var candidates=events.filter(function(imported){return imported.sourceEventId&&Core.calendarEventSourceKey(imported.sourceEventId)===key;});
-  return closestCalendarMatch(candidates,source.start,function(imported){return imported.sourceStart;});
+  if(source.recurring)return null;
+  return events.find(function(imported){return imported.sourceEventId&&findCalendarEventForImported(imported)===source;})||null;
 }
 
 function calendarImportNeedsUpdate(imported,source){
-  return imported.sourceEventId!==source.id||imported.sourceStart!==source.start||String(imported.sourceUpdated||"")!==String(source.updated||"");
+  var effective=Object.assign({},source,{url:calendarIsFictional?"":source.url||calendarSourceUrl});
+  return imported.sourceEventId!==source.id||imported.sourceStart!==source.start||String(imported.sourceUpdated||"")!==String(source.updated||"")||Boolean(imported.sourceFingerprint&&imported.sourceFingerprint!==Core.calendarEventFingerprint(effective));
+}
+
+function calendarSourceStatus(imported){
+  if(!imported.sourceEventId)return "manual";
+  if(!calendarFeedLoaded||calendarLoadPending||calendarLoadNotice.indexOf("failed")>=0||calendarIsFictional)return "unavailable";
+  if(findCalendarEventForImported(imported))return "current";
+  var feed=calendarCurrentFeed||{},start=Date.parse(imported.sourceStart),from=Date.parse(feed.windowStart),to=Date.parse(feed.windowEnd);
+  if(!Number.isFinite(start)||!Number.isFinite(from)||!Number.isFinite(to))return "unavailable";
+  return start>=from&&start<to?"missing":"outside-coverage";
+}
+
+function keepCalendarEvent(id){
+  var imported=events.find(function(event){return event.id===id;});if(!imported)return;
+  imported.sourceEventId="";imported.sourceStart="";imported.sourceUpdated="";imported.sourceFingerprint="";
+  renderEventList();renderCalendarList();render();autoSave();
 }
 
 function updateCalendarSyncButton(){
@@ -1102,7 +1215,7 @@ function applyCalendarPreview(readInput){
     var coverage=calendarIsFictional?"":calendarCurrentFeed&&calendarCurrentFeed.windowStart&&calendarCurrentFeed.windowEnd?" Snapshot coverage "+calendarCurrentFeed.windowStart.slice(0,10)+" through "+calendarCurrentFeed.windowEnd.slice(0,10)+"; dates outside this range are unavailable.":" Snapshot coverage is not supplied; use Open Calendar to confirm missing dates.";
     status.textContent=calendarLoadNotice+(calendarIsFictional?"FICTIONAL REHEARSAL — no Google events. ":"Chapter generated snapshot. ")+calendarEvents.length+" event"+(calendarEvents.length===1?"":"s")+" for "+(calendarPreviewYear||"upcoming dates")+(generated&&!Number.isNaN(generated.getTime())?" · generated "+generated.toLocaleString():"")+(calendarCurrentFeed&&calendarCurrentFeed.checkedAt?" · source checked "+calendarCurrentFeed.checkedAt:"")+" · read "+new Date().toLocaleString()+". Refresh rereads JSON; it does not fetch Google live."+coverage;
     document.getElementById("clear-fictional-calendar").hidden=!calendarIsFictional;
-    renderCalendarList();renderEventList();document.getElementById("calendar-list").setAttribute("aria-busy",String(calendarLoadPending));
+    renderCalendarList();renderEventList();renderReadiness();document.getElementById("calendar-list").setAttribute("aria-busy",String(calendarLoadPending));
   }catch(error){status.textContent=error.message;}
 }
 
@@ -1163,10 +1276,11 @@ function importCalendarEvent(index){
   var imported=findImportedEventForCalendar(source);
   if(imported){if(calendarImportNeedsUpdate(imported,source))updateCalendarEvent(index);return;}
   var sourceWithUrl=Object.assign({},source,{url:calendarIsFictional?"":source.url||calendarSourceUrl});
-  events.push(Core.calendarEventToNewsletter(sourceWithUrl,nextId++,calendarTimeZone));
+  var importedId=allocateEventId();eventExpansion[importedId]=true;
+  events.push(Core.calendarEventToNewsletter(sourceWithUrl,importedId,calendarTimeZone));
   if(autoSortEvents)sortEventsChronologically(false);
   renderEventList();renderCalendarList();render();autoSave();switchTabByName("events");
-  document.getElementById("editor").scrollTop=document.getElementById("editor").scrollHeight;
+  document.getElementById("event-"+importedId+"-title").focus();
 }
 
 function applyCalendarUpdate(imported,source){
@@ -1422,19 +1536,49 @@ function generateHTML(){
 
 
 /* ── AUTO-SAVE ── */
-var autoSaveTimer=null;
-function autoSave(){
-  clearTimeout(autoSaveTimer);
-  autoSaveTimer=setTimeout(function(){
-    try{
-      var state=collectState();
-      localStorage.setItem("asme_nl_draft",JSON.stringify(state));
-      var ind=document.getElementById("save-indicator");
-      ind.textContent="\u2713 Saved";ind.classList.add("saved");
-      setTimeout(function(){ind.textContent="\u25cf Auto-saved";ind.classList.remove("saved");},1800);
-    }catch(e){}
-  },800);
+var autoSaveTimer=null, draftSavePending=false, draftSaveError=false;
+function setSaveStatus(status){
+  var indicator=document.getElementById("save-indicator");
+  indicator.textContent={pending:"Unsaved changes",saving:"Saving…",saved:"✓ Saved",error:"Could not save"}[status];
+  indicator.classList.toggle("saved",status==="saved");
+  indicator.dataset.status=status;
 }
+function showStorageWarning(message){
+  var warning=document.getElementById("storage-warning");
+  warning.hidden=false;
+  document.getElementById("storage-warning-message").textContent=message;
+}
+function flushDraftSave(){
+  clearTimeout(autoSaveTimer);autoSaveTimer=null;
+  if(!draftSavePending&&!draftSaveError)return true;
+  setSaveStatus("saving");
+  try{
+    localStorage.setItem("asme_nl_draft",JSON.stringify(collectState()));
+    draftSavePending=false;draftSaveError=false;setSaveStatus("saved");
+    // A backup warning is independent of the current draft's autosave status.
+    if(document.getElementById("storage-warning").dataset.reason!=="backup")document.getElementById("storage-warning").hidden=true;
+    return true;
+  }catch(error){
+    draftSavePending=true;draftSaveError=true;setSaveStatus("error");
+    document.getElementById("storage-warning").dataset.reason="save";
+    showStorageWarning("Your latest changes are only in this tab. Browser storage could not save them. Export a draft before leaving, or retry saving.");
+    return false;
+  }
+}
+function autoSave(){
+  clearTimeout(autoSaveTimer);draftSavePending=true;
+  if(!draftSaveError)setSaveStatus("pending");
+  autoSaveTimer=setTimeout(flushDraftSave,800);
+}
+window.addEventListener("pagehide",flushDraftSave);
+window.addEventListener("beforeunload",function(event){
+  if(!flushDraftSave()){event.preventDefault();event.returnValue="";}
+});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")flushDraftSave();});
+document.addEventListener("click",function(event){
+  var link=event.target.closest&&event.target.closest("a[href]");
+  if(link&&!link.hasAttribute("download"))flushDraftSave();
+},true);
 
 function collectState(){
   return{
@@ -1491,13 +1635,20 @@ function restoreDraft(){
 }
 
 function backupCurrentDraft(reason){
+  var previousSaved=false;
   try{
     var entry={reason:reason||"Before change",savedAt:new Date().toISOString(),state:Core.sanitizeState(collectState())};
-    localStorage.setItem("asme_nl_previous_draft",JSON.stringify(entry));
+    localStorage.setItem("asme_nl_previous_draft",JSON.stringify(entry));previousSaved=true;
     var revisions=getRevisions(),signature=JSON.stringify(entry.state);
     if(!revisions.length||JSON.stringify(revisions[0].state)!==signature){revisions.unshift(entry);localStorage.setItem("asme_nl_revisions",JSON.stringify(revisions.slice(0,20)));}
     renderRevisionHistory();
-  }catch(error){console.warn("Draft backup failed:",error);}
+    return true;
+  }catch(error){
+    console.warn("Draft backup failed:",error);
+    document.getElementById("storage-warning").dataset.reason="backup";
+    showStorageWarning(previousSaved?"Your previous draft snapshot was saved, but revision history could not be updated. Use Undo Last Major Change in Templates for recovery.":"A recovery snapshot could not be saved. Export your current draft before replacing or removing content if you need a backup.");
+    return previousSaved;
+  }
 }
 
 function getRevisions(){try{var revisions=JSON.parse(localStorage.getItem("asme_nl_revisions")||"[]");return Array.isArray(revisions)?revisions:[];}catch(error){return[];}}
@@ -1533,9 +1684,10 @@ function importDraft(ev){
   reader.onload=function(event){
     try{
       var state=Core.readDraftDocument(event.target.result);
-      backupCurrentDraft("Before importing draft");
+      var backedUp=backupCurrentDraft("Before importing draft");
+      if(!backedUp&&!confirm("A recovery snapshot could not be saved. Export your current draft first if you need it. Import anyway?"))return;
       applyState(state);autoSave();
-      alert("Draft imported. Your previous draft can be restored from the Templates tab.");
+      alert(backedUp?"Draft imported. Your previous draft can be restored from the Templates tab.":"Draft imported without a recovery snapshot of the previous draft.");
     }catch(error){alert("Draft import failed: "+error.message);}
   };
   reader.readAsText(file);ev.target.value="";
@@ -1547,9 +1699,9 @@ function restorePreviousDraft(){
     if(!raw){alert("No previous draft backup is available yet.");return;}
     var backup=JSON.parse(raw);
     if(!backup.state)throw new Error("Backup is invalid");
-    var current=Core.sanitizeState(collectState());
-    applyState(backup.state);
-    localStorage.setItem("asme_nl_previous_draft",JSON.stringify({reason:"Before restore",savedAt:new Date().toISOString(),state:current}));
+    var target=Core.sanitizeState(backup.state);
+    if(!backupCurrentDraft("Before restore")&&!confirm("A recovery snapshot could not be saved. Restore anyway?"))return;
+    applyState(target);
     autoSave();
   }catch(error){alert("Previous draft could not be restored: "+error.message);}
 }
@@ -1621,11 +1773,13 @@ function setFields(fields){
 }
 
 function applyTemplateState(state){
-  if(state.events) events=state.events.map(function(ev){
-    var copy=JSON.parse(JSON.stringify(ev));
-    copy.id=nextId++;
-    return copy;
-  });
+  if(state.events){
+    events=[];
+    state.events.forEach(function(ev){
+      var copy=JSON.parse(JSON.stringify(ev));
+      copy.id=allocateEventId();events.push(copy);
+    });
+  }
   showFeatured=state.showFeatured!==undefined?state.showFeatured:true;
   showAnnounce=state.showAnnounce!==undefined?state.showAnnounce:true;
   showLinks=state.showLinks!==undefined?state.showLinks:true;
@@ -1788,11 +1942,11 @@ function duplicateEvent(id){
   if(!ev) return;
   backupCurrentDraft("Before duplicating event");
   var clone=JSON.parse(JSON.stringify(ev));
-  clone.id=nextId++;
+  clone.id=allocateEventId();
   clone.title=clone.title+" (Copy)";
   var idx=events.findIndex(function(e){return e.id===id;});
-  events.splice(idx+1,0,clone);
-  renderEventList(); render(); autoSave();
+  events.splice(idx+1,0,clone);eventExpansion[clone.id]=true;
+  renderEventList(); render(); autoSave();document.getElementById("event-"+clone.id+"-title").focus();
 }
 
 /* ── EVENT PRESETS ── */
@@ -1856,6 +2010,11 @@ function getReadinessChecks(){
     if(event.showLink&&!Core.safeUrl(event.linkUrl))add(false,"Event "+(index+1)+" has an invalid button URL","Use an http:// or https:// link, or turn the button off.");
     if(event.showImg&&(!Core.safeUrl(event.imgUrl)||!event.imgAlt.trim()))add(false,"Event "+(index+1)+" image needs attention","Use a valid image URL and meaningful alt text.");
   });
+  var calendarImports=events.filter(function(event){return event.sourceEventId;});
+  var missingSources=calendarImports.filter(function(event){return calendarSourceStatus(event)==="missing";});
+  var uncheckedSources=calendarImports.filter(function(event){return ["unavailable","outside-coverage"].indexOf(calendarSourceStatus(event))>=0;});
+  if(missingSources.length)add(false,missingSources.length+" imported event(s) no longer on Calendar","Review Events, then remove the event or choose Keep newsletter copy to retain it independently.");
+  if(uncheckedSources.length)add(false,uncheckedSources.length+" calendar source(s) could not be verified","Refresh the chapter snapshot. For dates outside snapshot coverage, confirm on Calendar or keep the newsletter copy independently.");
   var duplicateCount=events.filter(function(event){return eventWarnings(event).duplicate;}).length;
   var conflictCount=events.filter(function(event){return eventWarnings(event).conflict;}).length;
   if(duplicateCount)add(false,"Possible duplicate events detected","Review the warning badges in Events before sending.");
@@ -1902,12 +2061,19 @@ function showReadinessChecklist(copyMode){
   }).join("");
 
   var hasIssues=issues.some(function(i){return!i.ok;});
-  document.getElementById("checklist-title").textContent=hasIssues?"Check Before Copying":"Checks Passed";
+  document.getElementById("checklist-title").textContent=copyMode?(hasIssues?"Check Before Copying":"Checks Passed"):"Newsletter Readiness";
   document.getElementById("checklist-subtitle").textContent=hasIssues?
     "A few things may need attention before this newsletter is sent.":
     "Everything looks ready. Run the network link checker too if you have not already.";
   document.getElementById("checklist-primary").textContent=copyMode?"Copy and go to Brevo":"Close";
   document.getElementById("checklist-copy-only").hidden=!copyMode;
+  document.getElementById("checklist-back").textContent=copyMode?"Go Back & Fix":"Back to editing";
+  var subject=g("s-subject").trim(),preheader=g("s-preheader").trim();
+  document.getElementById("checklist-copy-guidance").hidden=!copyMode||(!subject&&!preheader);
+  document.getElementById("checklist-copy-guidance").open=false;
+  document.getElementById("checklist-subject-value").value=subject;
+  document.getElementById("checklist-preheader-value").value=preheader;
+  document.getElementById("checklist-copy-status").textContent="";
   document.getElementById("checklist-modal").classList.add("open");
   lastFocusedBeforeModal=document.activeElement;
   var toolbar=lastFocusedBeforeModal&&lastFocusedBeforeModal.closest(".toolbar-menu");
@@ -1967,9 +2133,22 @@ function showSubjectToast(){
 
 function copySubject(){
   var subj=g("s-subject");
-  if(navigator.clipboard) navigator.clipboard.writeText(subj);
-  else{var ta=document.createElement("textarea");ta.value=subj;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);}
-  document.getElementById("subject-toast").style.display="none";
+  copyTextSafely(subj,function(){
+    document.getElementById("checklist-copy-status").textContent="Subject copied. Your final copy action will put the newsletter HTML on the clipboard.";
+    document.getElementById("subject-toast").style.display="none";
+  },function(){copyGuidanceError("subject");});
+}
+function copyPreheader(){
+  copyTextSafely(g("s-preheader"),function(){document.getElementById("checklist-copy-status").textContent="Preheader copied. Your final copy action will put the newsletter HTML on the clipboard.";},function(){copyGuidanceError("preheader");});
+}
+function copyGuidanceError(field){
+  var message="Could not copy the "+field+". Select its text and copy it manually.";
+  document.getElementById("checklist-copy-status").textContent=message;
+  if(!document.getElementById("checklist-modal").classList.contains("open"))alert(message);
+}
+function copyTextSafely(text,onSuccess,onFailure){
+  function fallback(){try{fallbackCopy(text,onSuccess,onFailure);}catch(error){onFailure();}}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(onSuccess).catch(fallback);else fallback();}catch(error){fallback();}
 }
 
 function doCopy(goToBrevo){
@@ -1979,10 +2158,12 @@ function doCopy(goToBrevo){
     btn.textContent="\u2713 Copied!";btn.classList.add("success");
     setTimeout(function(){btn.textContent="Copy HTML for Brevo";btn.classList.remove("success");},2200);
     showSubjectToast();
-    if(goToBrevo)window.location.assign("https://app.brevo.com/campaigns/listing");
+    if(goToBrevo){
+      if(flushDraftSave())window.location.assign("https://app.brevo.com/campaigns/listing");
+      else alert("HTML copied. Your draft could not be saved, so the builder stayed open. Export a draft backup before leaving.");
+    }
   };
-  if(navigator.clipboard){navigator.clipboard.writeText(html).then(done).catch(function(){fallbackCopy(html,done);});}
-  else{fallbackCopy(html,done);}
+  copyTextSafely(html,done,function(){alert("Copy was blocked. Please try again using Copy HTML only before opening Brevo.");});
 }
 
 
@@ -1990,10 +2171,10 @@ function doCopy(goToBrevo){
 function confirmNewIssue(){
   if(!confirm("Start a fresh issue? This will clear the current draft. Your saved templates will stay.")) return;
   backupCurrentDraft("Before starting new issue");
-  localStorage.removeItem("asme_nl_draft");
+  // The replacement draft is autosaved below; do not remove the last saved copy first.
   // Reset to defaults
   events=[
-    {id:nextId++,date:"MON DD",title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
+    {id:allocateEventId(),date:"MON DD",title:"Event Name",time:"6:00 PM",location:"Hitchcock Hall",description:"Brief description of the event.",eventType:"event",accent:"blue",showImg:false,imgUrl:"",imgAlt:""},
   ];
   showFeatured=true; showAnnounce=true; showLinks=true; showFeatImg=false; showFeatButton=true;
   activeTheme="light";
@@ -2059,7 +2240,7 @@ function copyHTML(){
   if(navigator.clipboard){navigator.clipboard.writeText(html).then(done).catch(function(){fallbackCopy(html,done);});}
   else{fallbackCopy(html,done);}
 }
-function fallbackCopy(text,cb){var ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;opacity:0;";document.body.appendChild(ta);ta.select();var copied=document.execCommand("copy");document.body.removeChild(ta);if(copied)cb();else alert("Copy was blocked. Please try again using Copy HTML only before opening Brevo.");}
+function fallbackCopy(text,cb,onFailure){var ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;opacity:0;";document.body.appendChild(ta);try{ta.select();var copied=document.execCommand("copy");}finally{document.body.removeChild(ta);}if(copied)cb();else if(onFailure)onFailure();else alert("Copy was blocked. Please try again using Copy HTML only before opening Brevo.");}
 function downloadHTML(){
   var html=generateHTML(),blob=new Blob([html],{type:"text/html"}),a=document.createElement("a");
   a.href=URL.createObjectURL(blob);a.download="asme-osu-newsletter.html";a.click();
@@ -2092,9 +2273,16 @@ function downloadHTML(){
   <div class="modal" tabindex="-1">
     <h2 id="checklist-title" tabindex="-1">Ready to Send?</h2>
     <p class="modal-sub" id="checklist-subtitle">Quick check before copying your HTML to Brevo.</p>
-    <div id="checklist-items"></div>
+    <div id="checklist-items" tabindex="0" role="region" aria-label="Newsletter checks"></div>
+    <details id="checklist-copy-guidance" hidden>
+      <summary>Subject and inbox preview for Brevo</summary>
+      <p class="calendar-status">Set these in Brevo before pasting the HTML. The final copy action below always copies the newsletter HTML.</p>
+      <div class="field"><label for="checklist-subject-value">Subject</label><input id="checklist-subject-value" readonly><button class="btn btn-ghost" type="button" onclick="copySubject()">Copy subject</button></div>
+      <div class="field"><label for="checklist-preheader-value">Inbox preview</label><input id="checklist-preheader-value" readonly><button class="btn btn-ghost" type="button" onclick="copyPreheader()">Copy inbox preview</button></div>
+      <p id="checklist-copy-status" class="calendar-status" role="status"></p>
+    </details>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeChecklist()">Go Back &amp; Fix</button>
+      <button class="btn btn-ghost" id="checklist-back" onclick="closeChecklist()">Go Back &amp; Fix</button>
       <button class="btn btn-ghost" id="checklist-copy-only" onclick="proceedCopy(false)">Copy HTML only</button>
       <button class="btn btn-red" id="checklist-primary" onclick="proceedCopy(true)">Copy and go to Brevo</button>
     </div>
