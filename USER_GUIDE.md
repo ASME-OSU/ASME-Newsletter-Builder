@@ -96,3 +96,6 @@ Secretary: verify the official chapter postal/mailing address under Design befor
 Use **Edit** and **Preview** in the header to switch views. Each view keeps its scroll position, and switching never resets your draft. Choose a section from **Editing section**; content, calendar tools, templates, and setup are grouped there. On a wide desktop, the editor and preview appear side by side.
 
 Open **Export** for Copy HTML for Brevo or Download .html. Open **Tools** for the ASME Hub, Brevo, New Issue, and help. Expand **Readiness** for checks and link validation. Organization defaults and academic-year rehearsal controls are expandable to keep routine editing focused.
+
+
+The dedicated **Brevo** button opens your campaign list in a new tab. In the copy checklist, **Copy and go to Brevo** copies the newsletter and then opens Brevo in the current tab; your browser draft remains saved. Choose **Copy HTML only** to stay in the builder. The checklist always opens at the heading, with its actions visible while the checks scroll.

@@ -195,13 +195,42 @@ test("toolbar disclosures close predictably and checklist returns focus to the v
     copy.click();
     assert.equal(exports.open, false);
     assert.equal(document.getElementById("checklist-modal").classList.contains("open"), true);
-    await waitFor(() => document.activeElement === document.getElementById("checklist-primary"));
+    await waitFor(() => document.activeElement === document.getElementById("checklist-title"));
+    assert.equal(document.getElementById("checklist-items").scrollTop, 0);
+    assert.equal(document.getElementById("checklist-primary").textContent, "Copy and go to Brevo");
+    document.getElementById("checklist-items").scrollTop = 350;
+    window.closeChecklist();
+    copy.click();
+    await waitFor(() => document.activeElement === document.getElementById("checklist-title"));
+    assert.equal(document.getElementById("checklist-items").scrollTop, 0);
     window.closeChecklist();
     assert.equal(document.getElementById("checklist-modal").classList.contains("open"), false);
     assert.equal(document.activeElement, exports.querySelector("summary"));
   } finally {
     window.close();
   }
+});
+
+test("copy-only keeps the builder open and Brevo action delegates only from copy mode", async () => {
+  const { window } = await responsiveFixture();
+  try {
+    let copied = "";
+    Object.defineProperty(window.navigator, "clipboard", { value: { writeText: async (html) => { copied = html; } }, configurable: true });
+    window.doCopy(false);
+    await waitFor(() => window.document.getElementById("copy-btn").textContent.includes("Copied"));
+    assert.match(copied, /<!doctype html>/i);
+    assert.equal(window.location.hostname, "isolated.invalid");
+    let destination = null;
+    window.doCopy = (goToBrevo) => { destination = goToBrevo; };
+    window.showReadinessChecklist(true);
+    window.document.getElementById("checklist-primary").click();
+    assert.equal(destination, true);
+    assert.equal(window.document.getElementById("checklist-modal").classList.contains("open"), false);
+    destination = null;
+    window.showReadinessChecklist(false);
+    window.document.getElementById("checklist-primary").click();
+    assert.equal(destination, null);
+  } finally { window.close(); }
 });
 
 function waitFor(predicate, timeout = 2000) {
@@ -283,11 +312,11 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
 
   const topLinks = window.document.querySelectorAll(".top-link-btn");
   assert.equal(topLinks.length, 3);
-  assert.equal(topLinks[0].textContent.trim(), "ASME Hub ↗");
-  assert.equal(topLinks[0].href, "https://asme-osu.github.io/ASME-HUB/");
-  assert.equal(topLinks[1].textContent.trim(), "Brevo ↗");
-  assert.equal(topLinks[1].href, "https://app.brevo.com/campaigns/listing");
-  assert.equal(topLinks[2].textContent.trim(), "Builder ↗");
+  assert.equal(topLinks[0].textContent.trim(), "Brevo");
+  assert.equal(topLinks[0].href, "https://app.brevo.com/campaigns/listing");
+  assert.equal(topLinks[1].textContent.trim(), "ASME Hub");
+  assert.equal(topLinks[1].href, "https://asme-osu.github.io/ASME-HUB/");
+  assert.equal(topLinks[2].textContent.trim(), "Builder");
   assert.equal(topLinks[2].href, "https://asme-osu.github.io/ASME-Newsletter-Builder/");
   for (const link of topLinks) {
     assert.equal(link.target, "_blank");
