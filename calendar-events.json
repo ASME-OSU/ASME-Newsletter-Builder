@@ -1,26 +1,13 @@
 {
-  "generatedAt": "2026-10-23T22:08:09.524Z",
-  "checkedAt": "2026-10-23T22:08:09.524Z",
-  "windowStart": "2026-10-16T22:08:09.494Z",
+  "generatedAt": "2026-10-24T05:50:30.254Z",
+  "checkedAt": "2026-10-24T05:50:30.254Z",
+  "windowStart": "2026-10-17T05:50:30.232Z",
   "windowEnd": "2029-08-01T00:00:00.000Z",
   "calendarId": "c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba@group.calendar.google.com",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "6b6r3vahedesilnk814v81q811@google.com::2026-10-15T00:00:00.000Z",
-      "recurring": false,
-      "recurrenceId": "",
-      "title": "Autumn Break - no classes, offices open",
-      "start": "2026-10-15T00:00:00.000Z",
-      "end": "2026-10-17T00:00:00.000Z",
-      "allDay": true,
-      "location": "",
-      "description": "",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-07-09T22:51:31.000Z"
-    },
     {
       "id": "5n4j886meo63ojjrbue0b56i19@google.com::2026-10-19T00:00:00.000Z",
       "recurring": false,
@@ -342,7 +329,7 @@
       "end": "2027-01-14T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -368,7 +355,7 @@
       "end": "2027-01-21T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -394,7 +381,7 @@
       "end": "2027-01-28T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -407,7 +394,7 @@
       "end": "2027-02-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -420,7 +407,7 @@
       "end": "2027-02-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -433,7 +420,7 @@
       "end": "2027-02-18T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -446,7 +433,7 @@
       "end": "2027-02-25T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -498,7 +485,7 @@
       "end": "2027-03-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -511,7 +498,7 @@
       "end": "2027-03-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -550,7 +537,7 @@
       "end": "2027-03-18T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -563,7 +550,7 @@
       "end": "2027-03-25T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -576,7 +563,7 @@
       "end": "2027-04-01T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -589,7 +576,7 @@
       "end": "2027-04-08T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -602,7 +589,7 @@
       "end": "2027-04-15T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -615,7 +602,7 @@
       "end": "2027-04-22T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -654,7 +641,7 @@
       "end": "2027-04-29T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
