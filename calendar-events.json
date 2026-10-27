@@ -1,26 +1,13 @@
 {
-  "generatedAt": "2026-10-26T23:09:34.733Z",
-  "checkedAt": "2026-10-26T23:09:34.733Z",
-  "windowStart": "2026-10-19T23:09:34.717Z",
+  "generatedAt": "2026-10-27T02:04:12.783Z",
+  "checkedAt": "2026-10-27T02:04:12.783Z",
+  "windowStart": "2026-10-20T02:04:12.750Z",
   "windowEnd": "2029-08-01T00:00:00.000Z",
   "calendarId": "c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba@group.calendar.google.com",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "5n4j886meo63ojjrbue0b56i19@google.com::2026-10-19T00:00:00.000Z",
-      "recurring": false,
-      "recurrenceId": "",
-      "title": "Second-session classes begin",
-      "start": "2026-10-19T00:00:00.000Z",
-      "end": "2026-10-20T00:00:00.000Z",
-      "allDay": true,
-      "location": "",
-      "description": "",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-07-09T22:51:54.000Z"
-    },
     {
       "id": "cgqu1b7nqiesqn2bf0s1gg7jki_R20260924T213000@google.com::2026-10-29T21:30:00.000Z",
       "recurring": true,
@@ -329,7 +316,7 @@
       "end": "2027-01-14T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -355,7 +342,7 @@
       "end": "2027-01-21T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -381,7 +368,7 @@
       "end": "2027-01-28T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -394,7 +381,7 @@
       "end": "2027-02-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -407,7 +394,7 @@
       "end": "2027-02-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -420,7 +407,7 @@
       "end": "2027-02-18T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -433,7 +420,7 @@
       "end": "2027-02-25T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -485,7 +472,7 @@
       "end": "2027-03-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -498,7 +485,7 @@
       "end": "2027-03-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -537,7 +524,7 @@
       "end": "2027-03-18T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -550,7 +537,7 @@
       "end": "2027-03-25T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -563,7 +550,7 @@
       "end": "2027-04-01T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -576,7 +563,7 @@
       "end": "2027-04-08T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -589,7 +576,7 @@
       "end": "2027-04-15T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -602,7 +589,7 @@
       "end": "2027-04-22T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -641,7 +628,7 @@
       "end": "2027-04-29T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
+      "description": "Matlab info session",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
