@@ -1,26 +1,13 @@
 {
-  "generatedAt": "2026-10-29T21:48:31.049Z",
-  "checkedAt": "2026-10-29T21:48:31.049Z",
-  "windowStart": "2026-10-22T21:48:31.033Z",
+  "generatedAt": "2026-10-30T01:57:05.167Z",
+  "checkedAt": "2026-10-30T01:57:05.167Z",
+  "windowStart": "2026-10-23T01:57:05.136Z",
   "windowEnd": "2029-08-01T00:00:00.000Z",
   "calendarId": "c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba@group.calendar.google.com",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "cgqu1b7nqiesqn2bf0s1gg7jki_R20260924T213000@google.com::2026-10-29T21:30:00.000Z",
-      "recurring": true,
-      "recurrenceId": "2026-10-29T21:30:00.000Z",
-      "title": "ASME Scheduling/BuckeyeLink Tour",
-      "start": "2026-10-22T21:30:00.000Z",
-      "end": "2026-10-22T22:30:00.000Z",
-      "allDay": false,
-      "location": "Scott Laboratory E141",
-      "description": "Scheduling / Buckeye link tour",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-10-18T22:23:54.000Z"
-    },
     {
       "id": "51ktvdb5pj9l342194d7ance14@google.com::2026-10-23T22:30:00.000Z",
       "recurring": false,
@@ -33,19 +20,6 @@
       "description": "",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-10-18T22:24:48.000Z"
-    },
-    {
-      "id": "cgqu1b7nqiesqn2bf0s1gg7jki_R20260924T213000@google.com::2026-10-22T21:30:00.000Z",
-      "recurring": true,
-      "recurrenceId": "2026-10-22T21:30:00.000Z",
-      "title": "ASME Bridge Building Competition",
-      "start": "2026-10-29T21:30:00.000Z",
-      "end": "2026-10-29T22:30:00.000Z",
-      "allDay": false,
-      "location": "Scott Laboratory E141",
-      "description": "<p>Bridge Building + Lesson</p>",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-10-28T02:48:08.000Z"
     },
     {
       "id": "4o94ugad0fu7c42nu4j2huli1j@google.com::2026-11-02T00:00:00.000Z",
@@ -316,7 +290,7 @@
       "end": "2027-01-14T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -342,7 +316,7 @@
       "end": "2027-01-21T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -368,7 +342,7 @@
       "end": "2027-01-28T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -381,7 +355,7 @@
       "end": "2027-02-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -394,7 +368,7 @@
       "end": "2027-02-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -407,7 +381,7 @@
       "end": "2027-02-18T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -420,7 +394,7 @@
       "end": "2027-02-25T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -472,7 +446,7 @@
       "end": "2027-03-04T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -485,7 +459,7 @@
       "end": "2027-03-11T23:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -524,7 +498,7 @@
       "end": "2027-03-18T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -537,7 +511,7 @@
       "end": "2027-03-25T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -550,7 +524,7 @@
       "end": "2027-04-01T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -563,7 +537,7 @@
       "end": "2027-04-08T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -576,7 +550,7 @@
       "end": "2027-04-15T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -589,7 +563,7 @@
       "end": "2027-04-22T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
@@ -628,7 +602,7 @@
       "end": "2027-04-29T22:30:00.000Z",
       "allDay": false,
       "location": "Scott Laboratory E141",
-      "description": "Sweets with SWE",
+      "description": "Friendsgiving",
       "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
       "updated": "2026-09-11T15:09:34.000Z"
     },
