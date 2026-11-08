@@ -538,9 +538,6 @@
   </div>
   <div id="main">
     <div id="editor">
-      <div class="editor-nav-heading">
-        <span class="editor-nav-title">Newsletter sections</span>
-      </div>
       <div class="editor-context">
       <label class="section-picker" for="section-select"><span class="section-picker-label">Editing section</span>
         <select id="section-select" aria-label="Editing section" onchange="switchTabByName(this.value)">
@@ -551,6 +548,8 @@
       </label>
       <button type="button" class="mobile-readiness" id="mobile-readiness" onclick="openReadinessChecklist()" aria-label="Review newsletter readiness"><span id="mobile-readiness-count" aria-live="polite">Review</span></button>
       </div>
+      <section class="section-navigation" aria-labelledby="newsletter-sections-title">
+      <div class="editor-nav-heading"><h2 class="editor-nav-title" id="newsletter-sections-title"><svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Newsletter sections</span></h2></div>
       <div class="tabs" role="tablist" aria-label="Newsletter sections">
         <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-events" onclick="switchTab('events',this)">Events</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-calendar" onclick="switchTab('calendar',this)">Calendar</button>
@@ -561,9 +560,10 @@
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-settings" onclick="switchTab('settings',this)">Settings</button>
         <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-templates" onclick="switchTab('templates',this)">Templates</button>
       </div>
-      <details class="readiness-card">
-        <summary class="readiness-top"><span class="readiness-title">Readiness <span id="readiness-count" aria-live="polite"></span></span><span id="readiness-score">0%</span></summary>
-        <div class="readiness-track"><div id="readiness-fill"></div></div>
+      </section>
+      <details class="readiness-card" data-state="review">
+        <summary class="readiness-top"><span class="readiness-symbol"><svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5h11v16H4V5h2"/><rect x="8" y="3" width="8" height="4" rx="1"/><path d="m8 13 2 2 5-5"/></svg></span><span class="readiness-copy"><span class="readiness-title">Send readiness</span><span id="readiness-count" aria-live="polite"></span></span><span class="readiness-score-group"><span id="readiness-score">0%</span><span class="readiness-score-caption">passed</span></span></summary>
+        <div class="readiness-track" role="progressbar" aria-label="Readiness checks passed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="readiness-fill"></div></div>
         <div id="readiness-summary">Add content to see send-readiness guidance.</div>
         <div style="display:flex;gap:6px;"><button class="btn btn-ghost btn-sm" onclick="openReadinessChecklist()" style="flex:1;">View Checks</button><button class="btn btn-ghost btn-sm" onclick="checkAllLinks()" style="flex:1;">Check Links</button></div>
         <div id="link-check-results" class="link-results" role="status"></div>
@@ -744,7 +744,7 @@
     </div>
     <div id="preview-panel">
       <button id="fullscreen-exit" onclick="toggleFullscreen()">Exit Full Preview</button>
-      <div class="preview-tools"><div class="preview-label" style="margin:0;">Live Preview</div><div class="preview-mode-group" role="group" aria-label="Preview mode"><button id="preview-desktop-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="true" onclick="setPreviewMode('desktop')">Desktop</button><button id="preview-mobile-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="setPreviewMode('mobile')">Mobile</button><button id="preview-dark-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="toggleDarkSimulation()">Email dark mode</button></div></div>
+      <div class="preview-tools"><div class="preview-label" style="margin:0;">Live Preview</div><div class="preview-mode-group" role="group" aria-label="Preview mode"><div class="preview-device-group" role="group" aria-label="Device preview"><button id="preview-desktop-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="true" onclick="setPreviewMode('desktop')"><svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M12 16v5M8 21h8"/></svg><span id="preview-desktop-label">Desktop</span></button><button id="preview-mobile-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="setPreviewMode('mobile')"><svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 5h4M11 19h2"/></svg><span>Mobile</span></button></div><button id="preview-dark-btn" class="btn btn-ghost btn-sm preview-mode-btn" aria-pressed="false" onclick="toggleDarkSimulation()" title="Simulate email-client dark mode"><svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/></svg><span>Email dark mode</span></button></div></div>
       <div id="inbox-preview"><div class="inbox-from">Ohio State ASME</div><div id="inbox-subject" class="inbox-subject">Add a subject line</div><div id="inbox-preheader" class="inbox-preheader">Add preheader text in Settings</div></div>
       <div id="preview-shell"><div id="preview-inner"></div></div>
       <div class="tip-box">
@@ -924,7 +924,7 @@ var workspaceView="edit",workspaceScroll={edit:0,preview:0};
 var compactWorkspace=window.matchMedia("(max-width:1199px)");
 function syncWorkspace(){
   document.getElementById("app").dataset.workspaceView=workspaceView;
-  document.getElementById("preview-desktop-btn").textContent=compactWorkspace.matches?"Fit width":"Desktop";
+  document.getElementById("preview-desktop-label").textContent=compactWorkspace.matches?"Fit width":"Desktop";
   document.getElementById("workspace-edit").setAttribute("aria-pressed",String(workspaceView==="edit"));
   document.getElementById("workspace-preview").setAttribute("aria-pressed",String(workspaceView==="preview"));
   document.getElementById("topbar").inert=!!isFullscreen;
@@ -2105,10 +2105,14 @@ function renderReadiness(){
   var issues=getReadinessChecks(),score=readinessScore(issues),open=issues.filter(function(item){return!item.ok;});
   var scoreEl=document.getElementById("readiness-score"),fill=document.getElementById("readiness-fill"),summary=document.getElementById("readiness-summary");
   if(scoreEl)scoreEl.textContent=score+"%";
-  document.getElementById("mobile-readiness-count").textContent=open.length?open.length+" issue"+(open.length===1?"":"s"):"Ready";
-  document.getElementById("mobile-readiness").setAttribute("aria-label",score+"% ready. "+(open.length?open.length+" issues to review":"All readiness checks pass")+". Open checklist");
-  document.getElementById("readiness-count").textContent=open.length?"· "+open.length+" to review":"· Ready";
-  if(fill){fill.style.width=score+"%";fill.style.background=score>=90?"#267044":score>=70?"#a87300":"#ba0c2f";}
+  document.getElementById("mobile-readiness-count").textContent=open.length?open.length+" to review":"Ready";
+  document.getElementById("mobile-readiness").setAttribute("aria-label",score+"% of readiness checks passed. "+(open.length?open.length+" items to review":"All readiness checks pass")+". Open checklist");
+  document.getElementById("readiness-count").textContent=open.length?open.length+" to review":"All checks passed";
+  var state=open.length?"review":"ready",card=document.querySelector(".readiness-card"),track=document.querySelector(".readiness-track");
+  if(card)card.dataset.state=state;
+  document.getElementById("mobile-readiness").dataset.state=state;
+  if(track){track.setAttribute("aria-valuenow",String(score));track.setAttribute("aria-valuetext",score+"% of readiness checks passed. "+(open.length?open.length+" items to review":"All checks passed"));}
+  if(fill)fill.style.width=score+"%";
   if(summary)summary.textContent=open.length?(open.length+" item"+(open.length===1?"":"s")+" need attention · "+open[0].label):"All live checks pass. Run the link checker before export.";
 }
 
