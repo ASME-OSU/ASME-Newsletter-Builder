@@ -90,6 +90,8 @@ Then open `http://localhost:8000`.
 
 - `index.html` — builder interface and email generator
 - `newsletter-core.js` — state validation, escaping, draft schema, and calendar mapping helpers
+- `assets/hub-theme.css` — shared ASME editor colors, typography, controls, and panels; email designs remain separate
+- `assets/fonts/` — bundled Inter and DM Serif Display fonts with their license files
 - `calendar-events.json` — generated public event feed used by the hosted builder
 - `scripts/sync-calendar.mjs` — Google iCal synchronization script
 - `test/` — Node tests for state, security, draft, and calendar behavior
