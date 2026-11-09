@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {JSDOM} from 'jsdom';
 import {loadBuilderHTML} from './helpers/load-builder.mjs';
-async function setup(){
+async function setup(compact=false){
  const dom=new JSDOM(loadBuilderHTML(),{url:'https://isolated.invalid/',runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){
-  w.matchMedia=()=>({matches:false,addEventListener(){}});w.HTMLElement.prototype.scrollIntoView=function(){};
+  w.matchMedia=()=>({matches:compact,addEventListener(){}});w.HTMLElement.prototype.scrollIntoView=function(){};
   w.confirm=()=>true;w.alert=()=>{};w.fetch=async()=>({ok:true,json:async()=>({events:[
    {id:'first',title:'Design workshop',start:'2099-11-01T23:00:00Z',location:'Scott Lab',description:'Practice CAD'},
    {id:'second',title:'Company visit',start:'2099-11-10T23:00:00Z',location:'Factory',description:'Meet engineers'}
@@ -72,5 +72,29 @@ test('optional announcement attribution is omitted cleanly in the preview and ex
   assert.doesNotMatch(w.generateHTML(),/— <strong[^>]*><\/strong>/);
   d.getElementById('ann-author').value='Chapter board';w.documentChanged();
   assert.match(d.querySelector('.pv-ann-author').textContent,/Chapter board/);assert.match(w.generateHTML(),/Chapter board/);
+ }finally{w.close();}
+});
+
+
+test('inbox shortcuts reach the correct editable field from phone preview without changing the draft',async()=>{
+ const w=await setup(true),d=w.document;try{
+  const before=JSON.stringify(w.collectState());
+  for(const [button,field] of [['inbox-subject','s-subject'],['inbox-preheader','s-preheader']]){
+   w.setWorkspaceView('preview');d.getElementById(button).click();
+   assert.equal(w.workspaceView,'edit');
+   assert.equal(d.getElementById('tab-settings').classList.contains('active'),true);
+   assert.equal(d.activeElement.id,field);
+   assert.equal(d.getElementById('editor').inert,false);
+  }
+  assert.equal(JSON.stringify(w.collectState()),before);
+ }finally{w.close();}
+});
+test('inbox shortcuts leave full preview before focusing Settings',async()=>{
+ const w=await setup(),d=w.document;try{
+  w.toggleFullscreen();assert.equal(w.isFullscreen,true);
+  d.getElementById('inbox-subject').click();
+  assert.equal(w.isFullscreen,false);assert.equal(d.activeElement.id,'s-subject');
+  d.getElementById('s-subject').value='September issue';w.render();
+  assert.equal(d.getElementById('inbox-subject').textContent,'September issue');
  }finally{w.close();}
 });

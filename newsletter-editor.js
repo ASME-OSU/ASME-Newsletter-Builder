@@ -122,11 +122,11 @@ window.onload=function(){
     var modal=document.querySelector(".modal-overlay.open");
     if(!modal)return;
     if(event.key==="Escape"){
-      if(modal.id==="info-modal")closeInfoDialog();else closeChecklist();
+      if(modal.id==="info-modal")closeInfoDialog();else if(modal.id==="next-issue-modal")closeNextIssue();else if(modal.id==="chat-digest-modal")closeChatDigest();else closeChecklist();
       return;
     }
     if(event.key==="Tab"){
-      var focusable=Array.prototype.slice.call(modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex]:not([tabindex="-1"])'));
+      var focusable=Array.prototype.slice.call(modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'));
       if(!focusable.length)return;
       var first=focusable[0],last=focusable[focusable.length-1];
       if(event.shiftKey&&(document.activeElement===first||!focusable.includes(document.activeElement))){event.preventDefault();last.focus();}
@@ -160,7 +160,7 @@ function buildThemeChips(){
   var selectedMode=activeTheme==="light"?"light":"navy";
   r.innerHTML=selectableThemes.map(function(k){
     var t=THEMES[k],selected=k===selectedMode;
-    return '<button type="button" class="theme-chip '+(selected?'selected':'')+'" aria-pressed="'+selected+'" onclick="setTheme(\''+k+'\')" style="background:'+t.headerBg+';color:'+t.title+';"><span class="theme-dot" style="background:'+t.accent+';"></span>'+t.name+'</button>';
+    return '<button type="button" class="theme-chip '+(selected?'selected':'')+'" aria-pressed="'+selected+'" onclick="setTheme(\''+k+'\')"><span class="theme-swatch" aria-hidden="true" style="background:'+t.headerBg+';border-top-color:'+t.accent+';"><i style="background:'+t.title+';"></i></span><span>'+t.name+'</span><svg class="theme-selection" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>';
   }).join("");
   var note=document.getElementById("theme-mode-note");
   if(note){
@@ -235,6 +235,12 @@ function switchTab(name,btn){
   btn.classList.add("active"); btn.setAttribute("aria-selected","true");btn.tabIndex=0;
   document.getElementById("section-select").value=name;
 }
+function editInboxField(field){
+  if(field!=="s-subject"&&field!=="s-preheader")return;
+  if(isFullscreen)toggleFullscreen();
+  setWorkspaceView("edit");switchTabByName("settings");
+  var target=document.getElementById(field);target.focus();target.scrollIntoView({block:"nearest"});
+}
 function switchTabByName(name){
   var btn=document.querySelector('.tab-btn[aria-controls="tab-'+name+'"]');
   if(btn) switchTab(name,btn);
@@ -304,7 +310,7 @@ function updateEvent(id,field,value){
   var ev=events.find(function(e){return e.id===id;});
   if(ev){
     if(field==="dateISO"){
-      ev.dateISO=Core.normalizeDateISO(value);
+      ev.dateISO=Core.normalizeDateISO(value);ev.endDateISO="";
       if(ev.dateISO){ev.date=new Date(ev.dateISO+"T12:00:00Z").toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).toUpperCase();var label=document.getElementById("event-"+id+"-date");if(label)label.value=ev.date;}
     }else{ev[field]=value;}
   }
@@ -412,7 +418,7 @@ function renderEventList(){
       '</div>'+
       (ev.showImg?
         '<div class="img-fields">'+
-          '<div class="field"><label>Image URL</label><input value="'+escHtml(ev.imgUrl)+'" data-field="imgUrl" oninput="updateEvent('+ev.id+',\'imgUrl\',this.value)" placeholder="https://..."/></div>'+
+          '<div class="field"><label>Image URL</label><input value="'+escHtml(ev.imgUrl)+'" data-field="imgUrl" oninput="updateEvent('+ev.id+',\'imgUrl\',this.value)" placeholder="https://..."/><p class="image-url-hint" data-image-hint="event-'+ev.id+'-imgUrl" hidden></p></div>'+
           '<div class="field"><label>Alt Text</label><input value="'+escHtml(ev.imgAlt)+'" data-field="imgAlt" oninput="updateEvent('+ev.id+',\'imgAlt\',this.value)" placeholder="Event photo"/></div>'+
         '</div>':"")+
       '<div class="field" style="margin-top:10px;"><label>Accent Color</label>'+
@@ -622,8 +628,8 @@ function renderLiveTools(){
   if(preheaderCount){preheaderCount.textContent=preheader.length+" / 100 recommended";preheaderCount.classList.toggle("warning",preheader.length>100);}
   var inboxSubject=document.getElementById("inbox-subject"),inboxPreheader=document.getElementById("inbox-preheader");
   if(inboxSubject)inboxSubject.textContent=subject||"Add a subject line";
-  if(inboxPreheader)inboxPreheader.textContent=preheader||"Add preheader text in Settings";
-  renderReadiness();
+  if(inboxPreheader)inboxPreheader.textContent=preheader||"Add inbox preview text";
+  renderReadiness();syncWorkflowHints();
 }
 
 function setPreviewMode(mode){
@@ -892,7 +898,7 @@ function useEventAsFeatured(id){
   if(g("feat-title").trim()&&!confirm("Replace the current featured event with this event? The original stays in Upcoming Events."))return;
   mutateDraft("Before replacing featured event",function(){
     showFeatured=true;featuredPractice=Boolean(event.practice)||/^fictional-/.test(event.sourceEventId||"");
-    var values={"feat-title":event.title,"feat-date":[event.date,event.time].filter(Boolean).join(" · "),"feat-location":event.location,"feat-desc":event.description,"feat-btn-text":event.linkText||"Learn More","feat-btn-url":event.linkUrl||"","feat-img-url":event.imgUrl||"","feat-img-alt":event.imgAlt||""};
+    var values={"feat-title":event.title,"feat-dateISO":event.dateISO||"","feat-date":[event.date,event.time].filter(Boolean).join(" · "),"feat-location":event.location,"feat-desc":event.description,"feat-btn-text":event.linkText||"Learn More","feat-btn-url":event.linkUrl||"","feat-img-url":event.imgUrl||"","feat-img-alt":event.imgAlt||""};
     Object.keys(values).forEach(function(key){document.getElementById(key).value=values[key];});
     showFeatImg=Boolean(event.showImg);showFeatButton=Boolean(event.showLink);applyState(collectState());
   });
@@ -957,6 +963,10 @@ function enabledNewsletterImages(){
 function getReadinessChecks(){
   var checks=NewsletterReadiness.check(collectState(),{activeLogo:getActiveLogoUrl(),calendarSourceStatus:calendarSourceStatus,eventWarnings:eventWarnings});
   enabledNewsletterImages().forEach(function(image){if(imageLoadResults[image.url]&&!imageLoadResults[image.url].ok)checks.push({ok:false,label:image.label+" could not load",detail:"Check the image URL or choose another image.",tab:image.tab,field:image.field,eventId:image.eventId});});
+  var logoHint=NewsletterWorkflows.imageHint(getActiveLogoUrl());
+  if(logoHint)checks.push({ok:false,label:"Logo may use a sharing-page URL",detail:logoHint,tab:"settings",field:activeTheme==="light"&&Core.safeUrl(g("s-logo-light"))?"s-logo-light":"s-logo",eventId:null});
+  checks=checks.concat(NewsletterWorkflows.planningChecks(collectState()));
+  enabledNewsletterImages().forEach(function(image){var hint=NewsletterWorkflows.imageHint(image.url);if(hint)checks.push({ok:false,label:image.label+" may use a sharing-page URL",detail:hint,tab:image.tab,field:image.field,eventId:image.eventId});});
   return checks;
 }
 function fixReadiness(index){
@@ -1015,6 +1025,8 @@ function showReadinessChecklist(copyMode){
   document.getElementById("checklist-copy-status").textContent="";
   document.getElementById("checklist-copy-status").hidden=true;
   document.querySelector(".checklist-body").scrollTop=0;
+  document.getElementById("html-copy-freshness").hidden=!copyMode;
+  if(copyMode)syncHTMLCopyStatus();
   document.getElementById("checklist-modal").classList.add("open");
   lastFocusedBeforeModal=document.activeElement;
   var toolbar=lastFocusedBeforeModal&&lastFocusedBeforeModal.closest(".toolbar-menu");
@@ -1093,7 +1105,8 @@ function doCopy(){
   btn.disabled=true;
   copyTextSafely(html,function(){
     btn.disabled=false;btn.focus({preventScroll:true});
-    exportStatus("HTML copied. Paste it into your campaign’s HTML editor in Brevo. This is a copy only; your newsletter has not been sent. Send yourself a test before sending to members.");
+    rememberHTMLCopy(html);
+    exportStatus(NewsletterWorkflows.fingerprint(html)===NewsletterWorkflows.fingerprint(generateHTML())?"HTML copied. Paste it into your campaign’s HTML editor in Brevo. This is a copy only; your newsletter has not been sent. Send yourself a test before sending to members.":"Earlier HTML copied. The newsletter changed while copying; use Copy updated HTML again before pasting into Brevo.");
   },function(){
     btn.disabled=false;btn.focus({preventScroll:true});
     exportStatus("HTML could not be copied. Try Copy HTML again, or use Export → Download .html and open the file to copy its source.");
@@ -1119,7 +1132,7 @@ function confirmNewIssue(){
     "feat-btn-text":"RSVP Now","feat-btn-url":"https://org.osu.edu/asme/calendar/",
     "ann-title":"From the Board","ann-quote":"","ann-author":"",
     "issue-bar-text":"Biweekly Newsletter · "+new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'}),
-    "s-subject":"","s-preheader":""
+    "s-subject":"","s-preheader":"","s-send-date":"","s-issue-from":"","s-issue-through":"","feat-dateISO":""
   };
   Object.keys(blanks).forEach(function(k){var el=document.getElementById(k);if(el)el.value=blanks[k];});
   applyOrganizationDefaults(getOrganizationDefaults());

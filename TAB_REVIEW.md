@@ -57,3 +57,31 @@ The copy dialog leads with review items and collapses passed checks. Fix buttons
 Copy HTML keeps the dialog open with a persistent, accessible success or failure message. Open Brevo is a separate link to a new tab, preserving the builder. The old temporary subject toast and combined copy/navigation action were removed. One scrolling body keeps the footer actions and result visible on phones.
 
 All 96 tests and HTML/asset/syntax checks pass. Clipboard success/failure, metadata replacing HTML, Fix routing, new-tab link behavior, and readiness-only mode are covered. Phone and desktop layouts were verified in the local browser. Changes remain local and unpublished.
+
+
+## Follow-up from the expanded visual review
+
+Implemented three focused improvements: separate theme swatches from selection styling, place phone Undo/Redo in the first toolbar row instead of a third row, and turn inbox subject/preheader text into field-specific Settings shortcuts. The phone Brevo launcher was removed from the header, with Open Brevo retained in Export. Shortcut navigation handles phone Preview and Full Preview without modifying draft content.
+
+All 98 tests and HTML/asset/syntax checks pass. Browser checks verified both theme selections, subject/preheader focus, the two-row phone header, and no horizontal overflow at 320px. Changes are local and have not been published.
+
+
+## Hub typography alignment
+
+Switched the UI back to locally hosted Inter, matching the live ASME Officer Hub, and retained DM Serif Display for headings. The font preload and cache version were updated. Browser verification confirmed Inter loads and is used by the editor and inbox preview. All 98 tests and HTML/asset/syntax checks pass. This font change and the three preceding visual-review improvements remain local and unpublished.
+
+
+## Additional officer workflows
+
+Added optional saved issue dates and date-aware readiness checks, explicit Calendar filtering by the saved range, recoverable next-issue preparation, persistent last-successful-HTML-copy comparison, a reviewed plain-text event digest, and inline sharing-page image guidance. The workflows are isolated in `newsletter-workflows.js`. Optional fields extend the existing draft format without making older drafts unreadable; loading older drafts clears missing planning fields. Calendar imports retain an inclusive end date for multi-day planning and handoff. Free-text dates are retained for manual review rather than guessed.
+
+Next-issue preparation requires a successful recovery copy and supports Undo/Redo. It starts from the current issue, preserves reusable branding/links, clears featured/inbox content, and retains the announcement switched off. No campaign is marked sent or sent automatically. Copy tracking changes only on successful HTML clipboard writes, survives dialog reopening, and detects edits made while copying.
+
+All 109 tests and HTML/asset/syntax checks pass, including failure paths, legacy handoff, multi-day dates, planning filters, digest safety, image guidance, export comparison and next-issue recovery. Local browser verification covered the desktop next-issue summary, create/Undo, digest copying and phone modal layout. Changes remain local and unpublished.
+
+
+## Sidebar density pass
+
+Reduced repeated card/field gaps, navigation/readiness padding and label spacing across the editor. Mouse-driven desktop forms use 36px controls and 13px text, while phones/touch inputs retain 44px targets and 16px input text. Desktop textareas remain at least 64px. The narrow-desktop header uses a smaller single-line brand and removes the redundant Brevo launcher; its link remains in Export. Guide/Tools use accessible icon labels at the narrowest tablet breakpoint.
+
+At a 1440×950 viewport, the same Featured sidebar measured 978px tall instead of 1236px (about 21% less), with the first field about 115px higher. At the 720px Chrome window, header height dropped from about 225px to 116px. All eight tabs were checked for horizontal overflow; phone inputs retained their original touch size. The HTML/asset/syntax checks pass. No document behavior or email rendering changed in this density pass. Changes remain local and unpublished.

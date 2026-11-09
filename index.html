@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="assets/newsletter-builder-badge.png">
   <title>ASME OSU — Newsletter Builder</title>
-  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=4.5.2">
-  <link rel="stylesheet" href="assets/hub-theme.css?v=4.5.2">
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=4.8.2">
+  <link rel="stylesheet" href="assets/hub-theme.css?v=4.8.2">
 
 </head>
 <body>
@@ -42,6 +42,8 @@
         <div class="toolbar-popover">
           <section class="tool-menu-group" aria-label="Issue actions"><h3>Issue actions</h3>
             <button id="new-issue-btn" class="btn btn-ghost" onclick="confirmNewIssue()" title="Start a fresh issue with a recovery copy">New Issue</button>
+            <button class="btn btn-ghost" type="button" onclick="openNextIssue()">Start next issue</button>
+            <button class="btn btn-ghost" type="button" onclick="openChatDigest()">Copy event digest</button>
             <button class="btn btn-ghost" type="button" onclick="reviewNewsletterLinks()">Check newsletter links</button>
           </section>
           <section class="tool-menu-group" aria-label="Related tools"><h3>Related tools</h3>
@@ -123,7 +125,7 @@
         <div class="calendar-toolbar"><label class="calendar-select-all"><input id="calendar-select-all" type="checkbox" onchange="toggleAllCalendarEvents(this.checked)" title="Select all unimported events shown">Select all</label><button id="calendar-import-selected" class="btn btn-blue btn-sm" onclick="importSelectedCalendarEvents()" disabled>Import selected</button><button id="calendar-clear-selection" class="btn btn-text btn-sm" onclick="calendarSelected.clear();renderCalendarList()" hidden>Clear selection</button></div>
         <div id="calendar-update-review" class="editor-card" hidden></div>
         <details id="calendar-source-details" class="settings-disclosure calendar-options"><summary>More filters &amp; tools</summary>
-        <section class="calendar-range" aria-labelledby="calendar-range-heading"><h3 id="calendar-range-heading">Issue date range <span>Optional</span></h3><div class="field-row"><div class="field"><label for="calendar-from">From</label><input type="date" id="calendar-from" onchange="applyCalendarPreview(false)"></div><div class="field"><label for="calendar-to">Through</label><input type="date" id="calendar-to" onchange="applyCalendarPreview(false)"></div></div><button class="btn btn-text btn-sm" onclick="clearCalendarFilters()">Clear filters</button></section>
+        <section class="calendar-range" aria-labelledby="calendar-range-heading"><h3 id="calendar-range-heading">Issue date range <span>Optional</span></h3><div class="field-row"><div class="field"><label for="calendar-from">From</label><input type="date" id="calendar-from" onchange="applyCalendarPreview(false)"></div><div class="field"><label for="calendar-to">Through</label><input type="date" id="calendar-to" onchange="applyCalendarPreview(false)"></div></div><button class="btn btn-text btn-sm" onclick="useIssueDatesInCalendar()">Use saved issue dates</button> <button class="btn btn-text btn-sm" onclick="clearCalendarFilters()">Clear filters</button></section>
         <section class="calendar-options-section"><h3>Academic year &amp; practice</h3>
         <div class="calendar-toolbar">
           <label for="calendar-preview-year">Academic year (August–July)</label>
@@ -139,7 +141,7 @@
         </details>
         <div id="calendar-list"></div>
       </div>
-      <div id="tab-featured" class="tab-panel"><p class="tab-help">Highlight an event at the top of the newsletter. <button class="btn btn-text btn-sm" onclick="browseFeatureEvents()">Choose from Events</button></p>
+      <div id="tab-featured" class="tab-panel"><p class="tab-help">Highlight an event. <button class="btn btn-text btn-sm" onclick="browseFeatureEvents()">Choose from Events</button></p>
         <div class="editor-card">
           <div class="row" style="margin-bottom:0;">
             <span style="font-family:var(--font-ui);font-size:13px;color:#d8e2ee;">Show Featured Event</span>
@@ -149,6 +151,7 @@
         <p id="featured-disabled-note" class="section-disabled-note" hidden>This section is off. Your content is kept for later.</p><fieldset aria-label="Featured content" id="featured-fields" class="editor-card">
           <div class="field"><label for="feat-title">Event Title</label><input id="feat-title" oninput="render()"/></div>
           <div class="field"><label for="feat-date">Date &amp; Time</label><input id="feat-date" oninput="render()"/></div>
+          <div class="field"><label for="feat-dateISO">Calendar date <span>(optional, for planning checks)</span></label><input id="feat-dateISO" type="date" onchange="render()"/></div>
           <div class="field"><label for="feat-location">Location</label><input id="feat-location" oninput="render()"/></div>
           <div class="field"><label for="feat-desc">Description</label><textarea id="feat-desc" oninput="render()"></textarea></div>
           <div class="img-toggle-row">
@@ -156,7 +159,7 @@
             <button id="toggle-feat-img" aria-label="Include featured image" class="btn btn-sm btn-toggle off" aria-pressed="false" onclick="toggleFeatImg()">Off</button>
           </div>
           <div id="feat-img-fields" class="img-fields" style="display:none;">
-            <div class="field"><label for="feat-img-url">Image URL</label><input id="feat-img-url" placeholder="https://..." oninput="render()"/></div>
+            <div class="field"><label for="feat-img-url">Image URL</label><input id="feat-img-url" aria-describedby="featured-image-hint" placeholder="https://..." oninput="render()"/><p id="featured-image-hint" class="image-url-hint" data-image-hint="feat-img-url" hidden></p></div>
             <div class="field"><label for="feat-img-alt">Alt Text</label><input id="feat-img-alt" placeholder="Event photo" oninput="render()"/></div>
           </div>
           <div class="section-divider"></div>
@@ -215,10 +218,15 @@
           <div class="field"><label for="s-subject">Email Subject Line</label><input id="s-subject" maxlength="120" placeholder="ASME OSU — Upcoming events" oninput="render()"/><div id="subject-count" class="count-line">0 / 65 recommended</div></div>
           <div class="field"><label for="s-preheader">Preheader Text <span style="font-weight:400;opacity:1;">(preview line in inbox)</span></label><input id="s-preheader" maxlength="180" placeholder="Your biweekly update from ASME at OSU..." oninput="render()"/><div id="preheader-count" class="count-line">0 / 100 recommended</div></div>
           <div class="section-divider"></div>
+          <details class="settings-disclosure" id="issue-planning"><summary>Issue dates <span>Optional</span></summary>
+            <p class="calendar-status">Save the planned send date and the dates this issue covers. These add review reminders; they do not schedule a send or hide Calendar events.</p>
+            <div class="field"><label for="s-send-date">Planned send date</label><input type="date" id="s-send-date" onchange="issueDatesChanged()"/></div>
+            <div class="field-row"><div class="field"><label for="s-issue-from">Covers from</label><input type="date" id="s-issue-from" onchange="issueDatesChanged()"/></div><div class="field"><label for="s-issue-through">Through</label><input type="date" id="s-issue-through" onchange="issueDatesChanged()"/></div></div>
+          </details>
           <details class="settings-disclosure"><summary>Organization defaults</summary>
           <div style="font:11px/1.5 var(--font-ui);color:var(--ink-muted);margin-bottom:10px;">These branding and contact values can be saved once for every new issue on this browser.</div>
-          <div class="field"><label for="s-logo">Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/></div>
-          <div class="field"><label for="s-logo-light">Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/></div>
+          <div class="field"><label for="s-logo">Dark Theme Logo URL</label><input id="s-logo" oninput="render()"/><p class="image-url-hint" data-image-hint="s-logo" hidden></p></div>
+          <div class="field"><label for="s-logo-light">Light Theme Logo URL</label><input id="s-logo-light" placeholder="Uses the dark-theme logo when empty" oninput="render()"/><p class="image-url-hint" data-image-hint="s-logo-light" hidden></p></div>
           <div class="field"><label for="s-website">Website URL</label><input id="s-website" oninput="render()"/></div>
           <div class="field"><label for="s-ig-url">Instagram URL</label><input id="s-ig-url" oninput="render()"/></div>
           <div class="field"><label for="s-ig-handle">Instagram Handle</label><input id="s-ig-handle" oninput="render()"/></div>
@@ -284,7 +292,7 @@
       <h2 class="sr-only">Newsletter preview</h2>
       <button id="fullscreen-exit" onclick="toggleFullscreen()">Exit Full Preview</button>
 
-      <div id="inbox-preview"><div class="inbox-from">Ohio State ASME</div><div id="inbox-subject" class="inbox-subject">Add a subject line</div><div id="inbox-preheader" class="inbox-preheader">Add preheader text in Settings</div></div>
+      <div id="inbox-preview"><div class="inbox-from">Ohio State ASME</div><button id="inbox-subject" class="inbox-subject" type="button" aria-label="Edit email subject" title="Edit email subject" onclick="editInboxField('s-subject')">Add a subject line</button><button id="inbox-preheader" class="inbox-preheader" type="button" aria-label="Edit inbox preview" title="Edit inbox preview" onclick="editInboxField('s-preheader')">Add inbox preview text</button></div>
       <div id="preview-shell"><div id="preview-inner"></div></div>
       <div class="tip-box">
         <strong>Brevo:</strong> Click <em>Copy HTML for Brevo</em> &rarr; New campaign &rarr; Design &rarr; Code your own &rarr; paste.<br>
@@ -295,22 +303,23 @@
     </div>
   </div>
 </div>
-<script src="newsletter-core.js?v=4.5.2"></script>
-<script src="newsletter-readiness.js?v=4.5.2"></script>
-<script src="newsletter-links.js?v=4.5.2"></script>
-<script src="newsletter-library.js?v=4.5.2"></script>
-<script src="newsletter-calendar.js?v=4.5.2"></script>
-<script src="newsletter-email.js?v=4.5.2"></script>
-<script src="newsletter-storage.js?v=4.5.2"></script>
-<script src="newsletter-layout.js?v=4.5.2"></script>
-<script src="newsletter-editor.js?v=4.5.2"></script>
+<script src="newsletter-core.js?v=4.8.2"></script>
+<script src="newsletter-workflows.js?v=4.8.2"></script>
+<script src="newsletter-readiness.js?v=4.8.2"></script>
+<script src="newsletter-links.js?v=4.8.2"></script>
+<script src="newsletter-library.js?v=4.8.2"></script>
+<script src="newsletter-calendar.js?v=4.8.2"></script>
+<script src="newsletter-email.js?v=4.8.2"></script>
+<script src="newsletter-storage.js?v=4.8.2"></script>
+<script src="newsletter-layout.js?v=4.8.2"></script>
+<script src="newsletter-editor.js?v=4.8.2"></script>
 
 <!-- INSTRUCTIONS MODAL -->
 <div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-subtitle">
   <div class="modal" tabindex="-1">
     <div class="info-heading"><h2 id="info-title" tabindex="-1"><svg class="guide-book-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6C9 3 5 3 2 4v15c4-1 7 0 10 2m0-15c3-3 7-3 10-2v15c-4-1-7 0-10 2V6z"/></svg><span>How to Use the Builder</span></h2><button type="button" class="info-dismiss" onclick="closeInfoDialog()">Close</button></div>
     <p class="modal-sub" id="info-subtitle">A new-officer guide to building, checking, and sending an ASME newsletter.</p>
-    <figure class="guide-overview"><img src="assets/guide-workflow.svg?v=4.5.2" alt="Choose calendar events, build your issue, then review and copy it to Brevo." width="960" height="210"></figure>
+    <figure class="guide-overview"><img src="assets/guide-workflow.svg?v=4.8.2" alt="Choose calendar events, build your issue, then review and copy it to Brevo." width="960" height="210"></figure>
     <ol class="info-steps">
 <li><span class="guide-step-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg></span><div><h3>Start with a layout</h3><p>Choose <strong>Templates</strong> for a starter layout, or <strong>Tools → New Issue</strong> for a fresh issue. Your draft saves automatically in this browser.</p></div></li>
 <li><span class="guide-step-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 11h18m-12 5 2 2 4-4"/></svg></span><div><h3>Choose your events</h3><p>Search <strong>Calendar</strong>, tick the events for this issue, then choose <strong>Import selected</strong>. <strong>Select all</strong> selects the events shown, excluding ones already imported. Date filters are under <strong>More filters &amp; tools</strong>.</p></div></li>
@@ -332,6 +341,7 @@
   <div class="modal" tabindex="-1">
     <h2 id="checklist-title" tabindex="-1">Ready to Send?</h2>
     <p class="modal-sub" id="checklist-subtitle">Quick check before copying your HTML to Brevo.</p>
+    <p id="html-copy-freshness" class="calendar-status"></p>
     <p id="checklist-copy-status" class="export-status" role="status" hidden></p>
     <div class="checklist-body">
     <div id="checklist-items" tabindex="0" role="region" aria-label="Newsletter checks"></div>
@@ -351,5 +361,19 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="next-issue-modal" role="dialog" aria-modal="true" aria-labelledby="next-issue-title">
+  <div class="modal workflow-modal"><h2 id="next-issue-title">Start next issue</h2><p class="modal-sub">Continue from this draft with a reviewable cleanup. Nothing is sent or marked as sent.</p>
+    <div class="workflow-body"><div class="field"><label for="next-send">Planned send date</label><input id="next-send" type="date" onchange="previewNextIssue()" required></div>
+    <div class="field-row"><div class="field"><label for="next-from">Covers from</label><input id="next-from" type="date" onchange="previewNextIssue()"></div><div class="field"><label for="next-through">Through</label><input id="next-through" type="date" onchange="previewNextIssue()"></div></div>
+    <p id="next-issue-summary" class="calendar-status" role="status"></p></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeNextIssue()">Cancel</button><button id="next-issue-apply" class="btn btn-blue" onclick="startNextIssue()">Create next issue</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="chat-digest-modal" role="dialog" aria-modal="true" aria-labelledby="chat-digest-title">
+  <div class="modal workflow-modal"><h2 id="chat-digest-title">Copy event digest</h2><p class="modal-sub">Review this plain-text message for GroupMe or another chat app. Edits here affect this copy only.</p>
+    <div class="workflow-body"><label for="chat-digest-text" class="sr-only">Event digest message</label><textarea id="chat-digest-text" rows="14"></textarea><p class="calendar-status">Check dates and practice content before sharing. Copying this replaces any HTML on your clipboard.</p><p id="chat-digest-status" class="calendar-status" role="status"></p></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeChatDigest()">Close</button><button class="btn btn-blue" onclick="copyChatDigest()">Copy message</button></div>
+  </div>
+</div>
 </body>
 </html>

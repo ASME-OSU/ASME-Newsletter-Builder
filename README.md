@@ -14,7 +14,7 @@ A static newsletter builder for creating ASME at Ohio State campaigns and copyin
 4. Watch the live readiness score and inbox preview while editing.
 5. Check the Desktop, Mobile, and Email dark mode previews, then run **Check Links**.
 6. Click **Export → Copy HTML for Brevo** and review the final checklist.
-7. In Brevo, choose **Design → Code your own**, paste the HTML, copy the subject line, and send a test email.
+7. Copy and paste the subject and inbox preview into Brevo first. Then copy HTML, paste it in **Design → Code your own**, and send a test email.
 
 The builder auto-saves in the current browser. Drafts are not automatically shared between computers.
 
@@ -115,7 +115,8 @@ Then open `http://localhost:8000`.
 - `newsletter-library.js` — named local issue storage
 - `assets/guide-workflow.svg` — original workflow illustration for the in-app guide
 - `assets/hub-theme.css` — latest shared ASME editor theme, with bundled fonts under `assets/fonts/`
-- The builder interface uses locally hosted Manrope (`@fontsource-variable/manrope` 5.2.8); its open font license is in `assets/fonts/MANROPE-OFL.txt`.
+- The builder interface uses locally hosted Inter to match the ASME Officer Hub; its open font license is in `assets/fonts/INTER-OFL.txt`. DM Serif Display remains the heading font.
+- `newsletter-workflows.js` — issue planning, next-issue preparation, copy freshness, event digest and image-link guidance
 - `newsletter-core.js` — state validation, escaping, draft schema, and calendar mapping helpers
 - `calendar-events.json` — generated public event feed used by the hosted builder
 - `scripts/sync-calendar.mjs` — Google iCal synchronization script
@@ -129,3 +130,16 @@ The preview accepts either a starting year such as `2027` or its complete academ
 ### Asset versions
 
 All script and stylesheet URLs in `index.html` share a release version. Bump it when shipping changed assets so returning browsers load a consistent release. The shared test fixture and HTML checks resolve the versioned URLs to local files.
+
+
+## Issue planning and repeat newsletters
+
+**Settings → Issue dates** optionally saves a planned send date and coverage range with the editable draft. Readiness highlights events ending before the planned send date, events outside the range, and dates that cannot be checked. Featured has an optional calendar date for the same review. Calendar’s existing date filters remain independent; choose **More filters & tools → Use saved issue dates** to apply the saved range explicitly.
+
+**Tools → Start next issue** shows a cleanup summary before replacing the current issue. It retains future/ongoing events and undated events requiring review, removes dated events ending before the new send date, preserves branding/design/quick links, clears the subject/preheader/featured content, and retains the announcement switched off. A recovery copy must succeed before applying, and toolbar Undo restores the prior issue. This starts from the current draft and does not mark a campaign as sent. Imported multi-day events retain an inclusive end date; manual dates without an end are treated as single-day events.
+
+The Brevo copy dialog reports whether its HTML has changed since the last successful copy on this browser. Copy failures and subject/message copying do not update that record. It does not verify that HTML was pasted into Brevo. The record contains only a compact content fingerprint and timestamp, not another copy of the newsletter.
+
+**Tools → Copy event digest** opens an editable plain-text message for review and manual pasting into a chat app. These message-only edits do not modify the draft. Unsafe links are omitted, practice content remains marked, and nothing is sent automatically.
+
+Image fields identify common Google Drive, Google Docs and Dropbox sharing-page URLs with inline guidance and readiness warnings. This is a URL-pattern hint, not proof that a remote image will or will not render; image loading and email tests remain separate checks.

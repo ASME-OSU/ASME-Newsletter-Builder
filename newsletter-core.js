@@ -12,7 +12,7 @@
     "ql1-title", "ql1-sub", "ql1-btn", "ql1-url", "ql2-title", "ql2-sub", "ql2-btn", "ql2-url",
     "ql3-title", "ql3-sub", "ql3-btn", "ql3-url", "issue-bar-text", "footer-name", "footer-addr",
     "s-logo", "s-logo-light", "s-website", "s-ig-url", "s-ig-handle", "s-li-url", "s-gm-url", "s-unsub",
-    "s-subject", "s-preheader", "email-width"
+    "s-subject", "s-preheader", "email-width", "s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"
   ];
 
   function asString(value, fallback) {
@@ -98,6 +98,7 @@
       id: id,
       date: asString(source.date),
       dateISO: normalizeDateISO(source.dateISO),
+      endDateISO: normalizeDateISO(source.endDateISO),
       practice: isPracticeEvent(source),
       title: asString(source.title, "Untitled Event"),
       time: asString(source.time),
@@ -136,7 +137,8 @@
   function sanitizeFields(fields) {
     var input = fields && typeof fields === "object" ? fields : {};
     return FIELD_IDS.reduce(function (output, id) {
-      if (Object.prototype.hasOwnProperty.call(input, id)) output[id] = asString(input[id]);
+      if (["s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"].indexOf(id)>=0) output[id]=normalizeDateISO(input[id]);
+      else if (Object.prototype.hasOwnProperty.call(input, id)) output[id] = asString(input[id]);
       return output;
     }, {});
   }
@@ -283,6 +285,7 @@
       id: id,
       date: date,
       dateISO: calendarYearKey(event, zone),
+      endDateISO: end ? new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit",timeZone:dateZone}).format(new Date(Math.max(start.getTime(),end.getTime()-1))) : calendarYearKey(event, zone),
       practice: event.practice,
       title: event.title,
       time: time,

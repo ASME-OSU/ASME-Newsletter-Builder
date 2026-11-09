@@ -1,5 +1,5 @@
 /* Shared ASME tools theme. Newsletter content inside #preview-inner has its own design. */
-@font-face { font-family: Manrope; src: url('./fonts/manrope-latin.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: Inter; src: url('./fonts/inter-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'DM Serif Display'; src: url('./fonts/dm-serif-display-latin.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 :root {
   --app-bg: #f2f5f9;
@@ -27,7 +27,7 @@
   --danger-line: #d99aa3;
   --shadow-sm: 0 4px 20px rgba(10, 30, 55, .045);
   --shadow-lg: 0 22px 50px rgba(5, 21, 39, .16);
-  --font-ui: Manrope, system-ui, sans-serif;
+  --font-ui: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-heading: 'DM Serif Display', Georgia, serif;
 }
 :root[data-editor-theme='dark'] {
@@ -364,3 +364,89 @@ body { font: 14px/1.5 var(--font-ui); }
 #checklist-items .check-icon { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font:750 14px/1 var(--font-ui); }
 #checklist-items .check-warning .check-icon { color:var(--warning-ink);background:var(--warning-bg);border:1px solid var(--warning-line); }
 #checklist-items .check-passed .check-icon { color:var(--success-ink);background:var(--success-bg); }
+
+/* Theme color samples are separate from the selected-control treatment. */
+#editor .theme-chip { background:var(--surface);color:var(--ink);border:2px solid var(--border);justify-content:flex-start;gap:10px;box-shadow:none; }
+#editor .theme-chip.selected { background:var(--surface-muted);border-color:var(--focus); }
+.theme-swatch { display:inline-flex;align-items:center;justify-content:center;flex:0 0 26px;height:30px;border:1px solid var(--border-strong);border-top-width:5px;border-radius:4px; }
+.theme-swatch i { display:block;width:14px;height:3px;border-radius:1px; }
+.theme-selection { flex:none;margin-left:auto;visibility:hidden; }
+.theme-chip.selected .theme-selection { visibility:visible; }
+#inbox-preview button { display:block;width:100%;min-width:0;min-height:28px;padding:3px 0;border:0;border-radius:4px;background:transparent;text-align:left;font-family:var(--font-ui);cursor:pointer; }
+#inbox-preview button:hover { text-decoration:underline;text-underline-offset:3px; }
+#inbox-preview button:focus-visible { outline:2px solid var(--focus);outline-offset:3px; }
+@media(max-width:599px) {
+  #topbar { grid-template-columns:minmax(44px,1fr) 84px 44px 44px 44px; }
+  #brevo-shortcut { display:none; }
+  .draft-history-controls { grid-row:1;grid-column:2;gap:0;justify-content:space-between; }
+  .draft-history-controls .btn { width:42px;min-width:42px;min-height:44px; }
+  #inbox-preview button { min-height:44px; }
+}
+
+.image-url-hint,.copy-is-stale { color:var(--warning-ink);background:var(--warning-bg);border:1px solid var(--warning-line);border-radius:7px;padding:8px;font:12px/1.5 var(--font-ui); }
+.workflow-modal { width:min(640px,100%);max-width:640px;display:flex;flex-direction:column;overflow:hidden; }
+.workflow-body { min-height:0;overflow-y:auto; }
+.workflow-modal .modal-actions { flex-shrink:0;flex-wrap:wrap; }
+#chat-digest-text { width:100%;min-height:220px;resize:vertical;max-height:45dvh;padding:12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--ink);font:14px/1.5 var(--font-ui); }
+@media(max-width:599px) { .workflow-modal { max-height:calc(100dvh - 24px);padding:18px; } .workflow-modal .field input { min-width:0;width:100%; } }
+
+.workflow-modal .field label { font:650 13px/1.5 var(--font-ui);text-transform:none;letter-spacing:0; }
+.workflow-modal .calendar-status { font-size:13px;line-height:1.6; }
+.workflow-modal .field input { font-family:var(--font-ui); }
+#next-issue-modal,#chat-digest-modal { padding:12px; }
+@media(max-width:359px) { .workflow-modal .field-row,#issue-planning .field-row { display:block; } }
+
+/* Compact editing rhythm: reduce repeated gaps before reducing readable text. */
+#editor { padding:14px 12px; }
+#editor .editor-card { padding:12px;margin-bottom:8px; }
+#editor .field { margin-bottom:10px; }
+#editor .field label { font-size:13px;line-height:1.4;margin-bottom:4px; }
+#editor .field textarea { min-height:64px; }
+#editor .section-divider { margin:8px 0; }
+#editor .tab-help { font:12.5px/1.45 var(--font-ui);margin:0 0 8px; }
+#editor .section-navigation { padding-bottom:10px;margin-bottom:10px; }
+#editor .editor-nav-heading { margin-bottom:8px; }
+#editor .readiness-card { padding:6px 10px;margin-bottom:12px; }
+#editor .readiness-top { min-height:36px; }
+#editor .event-list-utilities { margin-bottom:10px;padding-bottom:6px; }
+#editor .img-toggle-row { padding-top:4px; }
+#editor .settings-disclosure { margin:6px 0; }
+@media(min-width:600px) and (pointer:fine) {
+  #editor :is(.field input,.field select) { min-height:36px;font-size:13px;line-height:1.4;padding:6px 9px; }
+  #editor .field textarea { font-size:13px;line-height:1.5;padding:7px 9px; }
+  #editor .btn { min-height:36px;font-size:12.5px;padding:6px 10px; }
+  #editor .section-navigation .tab-btn { min-height:36px;padding:6px 4px;font-size:12px; }
+  #editor .btn-text { min-height:28px;padding:3px 2px; }
+  #editor .event-utility-row { min-height:36px; }
+  #editor .preset-btn { min-height:28px;padding:4px 7px;font-size:12px; }
+  #editor .preset-fill { min-height:28px;padding:3px 0;font-size:12px; }
+  #editor .calendar-toolbar > .calendar-command { min-height:36px;padding:6px 10px;font-size:12.5px; }
+  #editor .settings-disclosure > summary { min-height:36px;padding:7px 0; }
+  #editor .section-picker select { min-height:38px;font-size:14px;padding:6px 9px; }
+  #editor .event-summary-title { font-size:14px;line-height:1.4; }
+}
+/* A narrow desktop window still needs editing space below its header. */
+@media(min-width:600px) and (max-width:1199px) {
+  #topbar .brand-title { font-size:18px;white-space:nowrap; }
+  #topbar .brand-label { font-size:9px; }
+  #topbar .builder-badge { width:36px;height:36px; }
+  #topbar .topbar-left { flex-wrap:nowrap;gap:8px; }
+  #topbar .topbar-right { flex-wrap:nowrap;gap:6px; }
+  #brevo-shortcut { display:none; }
+  #editor .editor-context { padding:8px 10px;margin-bottom:12px; }
+}
+@media(min-width:600px) and (max-width:1199px) and (pointer:fine) {
+  .topbar-right > button,.topbar-right > .toolbar-menu > summary { height:36px;min-height:36px;font-size:12px; }
+  .workspace-switch button { min-height:36px;font-size:13px; }
+}
+@media(min-width:600px) and (max-width:699px) { #editor-theme-text { display:none; } }
+@media(pointer:coarse) {
+  #editor :is(.field input,.field select,.btn,.tab-btn),#editor .readiness-top { min-height:44px; }
+  #editor :is(.field input,.field select,.field textarea) { font-size:16px; }
+}
+#editor .editor-card > h3 { font-size:14px;line-height:1.4;margin:0 0 6px; }
+#editor .editor-card > p { font-size:13px;line-height:1.5;margin:0 0 8px; }
+@media(min-width:600px) and (max-width:699px) {
+  #info-btn .guide-label,#tools-menu .toolbar-label { display:none; }
+  #info-btn,#tools-menu > summary { width:44px;min-width:44px;padding:6px 8px;justify-content:center; }
+}

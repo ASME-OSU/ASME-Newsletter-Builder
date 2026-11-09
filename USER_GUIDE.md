@@ -149,3 +149,16 @@ On phones, the preview uses the available width without a device selector. Use t
 The Guide is now a larger illustrated walkthrough. Its shortcuts open Calendar, starter layouts or readiness directly.
 
 The top toolbar has Undo and Redo for the last major change (such as imports, sorting, removing content or opening another issue). These are recovery controls for major actions; text fields keep their normal editing undo. Redo clears when you make a new edit. Revision History retains older saved versions.
+
+The inbox preview’s subject and preview-text lines are shortcuts to their Settings fields. They switch back to Edit on phones and exit Full Preview before focusing the field. Design choices show their actual colors in small samples; the selected choice has a border and checkmark. On phones, Undo/Redo share the first toolbar row; Open Brevo remains available from Export.
+
+
+## Prepare the next issue and reuse event copy
+
+- **Settings → Issue dates:** optionally save the planned send date and dates covered. Review reminders use calendar dates, not guesses from display text. Add a calendar date to manual events or Featured when you want date checks. Calendar filters change only when you explicitly choose **Use saved issue dates** under **More filters & tools**.
+- **Tools → Start next issue:** review the new dates and cleanup summary, then choose **Create next issue**. Undated events stay for review. The old draft gets a recovery copy and can be restored with toolbar Undo. The featured section is cleared, and the announcement is kept switched off so you can review it before reusing it.
+- **Export → Copy HTML for Brevo:** the dialog now says whether the HTML changed since your last successful copy. If it did, use **Copy updated HTML**. Copying a subject, inbox preview or event digest replaces the clipboard contents; always copy HTML last before pasting it into Brevo.
+- **Tools → Copy event digest:** edit a plain-text version of the newsletter for your chat app, then copy and paste it manually. Nothing is posted, and edits in that dialog do not change the newsletter.
+- A warning under an image URL may identify a sharing page. Use a direct image URL from the chapter website or Brevo’s image library, and send a test email to check rendering.
+
+Issue dates travel with draft JSON and saved issues. Copy-history feedback stays on this browser. None of these features schedule or send a campaign.

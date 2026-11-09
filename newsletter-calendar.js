@@ -228,7 +228,7 @@ function applyReviewedCalendarUpdates(){
     pendingCalendarUpdates.forEach(function(update,i){
       var current=events.find(function(event){return event.id===update.id;});if(!current)return;
       var next=Core.calendarEventToNewsletter(Object.assign({},update.source,{url:calendarIsFictional?"":update.source.url||calendarSourceUrl}),update.id,calendarTimeZone);
-      choices.filter(function(choice){return choice.index===i;}).forEach(function(choice){current[choice.field]=next[choice.field];if(choice.field==="date")current.dateISO=next.dateISO;if(choice.field==="linkUrl"){current.showLink=next.showLink;current.linkText=next.linkText;}});
+      choices.filter(function(choice){return choice.index===i;}).forEach(function(choice){current[choice.field]=next[choice.field];if(choice.field==="date"){current.dateISO=next.dateISO;current.endDateISO=next.endDateISO;}if(choice.field==="linkUrl"){current.showLink=next.showLink;current.linkText=next.linkText;}});
       ["sourceEventId","sourceStart","sourceUpdated","sourceFingerprint"].forEach(function(field){current[field]=next[field];});current.practice=Boolean(current.practice)||next.practice;
     });
     if(autoSortEvents)sortEventsChronologically(false);
