@@ -3,6 +3,8 @@
 
   var SCHEMA_VERSION = 4;
   var DRAFT_KIND = "asme-newsletter-draft";
+  var CHAPTER_MAILING_ADDRESS = "American Society of Mechanical Engineers\n@ The Ohio State University\nScott Laboratory, Office N147\n201 W 19th Ave\nColumbus, OH 43210";
+  function upgradeMailingAddress(value){var address=asString(value);return address.trim()==="American Society of Mechanical Engineers · Columbus, OH 43210"?CHAPTER_MAILING_ADDRESS:address;}
   var ALLOWED_THEMES = ["navy", "light", "slate", "dark", "osu"];
   var ALLOWED_ACCENTS = ["blue", "red", "green", "gold"];
   var ALLOWED_EVENT_TYPES = ["event", "gbm", "workshop", "social", "info", "tour"];
@@ -138,7 +140,7 @@
     var input = fields && typeof fields === "object" ? fields : {};
     return FIELD_IDS.reduce(function (output, id) {
       if (["s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"].indexOf(id)>=0) output[id]=normalizeDateISO(input[id]);
-      else if (Object.prototype.hasOwnProperty.call(input, id)) output[id] = asString(input[id]);
+      else if (Object.prototype.hasOwnProperty.call(input, id)) output[id] = id==="footer-addr"?upgradeMailingAddress(input[id]):asString(input[id]);
       return output;
     }, {});
   }
@@ -308,6 +310,8 @@
   global.NewsletterCore = {
     SCHEMA_VERSION: SCHEMA_VERSION,
     DRAFT_KIND: DRAFT_KIND,
+    CHAPTER_MAILING_ADDRESS: CHAPTER_MAILING_ADDRESS,
+    upgradeMailingAddress: upgradeMailingAddress,
     FIELD_IDS: FIELD_IDS.slice(),
     ALLOWED_THEMES: ALLOWED_THEMES.slice(),
     ALLOWED_ACCENTS: ALLOWED_ACCENTS.slice(),

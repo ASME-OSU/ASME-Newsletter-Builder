@@ -67,7 +67,7 @@
       add(ready, "Quick link " + n + " " + (ready ? "looks ready" : "is incomplete"), ready ? "" : "Add a title and valid URL, or turn Quick Links off.", "links", field("ql" + n + "-title") ? "ql" + n + "-url" : "ql" + n + "-title");
     });
     add(field("s-unsub") === "{{ unsubscribe }}", field("s-unsub") === "{{ unsubscribe }}" ? "Brevo unsubscribe variable is correct" : "Brevo unsubscribe variable is incorrect", "Use exactly {{ unsubscribe }}.", "settings", "s-unsub");
-    var addressReady = /\d+\s+.+,\s*.+\b\d{5}(?:-\d{4})?\b/.test(field("footer-addr"));
+    var addressReady = /\d+\s+.+,\s*.+\b\d{5}(?:-\d{4})?\b/.test(field("footer-addr").replace(/\s+/g," "));
     add(addressReady, addressReady ? "Footer includes a postal address" : "Footer may be missing a full postal address", addressReady ? "" : "Enter a verified street or mailing address before sending commercial campaigns.", "design", "footer-addr");
     return issues;
   }

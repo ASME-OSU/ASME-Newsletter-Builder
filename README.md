@@ -72,7 +72,7 @@ Finished `.html` exports are email previews, not editable builder projects. Shar
 
 The unsubscribe field should contain exactly `{{ unsubscribe }}`. Brevo replaces that placeholder when sending.
 
-Before sending, replace the default footer text with a verified ASME/Ohio State mailing address appropriate for the campaign. The checklist warns when the footer does not resemble a complete postal address but still allows an officer to review and proceed.
+The footer is prefilled with the ASME office address at Scott Laboratory, Office N147, 201 W 19th Ave, Columbus, OH 43210. It remains editable under Design. The old bundled placeholder is upgraded automatically; custom addresses are preserved. The checklist warns when an edited footer does not resemble a complete postal address.
 
 ## Organization defaults and browser storage
 

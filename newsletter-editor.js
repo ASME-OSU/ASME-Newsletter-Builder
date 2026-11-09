@@ -23,7 +23,7 @@ var ASME_ORG_DEFAULTS={
   "ql1-title":"Join ASME","ql1-sub":"Access events and opportunities.","ql1-btn":"Join Now","ql1-url":"https://org.osu.edu/asme/join/",
   "ql2-title":"Calendar","ql2-sub":"See all upcoming events.","ql2-btn":"See Events","ql2-url":"https://org.osu.edu/asme/calendar/",
   "ql3-title":"Sponsor Us","ql3-sub":"Reach ME students at OSU.","ql3-btn":"Partner","ql3-url":"https://org.osu.edu/asme/sponsor-asme/",
-  "footer-name":"Ohio State ASME","footer-addr":"American Society of Mechanical Engineers · Columbus, OH 43210",
+  "footer-name":"Ohio State ASME","footer-addr":Core.CHAPTER_MAILING_ADDRESS,
   "s-logo":"https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png",
   "s-logo-light":"https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png",
   "s-website":"https://org.osu.edu/asme/","s-ig-url":"https://www.instagram.com/asmeohiostate/","s-ig-handle":"@asmeohiostate",
@@ -76,7 +76,7 @@ function getOrganizationDefaults(){
   }catch(error){return Object.assign({},ASME_ORG_DEFAULTS);}
 }
 function applyOrganizationDefaults(profile){
-  ORG_DEFAULT_FIELD_IDS.forEach(function(id){var el=document.getElementById(id);if(el&&Object.prototype.hasOwnProperty.call(profile,id))el.value=String(profile[id]||"");});
+  ORG_DEFAULT_FIELD_IDS.forEach(function(id){var el=document.getElementById(id);if(el&&Object.prototype.hasOwnProperty.call(profile,id))el.value=id==="footer-addr"?Core.upgradeMailingAddress(profile[id]):String(profile[id]||"");});
 }
 function saveOrganizationDefaults(){
   var profile={};ORG_DEFAULT_FIELD_IDS.forEach(function(id){profile[id]=g(id);});
@@ -615,7 +615,7 @@ function renderPreview(){
     eventsHTML+annHTML+qlHTML+
     '</div>'+
     '<div class="pv-footer" style="background:'+T.footerBg+';"><div class="pv-footer-name" style="color:'+T.title+';">'+escHtml(footerName)+'</div>'+
-    '<div class="pv-footer-addr" style="color:'+T.subtle+';">'+escHtml(footerAddr)+'</div>'+
+    '<div class="pv-footer-addr" style="color:'+T.subtle+';">'+Core.escapeMultiline(footerAddr)+'</div>'+
     buildSocialIconsPreview(T)+
     '<div class="pv-footer-unsub" style="color:'+T.faint+';">You\'re receiving this because you signed up for ASME OSU updates. <span style="color:'+T.muted+';">Unsubscribe</span></div></div>';
   renderLiveTools();

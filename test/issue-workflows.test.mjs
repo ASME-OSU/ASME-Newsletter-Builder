@@ -136,3 +136,27 @@ test('HTML-copy tracking survives reopening and identifies edits made while copy
   assert.equal(d.getElementById('checklist-primary').textContent,'Copy updated HTML');
  }finally{w.close();}
 });
+
+
+test('chapter mailing address is prefilled, editable, multiline and passes the footer check',async()=>{
+ const {w,d}=await setup();try{
+  const address=d.getElementById('footer-addr');assert.equal(address.tagName,'TEXTAREA');assert.equal(address.value,w.Core.CHAPTER_MAILING_ADDRESS);
+  assert.match(address.value,/Scott Laboratory, Office N147/);assert.match(address.value,/201 W 19th Ave/);
+  assert.equal(w.getReadinessChecks().find(c=>/postal address/.test(c.label)).ok,true);
+  assert.match(d.querySelector('.pv-footer-addr').innerHTML,/@ The Ohio State University<br>Scott Laboratory, Office N147/);
+  address.value='ASME custom office\n123 Main St\nColumbus, OH 43210';w.render();
+  const html=w.generateHTML();assert.match(html,/ASME custom office<br>123 Main St<br>Columbus, OH 43210/);
+  w.saveOrganizationDefaults();w.confirmNewIssue();assert.equal(address.value,'ASME custom office\n123 Main St\nColumbus, OH 43210');
+ }finally{w.close();}
+});
+
+test('only the bundled old placeholder is upgraded in drafts and saved defaults',async()=>{
+ const {w,d}=await setup();try{
+  const legacy='American Society of Mechanical Engineers · Columbus, OH 43210';
+  w.applyState({events:[],fields:{'footer-addr':legacy}});assert.equal(d.getElementById('footer-addr').value,w.Core.CHAPTER_MAILING_ADDRESS);
+  w.localStorage.setItem('asme_nl_org_defaults',JSON.stringify({'footer-addr':legacy}));w.applyOrganizationDefaults(w.getOrganizationDefaults());assert.equal(d.getElementById('footer-addr').value,w.Core.CHAPTER_MAILING_ADDRESS);
+  w.applyState({events:[],fields:{'footer-addr':'Officer custom mailing address'}});assert.equal(d.getElementById('footer-addr').value,'Officer custom mailing address');
+  const round=w.Core.readDraftDocument(JSON.stringify(w.Core.createDraftDocument(w.collectState())));assert.equal(round.fields['footer-addr'],'Officer custom mailing address');
+  d.getElementById('footer-addr').value='<img src=x onerror=alert(1)>\n123 Main St, Columbus, OH 43210';w.render();assert.equal(d.querySelector('.pv-footer-addr img'),null);assert.match(w.generateHTML(),/&lt;img src=x onerror=alert\(1\)&gt;<br>/);
+ }finally{w.close();}
+});

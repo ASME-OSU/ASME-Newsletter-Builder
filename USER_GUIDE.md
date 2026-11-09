@@ -162,3 +162,5 @@ The inbox preview’s subject and preview-text lines are shortcuts to their Sett
 - A warning under an image URL may identify a sharing page. Use a direct image URL from the chapter website or Brevo’s image library, and send a test email to check rendering.
 
 Issue dates travel with draft JSON and saved issues. Copy-history feedback stays on this browser. None of these features schedule or send a campaign.
+
+The mailing address under Design is prefilled for ASME’s Scott Laboratory office (N147), including 201 W 19th Ave, Columbus, OH 43210. Edit it if necessary; line breaks are preserved in preview and exported email. Custom saved addresses are retained.
