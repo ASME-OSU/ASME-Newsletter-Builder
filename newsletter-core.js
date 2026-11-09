@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  var SCHEMA_VERSION = 3;
+  var SCHEMA_VERSION = 4;
   var DRAFT_KIND = "asme-newsletter-draft";
   var ALLOWED_THEMES = ["navy", "light", "slate", "dark", "osu"];
   var ALLOWED_ACCENTS = ["blue", "red", "green", "gold"];
@@ -65,6 +65,31 @@
     return { month: match[1].toUpperCase(), day: match[2].toUpperCase(), label: label };
   }
 
+  function normalizeDateISO(value) {
+    var raw = asString(value).trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return "";
+    var parsed = new Date(raw + "T00:00:00.000Z");
+    return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === raw ? raw : "";
+  }
+
+  function isPracticeEvent(event) {
+    return Boolean(event && (event.practice || /^fictional-/i.test(asString(event.sourceEventId || event.id))));
+  }
+
+  function detachCalendarSource(event) {
+    var detached = Object.assign({}, event, { practice: isPracticeEvent(event) });
+    ["sourceEventId", "sourceUpdated", "sourceStart", "sourceFingerprint"].forEach(function (key) { delete detached[key]; });
+    return detached;
+  }
+
+  function exportFilename(subject, extension) {
+    var slug = asString(subject).normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80).replace(/^-+|-+$/g, "");
+    var suffix = asString(extension).toLowerCase().replace(/^\./, "");
+    if (!/^[a-z0-9]{1,10}(?:\.[a-z0-9]{1,10})?$/.test(suffix)) suffix = "json";
+    return "asme-newsletter" + (slug ? "-" + slug : "") + "." + suffix;
+  }
+
   function normalizeEvent(raw, fallbackId) {
     var source = raw && typeof raw === "object" ? raw : {};
     var numericId = Number(source.id);
@@ -72,6 +97,8 @@
     return {
       id: id,
       date: asString(source.date),
+      dateISO: normalizeDateISO(source.dateISO),
+      practice: isPracticeEvent(source),
       title: asString(source.title, "Untitled Event"),
       time: asString(source.time),
       location: asString(source.location),
@@ -138,6 +165,7 @@
       schemaVersion: SCHEMA_VERSION,
       events: events,
       showFeatured: raw.showFeatured !== false,
+      featuredPractice: Boolean(raw.featuredPractice),
       showAnnounce: raw.showAnnounce !== false,
       showLinks: raw.showLinks !== false,
       showFeatImg: Boolean(raw.showFeatImg),
@@ -183,7 +211,8 @@
       url: safeUrl(raw.url),
       updated: asString(raw.updated),
       recurring: Boolean(raw.recurring),
-      recurrenceId: asString(raw.recurrenceId)
+      recurrenceId: asString(raw.recurrenceId),
+      practice: isPracticeEvent(raw)
     };
   }
 
@@ -253,6 +282,8 @@
     return normalizeEvent({
       id: id,
       date: date,
+      dateISO: calendarYearKey(event, zone),
+      practice: event.practice,
       title: event.title,
       time: time,
       location: event.location,
@@ -284,6 +315,10 @@
     inferEventType: inferEventType,
     splitEventDate: splitEventDate,
     normalizeEvent: normalizeEvent,
+    normalizeDateISO: normalizeDateISO,
+    isPracticeEvent: isPracticeEvent,
+    detachCalendarSource: detachCalendarSource,
+    exportFilename: exportFilename,
     nextEventId: nextEventId,
     sanitizeState: sanitizeState,
     createDraftDocument: createDraftDocument,

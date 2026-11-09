@@ -1,3 +1,4 @@
+import { loadBuilderHTML } from './helpers/load-builder.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
@@ -7,7 +8,7 @@ const context = vm.createContext({ URL, Intl, Date });
 vm.runInContext(fs.readFileSync(new URL('../newsletter-core.js', import.meta.url), 'utf8'), context);
 const Core = context.NewsletterCore;
 
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace('<script src="newsletter-core.js"></script>', `<script>${fs.readFileSync(new URL('../newsletter-core.js', import.meta.url), 'utf8')}</script>`);
+const html=loadBuilderHTML();
 const feed = Core.fictionalCalendarFeed('2027-2028');
 feed.calendarName = 'Fixture for chapter snapshot';
 feed.sourceUrl = 'https://calendar.google.com/calendar/embed?src=public';
@@ -41,7 +42,11 @@ test('full builder year preview and fictional Fall/Spring source preserve drafts
     window.applyCalendarPreview();
     assert.equal(window.document.getElementById('calendar-preview-year').value, '2027-2028');
     assert.equal(window.calendarEvents.length, 2);
-    assert.match(window.document.getElementById('calendar-status').textContent, /2027-2028.*Refresh rereads JSON/);
+    assert.match(window.document.getElementById('calendar-status').textContent, /2 events · 2027-2028/);
+    assert.doesNotMatch(window.document.getElementById('calendar-status').textContent, /JSON|snapshot|coverage|source checked|read /i);
+    assert.equal(window.document.getElementById('calendar-source-details').open, false);
+    assert.match(window.document.getElementById('calendar-source-details').textContent, /once an hour/);
+    assert.match(window.document.getElementById('calendar-source-status').textContent, /Available date range is unknown/);
     const priorReads = reads;
     window.loadFictionalCalendar();
     assert.equal(reads, priorReads, 'fictional feed causes no network request');
@@ -65,9 +70,9 @@ test('full builder year preview and fictional Fall/Spring source preserve drafts
     assert.match(window.generateHTML(), /Edited fictional Spring copy/);
     const removal = window.clearFictionalCalendar();
     assert.equal(window.calendarIsFictional, false);
-    assert.match(window.document.getElementById('calendar-status').textContent, /Fictional events removed.*Reading/);
+    assert.match(window.document.getElementById('calendar-status').textContent, /Fictional events removed.*Loading/);
     await removal;
-    assert.match(window.document.getElementById('calendar-status').textContent, /Fictional events removed.*Chapter generated snapshot/);
+    assert.match(window.document.getElementById('calendar-status').textContent, /Fictional events removed.*2 events/);
     assert.doesNotMatch(window.document.getElementById('calendar-list').textContent, /TEST ONLY/);
     assert.equal(window.events.find(event => event.sourceEventId === imported.sourceEventId).description, 'Edited fictional Spring copy');
     assert.equal(window.calendarIsFictional, false);
@@ -80,7 +85,7 @@ test('full builder year preview and fictional Fall/Spring source preserve drafts
     assert.match(window.document.getElementById('calendar-status').textContent, /consecutive academic years/);
     assert.equal(window.calendarPreviewYear, '2028-2029', 'invalid input cannot poison the active year');
     await window.useChapterCalendar();
-    assert.match(window.document.getElementById('calendar-status').textContent, /Chapter generated snapshot.*2028-2029/);
+    assert.match(window.document.getElementById('calendar-status').textContent, /0 events · 2028-2029/);
   } finally { window.close(); }
 });
 
@@ -117,12 +122,12 @@ test('remove then Upcoming preserves loading, restores chapter source and handle
     window.showUpcomingCalendar();
     assert.equal(window.calendarIsFictional, false);
     assert.equal(window.calendarEvents.length, 0, 'pending source cannot display fictional cards as chapter cards');
-    assert.match(status(), /Fictional events removed.*Reading/);
+    assert.match(status(), /Fictional events removed.*Loading/);
     assert.equal(window.document.getElementById('calendar-list').getAttribute('aria-busy'), 'true');
     originalResponse({ ok: true, json: async () => ({ events: [{ ...feed.events[0], title: 'Stale response' }] }) }); await wait();
-    assert.match(status(), /Reading/);
+    assert.match(status(), /Loading/);
     restorationResponse({ ok: true, json: async () => feed }); await removal;
-    assert.match(status(), /Fictional events removed.*Chapter generated snapshot.*upcoming dates/);
+    assert.match(status(), /Fictional events removed.*events · Upcoming/);
     assert.match(window.document.getElementById('calendar-list').textContent, /Chapter fixture/);
     assert.doesNotMatch(window.document.getElementById('calendar-list').textContent, /TEST ONLY|Stale response/);
     assert.equal(window.document.getElementById('clear-fictional-calendar').hidden, true);
@@ -136,7 +141,7 @@ test('remove then Upcoming preserves loading, restores chapter source and handle
     assert.match(window.document.getElementById('calendar-list').textContent, /Chapter fixture/);
     fail = false;
     const retry = window.useChapterCalendar(); answer({ ok: true, json: async () => feed }); await retry;
-    assert.doesNotMatch(status(), /failed|Reading|FICTIONAL REHEARSAL/);
+    assert.doesNotMatch(status(), /failed|Loading|FICTIONAL REHEARSAL/);
   } finally { window.close(); }
 });
 

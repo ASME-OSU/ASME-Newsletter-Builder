@@ -1,9 +1,9 @@
+import { loadBuilderHTML } from './helpers/load-builder.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
-const core=fs.readFileSync(new URL('../newsletter-core.js',import.meta.url),'utf8');
-const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8').replace('<script src="newsletter-core.js"></script>',`<script>${core}</script>`);
+const html=loadBuilderHTML();
 async function setup(compact=false){
  const dom=new JSDOM(html,{url:'https://isolated.invalid/',runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){w.matchMedia=()=>({matches:compact,addEventListener(){}});w.fetch=async()=>({ok:true,json:async()=>({events:[]})});w.alert=()=>{};w.confirm=()=>true;}});
  await new Promise(resolve=>dom.window.addEventListener('load',resolve,{once:true}));await new Promise(resolve=>dom.window.setTimeout(resolve,10));return dom;
@@ -56,7 +56,44 @@ test('compact utilities preserve menu actions, focus and readiness access',async
   const card=d.querySelector('#event-list > details');card.open=true;
   const actions=card.querySelector('.event-actions-menu');actions.querySelector('summary').click();assert.equal(actions.open,true);
   const count=w.events.length;actions.querySelector('[onclick^="duplicateEvent"]').click();assert.equal(w.events.length,count+1);assert.match(d.activeElement.id,/event-\d+-title/);
-  const menu=d.getElementById('list-options');menu.querySelector('summary').click();const before=w.autoSortEvents;d.getElementById('auto-sort-toggle').click();assert.equal(w.autoSortEvents,!before);assert.equal(menu.open,false);assert.equal(d.activeElement,menu.querySelector('summary'));
+  const utilities=d.getElementById('list-options');assert.equal(utilities.getAttribute('role'),'group');const before=w.autoSortEvents;const toggle=d.getElementById('auto-sort-toggle');toggle.focus();toggle.click();assert.equal(w.autoSortEvents,!before);assert.equal(d.activeElement,toggle);
   assert.equal(d.querySelector('#tools-menu [onclick="reviewNewsletterLinks()"]').textContent,'Check newsletter links');
+ }finally{w.close();}
+});
+
+test('manual ordering disables ongoing date sorting while sort once stays manual',async()=>{
+ const dom=await setup(),w=dom.window,d=w.document;
+ try{
+  w.events=[{...w.events[0],id:101,dateISO:'2026-12-01'},{...w.events[0],id:102,dateISO:'2026-12-02'}];
+  w.setAutoSort(true);
+  assert.equal(d.getElementById('sort-events-once').hidden,true);
+  w.moveEvent(102,'up');
+  assert.equal(w.autoSortEvents,false);
+  assert.equal(w.localStorage.getItem('asme_nl_auto_sort'),'false');
+  assert.equal(d.getElementById('sort-events-once').hidden,false);
+  w.sortAfterEventEdit(true);await tick(w);
+  assert.deepEqual(Array.from(w.events,e=>e.id),[102,101]);
+  d.getElementById('sort-events-once').click();
+  assert.deepEqual(Array.from(w.events,e=>e.id),[101,102]);
+  assert.equal(w.autoSortEvents,false);
+  w.toggleAutoSort();
+  assert.equal(d.getElementById('sort-events-once').hidden,true);
+ }finally{w.close();}
+});
+
+test('top toolbar undo and redo recover major changes and a new edit clears redo',async()=>{
+ const dom=await setup(),w=dom.window,d=w.document;
+ try{
+  const undo=d.getElementById('undo-draft-btn'),redo=d.getElementById('redo-draft-btn');
+  assert.ok(undo.closest('#topbar'));assert.ok(redo.closest('#topbar'));
+  assert.equal(undo.disabled,true);assert.equal(redo.disabled,true);
+  const initial=w.events.length;
+  w.mutateDraft('Before adding a test event',()=>w.events.push({...w.events[0],id:999,title:'History test'}));
+  assert.equal(undo.disabled,false);
+  undo.click();assert.equal(w.events.length,initial);assert.equal(redo.disabled,false);
+  redo.click();assert.equal(w.events.length,initial+1);assert.equal(undo.disabled,false);
+  undo.click();
+  d.getElementById('s-subject').value='A new edit';w.documentChanged();
+  assert.equal(redo.disabled,true);
  }finally{w.close();}
 });

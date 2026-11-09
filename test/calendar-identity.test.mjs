@@ -1,9 +1,9 @@
+import { loadBuilderHTML } from './helpers/load-builder.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
-const core = fs.readFileSync(new URL('../newsletter-core.js', import.meta.url), 'utf8');
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace('<script src="newsletter-core.js"></script>', `<script>${core}</script>`);
+const html=loadBuilderHTML();
 const occurrence = (day, extra = {}) => ({ id: `series::2099-09-${day}T22:00:00.000Z`, start: `2099-09-${day}T22:00:00.000Z`, end: `2099-09-${day}T23:00:00.000Z`, title: 'Weekly meeting', description: 'Useful agenda', updated: '2026-01-01T00:00:00Z', recurring: true, ...extra });
 const feed = events => ({ events, windowStart: '2099-08-01T00:00:00Z', windowEnd: '2100-08-01T00:00:00Z', timeZone: 'America/New_York' });
 async function builder(t, events) {

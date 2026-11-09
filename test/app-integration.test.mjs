@@ -1,13 +1,10 @@
+import { loadBuilderHTML } from './helpers/load-builder.mjs';
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import { JSDOM } from "jsdom";
 
-const indexPath = new URL("../index.html", import.meta.url);
-const corePath = new URL("../newsletter-core.js", import.meta.url);
-const coreSource = fs.readFileSync(corePath, "utf8");
-const html = fs.readFileSync(indexPath, "utf8")
-  .replace('<script src="newsletter-core.js"></script>', `<script>${coreSource}</script>`);
+const html=loadBuilderHTML();
 
 const calendarFeed = {
   generatedAt: "2026-07-13T12:00:00.000Z",
@@ -199,7 +196,7 @@ test("toolbar disclosures close predictably and checklist returns focus to the v
     assert.equal(document.getElementById("checklist-modal").classList.contains("open"), true);
     await waitFor(() => document.activeElement === document.getElementById("checklist-title"));
     assert.equal(document.getElementById("checklist-items").scrollTop, 0);
-    assert.equal(document.getElementById("checklist-primary").textContent, "Copy and go to Brevo");
+    assert.equal(document.getElementById("checklist-primary").textContent, "Copy HTML");
     document.getElementById("checklist-items").scrollTop = 350;
     window.closeChecklist();
     copy.click();
@@ -213,25 +210,26 @@ test("toolbar disclosures close predictably and checklist returns focus to the v
   }
 });
 
-test("copy-only keeps the builder open and Brevo action delegates only from copy mode", async () => {
+test("copy keeps the builder and dialog open, with a separate new-tab Brevo link", async () => {
   const { window } = await responsiveFixture();
   try {
     let copied = "";
     Object.defineProperty(window.navigator, "clipboard", { value: { writeText: async (html) => { copied = html; } }, configurable: true });
-    window.doCopy(false);
-    await waitFor(() => window.document.getElementById("copy-btn").textContent.includes("Copied"));
-    assert.match(copied, /<!doctype html>/i);
-    assert.equal(window.location.hostname, "isolated.invalid");
-    let destination = null;
-    window.doCopy = (goToBrevo) => { destination = goToBrevo; };
     window.showReadinessChecklist(true);
     window.document.getElementById("checklist-primary").click();
-    assert.equal(destination, true);
-    assert.equal(window.document.getElementById("checklist-modal").classList.contains("open"), false);
-    destination = null;
+    await waitFor(() => window.document.getElementById("checklist-copy-status").textContent.includes("HTML copied"));
+    assert.match(copied, /<!doctype html>/i);
+    assert.equal(window.location.hostname, "isolated.invalid");
+    assert.equal(window.document.getElementById("checklist-modal").classList.contains("open"), true);
+    const link=window.document.getElementById("checklist-brevo");
+    assert.equal(link.target,"_blank");assert.match(link.rel,/noopener/);
+    assert.equal(link.href,"https://app.brevo.com/campaigns/listing");
+    let called=false;window.doCopy=()=>{called=true;};
     window.showReadinessChecklist(false);
+    assert.equal(link.hidden,true);
     window.document.getElementById("checklist-primary").click();
-    assert.equal(destination, null);
+    assert.equal(called,false);
+    assert.equal(window.document.getElementById("checklist-modal").classList.contains("open"), false);
   } finally { window.close(); }
 });
 
@@ -304,7 +302,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.deepEqual(Array.from(window.document.querySelectorAll(".pv-event-type"), (node) => node.textContent.trim()), ["Workshop", "GBM"]);
   assert.equal(window.document.querySelector(".pv-event-day").textContent, "28");
   assert.equal(window.document.querySelectorAll(".pv-event-bar").length, 0);
-  assert.match(window.document.querySelector("#calendar-status").textContent, /Chapter generated snapshot\. 1 event for upcoming dates/);
+  assert.match(window.document.querySelector("#calendar-status").textContent, /1 event · Upcoming · Updated/);
   assert.equal(window.document.querySelectorAll("#calendar-list .calendar-event").length, 1);
   assert.equal(window.document.getElementById("s-logo").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png");
   assert.equal(window.document.getElementById("s-logo-light").value, "https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png");
@@ -334,8 +332,8 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   infoButton.click();
   assert.equal(infoModal.classList.contains("open"), true);
   assert.equal(infoModal.getAttribute("aria-modal"), "true");
-  assert.match(infoModal.textContent, /Import upcoming items from Calendar/);
-  assert.match(infoModal.textContent, /Export Draft \.json/);
+  assert.match(infoModal.textContent, /Select all selects the events shown/);
+  assert.match(infoModal.textContent, /export a draft/i);
   window.document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   assert.equal(infoModal.classList.contains("open"), false);
 

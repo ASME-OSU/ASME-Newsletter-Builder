@@ -1,5 +1,5 @@
 /* Shared ASME tools theme. Newsletter content inside #preview-inner has its own design. */
-@font-face { font-family: Inter; src: url('./fonts/inter-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: Manrope; src: url('./fonts/manrope-latin.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
 @font-face { font-family: 'DM Serif Display'; src: url('./fonts/dm-serif-display-latin.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 :root {
   --app-bg: #f2f5f9;
@@ -27,7 +27,7 @@
   --danger-line: #d99aa3;
   --shadow-sm: 0 4px 20px rgba(10, 30, 55, .045);
   --shadow-lg: 0 22px 50px rgba(5, 21, 39, .16);
-  --font-ui: Inter, system-ui, sans-serif;
+  --font-ui: Manrope, system-ui, sans-serif;
   --font-heading: 'DM Serif Display', Georgia, serif;
 }
 :root[data-editor-theme='dark'] {
@@ -172,3 +172,195 @@ body { font: 14px/1.5 var(--font-ui); }
   .readiness-symbol { width: 28px; }
   #editor #readiness-score { font-size: 23px; }
 }
+
+/* Sidebar hierarchy: navigation, status, utilities and editing have separate roles. */
+#main { --sidebar-width:420px; }
+#main > #editor { width:var(--sidebar-width); flex:0 0 var(--sidebar-width); min-width:0; }
+#preview-panel { min-width:0; }
+#editor .section-navigation { padding:0 0 16px; border:0; border-bottom:1px solid var(--border); border-radius:0; background:transparent; box-shadow:none; margin-bottom:16px; }
+#editor .section-navigation .tabs { gap:4px; }
+#editor .section-navigation .tab-btn { background:var(--surface); border-color:var(--navigation-line); color:var(--ink-muted); font-weight:550; }
+#editor .section-navigation .tab-btn:hover { background:var(--surface-muted); }
+#editor .section-navigation .tab-btn.active { color:var(--navigation-active-ink); background:var(--navigation-active); border-color:var(--navigation-active); }
+#editor .readiness-card { padding:10px 12px; border-radius:10px; border:1px solid var(--readiness-line); margin-bottom:18px; }
+#editor .readiness-top { grid-template-columns:28px minmax(0,1fr) auto 18px; min-height:44px; gap:8px; }
+#editor .readiness-score-caption { display:none; }
+#editor .readiness-symbol { display:grid; width:28px; height:32px; border-radius:6px; }
+#editor .readiness-copy { gap:1px; }
+#editor .readiness-title { font-size:13px; }
+#editor #readiness-count { font-size:12px; }
+#editor .readiness-score-group { display:block; min-width:0; padding:0; border:0; border-radius:0; background:transparent; }
+#editor #readiness-score { font-size:17px; }
+#editor .readiness-card[open] .readiness-top { margin-bottom:10px; }
+#editor .btn-text { background:transparent; color:var(--ink-muted); border:1px solid transparent; box-shadow:none; padding:6px 3px; min-height:36px; text-decoration:underline; text-underline-offset:3px; font-weight:550; }
+#editor .btn-text:hover { color:var(--ink); background:var(--surface-muted); }
+#editor .event-list-toolbar { margin-bottom:6px; }
+#editor .event-list-utilities { display:flex; align-items:center; flex-wrap:wrap; justify-content:space-between; gap:6px 12px; margin-bottom:16px; padding:0 0 10px; border-bottom:1px solid var(--border); }
+#editor .event-list-utilities .auto-sort-setting { display:inline-flex; gap:7px; font:12px/1.4 var(--font-ui); color:var(--ink-muted); }
+#editor .auto-sort-setting .btn { width:48px; min-height:32px; padding:4px 8px; }
+#editor .event-utility-row { display:block; position:relative; min-height:44px; }
+#editor .event-utility-row > .row-gap { position:absolute; left:0; top:0; display:flex; gap:8px; z-index:1; }
+#editor .event-actions-menu { margin:0; width:100%; max-width:100%; min-width:0; }
+#editor .event-actions-menu > summary { width:max-content; margin-left:auto; padding:8px 10px; gap:7px; background:transparent; border-color:var(--border); font-size:12px; }
+#editor .event-actions-menu[open] { flex:1 0 100%; margin-left:0; }
+#editor .event-actions-menu .toolbar-popover { position:static; width:auto; max-width:none; grid-template-columns:repeat(2,minmax(0,1fr)); box-shadow:none; border:0; border-top:1px solid var(--border); border-radius:0; padding:10px 0 0; margin-top:8px; gap:8px; background:transparent; }
+#editor .event-actions-menu .toolbar-popover .btn-ghost { background:var(--surface-soft); border-color:var(--border); }
+#editor .event-actions-menu .toolbar-popover .btn-danger { grid-column:1/-1; width:auto; justify-self:start; color:var(--danger-ink); background:var(--danger-bg); border-color:var(--danger-line); }
+#editor .preset-row { gap:4px; }
+#editor .preset-btn { box-shadow:none; border-color:transparent; background:var(--surface-soft); }
+#editor .preset-btn.selected { border-color:var(--border-strong); }
+#editor .preset-fill { display:block; margin:10px 0 16px; color:var(--ink-muted); text-decoration:underline; text-underline-offset:3px; }
+#editor .calendar-range { padding:12px 0; margin:0 0 10px; border-bottom:1px solid var(--border); }
+#editor .calendar-range h3,#editor .calendar-options-section h3 { margin:0 0 10px; font:650 13px/1.5 var(--font-ui); color:var(--ink); }
+#editor .calendar-range h3 span { margin-left:6px; font-weight:400; color:var(--ink-muted); }
+#editor .calendar-range .field { margin-bottom:0; }
+#editor .calendar-options { margin:0 0 16px; }
+#editor .calendar-options > summary { color:var(--ink-muted); font-size:12px; }
+#editor .calendar-options-section { padding:12px; border:1px solid var(--border); border-radius:8px; background:var(--surface-soft); margin-bottom:10px; }
+#editor .calendar-options-section .calendar-toolbar { margin-bottom:6px; }
+#editor .calendar-toolbar a { background:transparent; border-color:transparent; text-decoration:underline; text-underline-offset:3px; padding:8px 4px; }
+#editor #edit-feedback { margin-bottom:14px; padding:8px 12px; font:12px/1.5 var(--font-ui); }
+/* A real separator, outside both scrollers, with a dedicated pointer target. */
+.sidebar-resizer { position:relative; display:flex; flex:0 0 12px; width:12px; align-items:center; justify-content:center; cursor:col-resize; touch-action:none; z-index:5; outline-offset:-2px; background:var(--app-bg); }
+.sidebar-resizer[hidden] { display:none; }
+.sidebar-resizer::before { content:""; position:absolute; top:0; bottom:0; width:1px; background:var(--border); }
+.sidebar-grip { display:flex; position:relative; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:14px; height:32px; background:var(--surface); border:1px solid var(--border-strong); border-radius:5px; box-shadow:none; }
+.sidebar-grip i { display:block; width:3px; height:3px; border-radius:50%; background:var(--ink-muted); }
+.sidebar-resizer:hover::before,.sidebar-resizer:focus-visible::before,.resizing-sidebar .sidebar-resizer::before { width:2px; background:var(--focus); }
+
+.resizing-sidebar,.resizing-sidebar * { cursor:col-resize!important; user-select:none!important; }
+.resizing-sidebar #editor,.resizing-sidebar #preview-panel { pointer-events:none; }
+@media (max-width:1199px) {
+  #main > #editor { width:100%; flex:1 1 auto; }
+  .sidebar-resizer { display:none; }
+  #editor .event-list-utilities { justify-content:flex-start; gap:8px 18px; }
+}
+
+#editor .btn-toggle.on { background:var(--success-bg); color:var(--success-ink); border:1px solid var(--success-line); }
+#editor .btn-toggle.off { background:var(--surface-soft); color:var(--ink-muted); border:1px solid var(--border); }
+
+/* Preview tools use a right rail; the existing segmented toggle stays intact. */
+#preview-panel { display:grid; grid-template-columns:minmax(0,1fr) 80px; align-items:start; gap:12px; }
+.preview-content { grid-column:1; grid-row:1; min-width:0; }
+#preview-controls { grid-column:2; grid-row:1; position:sticky; top:0; display:flex; flex-direction:column; align-items:stretch; align-self:start; gap:12px; width:80px; }
+#preview-controls .preview-device-group { display:flex; flex-direction:column; width:100%; gap:3px; padding:3px; }
+#preview-controls .preview-mode-btn { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:6px; width:100%; min-height:60px; padding:8px 4px; font:600 12px/1.3 var(--font-ui); }
+#preview-controls .preview-mode-btn svg { width:19px; height:19px; }
+.sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+#editor fieldset { min-width:0; }
+#editor fieldset.editor-card { margin:0 0 14px; }
+#editor .section-fields { border:0; margin:0; padding:0; }
+#editor .tab-help { margin:0 0 12px; color:var(--ink-muted); font:13px/1.6 var(--font-ui); }
+#editor .tab-help .btn { display:inline; font-size:inherit; }
+#editor .section-disabled-note { margin:0 0 12px; padding:8px 0; color:var(--ink-muted); font:13px/1.5 var(--font-ui); }
+#editor .section-is-off { opacity:.65; }
+#editor .optional-label { font-weight:400; color:var(--ink-muted); }
+#editor .ql-card-header { overflow-wrap:anywhere; }
+@media (max-width:599px) {
+  #preview-panel { grid-template-columns:minmax(0,1fr) 48px; gap:8px; padding:12px 8px; }
+  #preview-controls { width:48px; gap:8px; }
+  #preview-controls .preview-device-group { padding:1px; gap:2px; }
+  #preview-controls .preview-mode-btn { min-height:44px; padding:8px; }
+  #preview-controls .preview-mode-btn span { display:none; }
+  #preview-controls #preview-dark-btn { width:48px; }
+  #editor .readiness-top { grid-template-columns:28px minmax(0,1fr) auto 16px; }
+}
+
+#editor .settings-group-title { font:650 14px/1.5 var(--font-ui); margin:0 0 12px; color:var(--ink); }
+
+#editor .starter-template > div { min-width:0; }
+#editor .starter-template > button { flex-shrink:0; white-space:nowrap; }
+#issue-library-list .history-item { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; }
+#issue-library-list .history-meta strong { white-space:normal; overflow-wrap:anywhere; }
+
+/* Center the grip in the combined scrollbar/divider lane, not just its hit area. */
+#editor { scrollbar-gutter:auto; scrollbar-width:thin; border-right:0; }
+#editor::-webkit-scrollbar { width:6px; }
+#editor::-webkit-scrollbar-track { background:var(--app-bg); }
+.sidebar-grip { transform:translateX(var(--sidebar-optical-offset,0px)); transition:transform 120ms ease; }
+.sidebar-resizer:hover .sidebar-grip,.resizing-sidebar .sidebar-grip { transform:translateX(calc(var(--sidebar-optical-offset,0px) + 2px)); }
+.sidebar-resizer:focus-visible { outline:none; }
+.sidebar-resizer::before { left:calc(50% + var(--sidebar-optical-offset,0px)); transform:translateX(-50%); }
+.calendar-select-all { display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--ink-muted);font:550 13px/1.4 var(--font-ui);cursor:pointer; }
+.calendar-select-all input { width:16px;height:16px;accent-color:var(--blue); }
+#editor .calendar-options .calendar-range { border:0;margin:0;padding:10px 0 12px; }
+#editor .calendar-options .calendar-range .field { margin-bottom:0; }
+.mobile-preview-dark { display:none; }
+/* The guide is an illustrated reference, with room to read and useful shortcuts. */
+#info-modal { padding:20px; }
+#info-modal .modal { width:min(1040px,100%);max-width:1040px;max-height:calc(100dvh - 40px);padding:32px; }
+#info-modal h2 { display:flex;align-items:center;gap:12px;font-size:30px;line-height:1.2; }
+#info-modal .modal-sub { font:14px/1.6 var(--font-ui);margin-bottom:20px; }
+.guide-overview { margin:0 0 24px; }
+.guide-overview img { display:block;width:100%;height:auto; }
+#info-modal .info-steps { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;list-style:none;padding:0;counter-reset:guide; }
+#info-modal .info-steps li { display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--surface-soft);border:1px solid var(--border);border-radius:12px; }
+.guide-step-icon { display:grid;place-items:center;flex:0 0 36px;width:36px;height:40px;color:var(--metadata-ink);background:var(--surface);border:1px solid var(--border);border-radius:9px; }
+#info-modal .info-steps h3 { font:700 16px/1.4 var(--font-ui);margin:0 0 8px; }
+#info-modal .info-steps p { font:14px/1.6 var(--font-ui);margin:0;color:var(--ink-muted); }
+#info-modal .guide-shortcuts { display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 16px; }
+#info-modal .info-note { border:1px solid var(--border);font:13px/1.7 var(--font-ui);border-radius:10px; }
+@media (max-width:700px) {
+  #info-modal { padding:10px; }
+  #info-modal .modal { padding:22px;max-height:calc(100dvh - 20px); }
+  #info-modal .info-steps { grid-template-columns:1fr; }
+  #info-modal h2 { font-size:26px; }
+  #info-modal .guide-shortcuts .btn { flex:1 1 100%; }
+}
+@media (max-width:599px) {
+  #app[data-workspace-view='preview'] .workspace-switch .mobile-preview-dark { display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;padding:8px; }
+  #app[data-workspace-view='preview'] .workspace-switch .mobile-preview-dark[aria-pressed='true'] { color:var(--simulation-ink);background:var(--simulation-bg);border-color:var(--simulation-line); }
+  #preview-panel { display:block;padding:12px 8px; }
+  #preview-controls { display:none; }
+  #preview-shell,#preview-shell.preview-mobile { max-width:none;padding:0;border:0;box-shadow:none; }
+}
+
+/* Consistent secondary Calendar commands; the import action keeps primary emphasis. */
+#editor .calendar-toolbar > .calendar-command { display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:8px 12px;color:var(--ink);background:var(--surface);border:1px solid var(--border-strong);text-decoration:none;font:600 13px/1.4 var(--font-ui); }
+#editor .calendar-toolbar > .calendar-command:hover { color:var(--ink);background:var(--surface-muted); }
+.calendar-command svg { flex:none; }
+#info-btn { display:inline-flex;align-items:center;gap:7px; }
+#info-btn .guide-book-icon { flex:none; }
+#info-modal #info-title .guide-book-icon { flex:0 0 29px;width:29px;height:29px;color:var(--metadata-ink); }
+#tools-menu .tool-menu-group { display:grid;gap:6px; }
+#tools-menu .tool-menu-group + .tool-menu-group { border-top:1px solid var(--border);margin-top:4px;padding-top:12px; }
+#tools-menu .tool-menu-group h3 { margin:0 0 2px;font:600 11px/1.4 var(--font-ui);color:var(--ink-muted); }
+#tools-menu .tool-menu-group .btn { padding:9px;font:600 12px/1.4 var(--font-ui); }
+@media (max-width:599px) { #info-btn .guide-label { display:none; } }
+@media (prefers-reduced-motion:reduce) { .sidebar-grip { transition:none; } }
+
+#inbox-preview { font-family:var(--font-ui); }
+
+/* Keep sorting anchored while its optional action appears beside it. */
+#editor .event-list-utilities { display:grid;grid-template-columns:auto minmax(0,1fr) auto;justify-content:initial;gap:6px 10px; }
+#editor .event-list-utilities .auto-sort-setting { grid-column:1;grid-row:1; }
+#sort-events-once { grid-column:2;grid-row:1;justify-self:start; }
+#expand-events { grid-column:3;grid-row:1; }
+.draft-history-controls { display:flex;gap:4px;align-items:center; }
+.draft-history-controls .btn { display:inline-flex;align-items:center;justify-content:center;width:36px;min-height:36px;padding:6px; }
+@media (max-width:599px) {
+  .draft-history-controls { grid-row:3;grid-column:1 / -1;justify-content:flex-start; }
+}
+
+/* One scrolling body keeps the export actions and copy result in view. */
+.checklist-body { min-height:0;overflow-y:auto;overscroll-behavior:contain; }
+#checklist-items { overflow:visible;padding-right:0; }
+#checklist-copy-guidance { max-height:none;overflow:visible; }
+.passed-checks > summary { cursor:pointer;padding:12px 0;font:650 13px var(--font-ui);color:var(--ink-muted); }
+.export-status { flex-shrink:0;padding:12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface-muted);color:var(--ink);font:600 13px/1.5 var(--font-ui);margin:0 0 12px; }
+#checklist-modal .modal-actions .btn { display:inline-flex;align-items:center;justify-content:center;text-decoration:none; }
+@media(max-width:599px) {
+  #checklist-modal .modal-actions { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+  #checklist-primary { grid-column:1 / -1; }
+  #checklist-modal .modal-actions .btn { min-width:0;font-size:12px; }
+}
+
+#checklist-copy-guidance .field { display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;margin-top:12px; }
+#checklist-copy-guidance .field label { grid-column:1 / -1; }
+#checklist-copy-guidance .field input { min-width:0;width:100%; }
+#checklist-copy-guidance .field button { margin:0; }
+
+#checklist-items .check-warning { margin:6px 0;padding:12px;border:1px solid var(--warning-line);border-radius:8px;background:color-mix(in srgb,var(--warning-bg) 45%,var(--surface)); }
+#checklist-items .check-icon { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font:750 14px/1 var(--font-ui); }
+#checklist-items .check-warning .check-icon { color:var(--warning-ink);background:var(--warning-bg);border:1px solid var(--warning-line); }
+#checklist-items .check-passed .check-icon { color:var(--success-ink);background:var(--success-bg); }

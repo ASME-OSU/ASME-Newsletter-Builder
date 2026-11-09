@@ -9,7 +9,7 @@ A static newsletter builder for creating ASME at Ohio State campaigns and copyin
 ## Build a newsletter
 
 1. Open the hosted builder.
-2. Import upcoming events from **Calendar** or add them manually. Auto-sort arranges recognizable dates and flags possible duplicates or schedule conflicts.
+2. Select several upcoming events in **Calendar** and choose **Import selected**, or add them manually. Use the optional issue date filter to narrow the list. Auto-sort arranges recognizable dates and flags possible duplicates or schedule conflicts.
 3. Customize the featured event, announcement, quick links, design, subject, and preheader.
 4. Watch the live readiness score and inbox preview while editing.
 5. Check the Desktop, Mobile, and Email dark mode previews, then run **Check Links**.
@@ -24,7 +24,18 @@ The **Calendar** tab lists upcoming events from the public ASME Google Calendar.
 
 The browser reads `calendar-events.json` from the same GitHub Pages site. An hourly GitHub Actions workflow refreshes that file from the public Google iCal feed. This avoids requiring officers to sign in to Google or exposing an API key in browser code.
 
-If an imported event changes in Google Calendar, the builder marks it **Calendar update available**. Use **Update Imported Event** on that calendar card or **Sync Imported Events** to apply all available changes. Updating refreshes the calendar-owned title, date, time, location, description, event type, and link while preserving newsletter images. Changes are never applied silently, so newsletter-specific edits are not overwritten without a click. If an imported event is cancelled or removed, its editor card is marked **No longer on Calendar**.
+If an imported event changes in Google Calendar, the builder marks it **Calendar update available**. Use **Update Imported Event** on that calendar card or **Sync Imported Events** to review available changes. The review shows the current and calendar values; uncheck fields to keep newsletter-specific copy, then apply the selected changes. Updating refreshes the calendar-owned title, date, time, location, description, event type, and link while preserving newsletter images. Changes are never applied silently, so newsletter-specific edits are not overwritten without a click. If an imported event is cancelled or removed, its editor card is marked **No longer on Calendar**.
+
+## Faster editing and recovery
+
+- Use an event card’s **Actions → Use as featured** to copy its details, image and button into Featured. The original remains in Upcoming Events. Replacing featured content asks first and supports Undo.
+- **View Checks → Fix** opens the relevant section and focuses the field needing attention.
+- Major changes and preset fills expose an immediate **Undo** button as well as revision history.
+- An optional **Calendar date (for sorting)** stores the year separately from the editable display date. Calendar imports fill it automatically.
+- Image status reports actual preview loading failures and image dimensions; failures also appear in readiness.
+- **Templates → Saved issues** keeps up to 30 named issues in this browser. Use Open, Update, or Delete on saved entries. Export JSON for off-device backup or handoff.
+- JSON and HTML exports use the issue subject in their filenames.
+- Fictional practice events retain a dedicated readiness warning after duplication, detaching from Calendar, featured copying, and draft handoff.
 
 ## Share an editable draft
 
@@ -50,6 +61,11 @@ Finished `.html` exports are email previews, not editable builder projects. Shar
 - Versioned editable draft import/export
 - Brevo-ready HTML and downloadable HTML export
 - URL, placeholder, image-alt, duplicate, schedule-conflict, unsubscribe, and footer checks before copying
+- Resizable desktop editor with a three-dot drag handle, saved width, keyboard controls and responsive compact mode
+- Clear primary/secondary actions, directly available list tools and in-flow event action menus
+- Right-side preview rail on desktop, full-width phone preview with a dark-mode toggle
+- Larger illustrated guide with SVG workflow art and direct navigation shortcuts
+- Calendar search and two-way event expansion
 - Responsive editor and keyboard-visible focus states
 
 ## Brevo and footer requirements
@@ -88,10 +104,19 @@ Then open `http://localhost:8000`.
 
 ## Repository structure
 
-- `index.html` — builder interface and email generator
+- `index.html` and `styles.css` — builder markup and responsive styling
+- `newsletter-layout.js` — pointer/keyboard sidebar resizing and saved layout preferences
+- `newsletter-editor.js` — editor actions, preview and readiness navigation
+- `newsletter-calendar.js` — calendar feed, batch imports and reviewed updates
+- `newsletter-storage.js` — autosave, revision history and draft handoff
+- `newsletter-email.js` — email rendering from a supplied state snapshot
+- `newsletter-readiness.js` — pure validation and field destinations
+- `newsletter-links.js` — link-check invalidation and async race protection
+- `newsletter-library.js` — named local issue storage
+- `assets/guide-workflow.svg` — original workflow illustration for the in-app guide
+- `assets/hub-theme.css` — latest shared ASME editor theme, with bundled fonts under `assets/fonts/`
+- The builder interface uses locally hosted Manrope (`@fontsource-variable/manrope` 5.2.8); its open font license is in `assets/fonts/MANROPE-OFL.txt`.
 - `newsletter-core.js` — state validation, escaping, draft schema, and calendar mapping helpers
-- `assets/hub-theme.css` — shared ASME editor colors, typography, controls, and panels; email designs remain separate
-- `assets/fonts/` — bundled Inter and DM Serif Display fonts with their license files
 - `calendar-events.json` — generated public event feed used by the hosted builder
 - `scripts/sync-calendar.mjs` — Google iCal synchronization script
 - `test/` — Node tests for state, security, draft, and calendar behavior
@@ -100,3 +125,7 @@ Then open `http://localhost:8000`.
 ## Practice calendar cleanup
 
 The preview accepts either a starting year such as `2027` or its complete academic year, `2027-2028`. **Remove fictional events** leaves fictional mode immediately, restores the chapter source and refreshes its generated JSON. Loading and failure messages remain visible; a failed refresh keeps any available chapter snapshot. Choose **Upcoming** afterward to clear the year filter and show chapter events. Removing preview events does not delete editable newsletter cards already imported into a draft.
+
+### Asset versions
+
+All script and stylesheet URLs in `index.html` share a release version. Bump it when shipping changed assets so returning browsers load a consistent release. The shared test fixture and HTML checks resolve the versioned URLs to local files.

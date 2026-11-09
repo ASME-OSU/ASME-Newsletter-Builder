@@ -25,7 +25,7 @@ Confirm quick-link destinations under **Links**, the footer under **Design**, an
 - Open **Calendar** and click **Import Event** beside each event you want to include.
 - Return to **Events** to edit the imported title, date, time, location, description, image, or button. These edits do not change Google Calendar.
 - Use **+ Add Event** for an item that is not on the calendar. Events can also be reordered, duplicated, or removed.
-- **Auto-sort** is on by default and sorts events when a date or time edit is finished. Select **Sort by date** at any time for a manual sort. Unrecognized placeholders such as `MON DD` remain after dated events.
+- **Keep in date order** is on by default and sorts events after date/time edits and imports. Turn it off to arrange events yourself; **Sort once** then orders the list without enabling automatic sorting. Moving an event with its up/down controls also turns automatic sorting off. Unrecognized placeholders such as `MON DD` remain after dated events.
 - A **Possible duplicate** badge appears when two events have the same normalized title and date. A **Schedule conflict** badge appears when events have the same date and start-time text. Review these warnings; legitimate simultaneous events can stay.
 
 If the calendar does not load, click **Refresh Events** or **Open Calendar**. The rest of the builder remains usable.
@@ -82,9 +82,9 @@ Use **Export → Download .html** when someone only needs an offline preview of 
 
 Calendar → enter `2027-2028` under **Academic year (August–July)** → **Preview year**. This filters the generated snapshot by Eastern calendar date; all-day dates retain their source day. **Upcoming** returns to upcoming dates. The selected view changes this browser, not a Google calendar or the newsletter draft.
 
-**Refresh chapter snapshot** reads `calendar-events.json` again and returns from a fictional source to the chapter snapshot. It does not fetch Google live. The hourly `sync-calendar.yml` job reads the public chapter iCal feed; status reports when JSON was generated/read, its source check time when available and date coverage. A blank year view is not proof that Google has no events outside that coverage. Hub annual settings do not change this repository's calendar source.
+**Refresh events** loads the latest saved chapter calendar and returns from fictional practice events. Google Calendar updates are collected by the hourly job. **More options** contains the source check time and available date range. A blank year view is not proof that Google has no events outside that coverage. Hub annual settings do not change this repository's calendar source.
 
-**Load fictional Fall/Spring** creates two labeled TEST ONLY/DO NOT SEND local fixture records for the entered year. No Google event, guest or invitation is created. **Remove fictional events** verifies the empty local source. Importing a fictional event explicitly adds it to your editable draft; preserve a revision/export first, remove the fictional draft event afterward and restore the original draft. Refresh chapter snapshot clears the fictional source. Existing organization defaults and named templates are preserved.
+**Load fictional Fall/Spring** creates two labeled TEST ONLY/DO NOT SEND local fixture records for the entered year. No Google event, guest or invitation is created. **Remove fictional events** reloads the chapter calendar. Importing a fictional event explicitly adds it to your editable draft; preserve a revision/export first, remove the fictional draft event afterward and restore the original draft. Refresh events clears the fictional source. Existing organization defaults and named templates are preserved.
 
 For real chapter entry, **Open event editor**, choose the approved chapter calendar before Save and verify the calendar selector again. For a separate private native rehearsal, choose the training calendar and keep guests empty. Reuse the approved chapter calendar for routine future years; do not publish a private calendar's secret feed. Infrastructure/feed changes require the Webmaster's reviewed receipt.
 
@@ -97,17 +97,55 @@ Use **Edit** and **Preview** in the header to switch views. Each view keeps its 
 
 Open **Export** (the download icon on phones) for Copy HTML for Brevo or Download .html. Open **Tools** (the three-dot icon) for the ASME Hub, Check newsletter links, New Issue, and help. On phones and tablets, the issue-count button beside the section selector opens readiness checks. Organization defaults and academic-year rehearsal controls are expandable to keep routine editing focused.
 
-Event cards start collapsed on phones and tablets. Open a card to edit it, use its up/down controls to reorder it, and open its three-dot menu for **Duplicate** or **Remove**. **List options** groups Sort by date, Auto-sort, and Expand all events beside **Add Event**.
+Event cards start collapsed on phones and tablets. Open a card to edit it, use its up/down controls to reorder it, and open **Actions** for **Duplicate**, **Use as featured**, or **Remove**. Actions expand inside the card so they do not cover the form. **Keep in date order** and **Expand all** are directly available beneath **Add Event**. **Sort once** appears when automatic sorting is off.
 
 
-The dedicated **Brevo** button opens your campaign list in a new tab. In the copy checklist, **Copy and go to Brevo** copies the newsletter and then opens Brevo in the current tab; your browser draft remains saved. Choose **Copy HTML only** to stay in the builder. The checklist always opens at the heading, with its actions visible while the checks scroll.
+The dedicated **Brevo** button and the copy dialog’s **Open Brevo** link open your campaign list in a separate tab. The copy dialog lists review items first, with passed checks collapsed. Copy the subject and paste it into Brevo, then do the same for the inbox preview. Use **Copy HTML** last and paste it into the campaign HTML editor. The dialog stays open with a persistent result message; copying another value updates that message to identify the current clipboard content. Copying does not send the newsletter. Send yourself a test before sending to members.
 
 ## Reliable editing and calendar review
 
 - Event cards can be collapsed to a title/date/status summary. **Expand all events** opens every card; new and duplicated cards open automatically. Editing, sorting, and toggling options preserve keyboard focus.
 - Every field has an associated label. Desktop section tabs support Left/Right, Home, and End. JSON import controls work with keyboard activation.
-- The save indicator distinguishes unsaved changes, saving, saved, and failures. A storage failure keeps an **Export Draft** and **Retry saving** notice visible. Export a JSON backup if storage is unavailable. Pending changes are saved before leaving; Copy and go to Brevo stays in the builder if saving fails.
+- The save indicator distinguishes unsaved changes, saving, saved, and failures. A storage failure keeps an **Export Draft** and **Retry saving** notice visible. Export a JSON backup if storage is unavailable. The builder stays open when you open Brevo.
 - Draft imports assign unique event IDs, and editable exports preserve every event rather than silently truncating at 100. Backup warnings explain whether the previous-draft snapshot or only revision history could be saved.
 - Weekly calendar occurrences import as separate events. Rescheduled recurring occurrences retain their original identity, and content changes can be detected even when the upstream update timestamp stays unchanged. Recurring descriptions are preserved.
 - Readiness now flags missing calendar sources within verified snapshot coverage. A failed refresh or an event outside snapshot coverage is shown as unverified rather than canceled. Review the calendar, then remove the event or choose **Keep newsletter copy** to retain it as an independent authored event.
 - **View Checks** uses a review-only title and close action. When copying, expand **Subject and inbox preview for Brevo** to copy those fields before the final HTML copy. The final action always restores newsletter HTML to the clipboard; copy failures are reported.
+
+### Calendar status
+
+Use **Refresh events** to load the latest saved calendar. The short status shows the event count, active year or Upcoming, and the calendar update time. **More options** contains the hourly update explanation, available date range, and source check time. Loading and refresh failures stay visible above the events, and practice events remain clearly marked as fictional.
+
+### Editing shortcuts and saved issues
+
+- In Calendar, check the events you want and choose **Import selected**. **Issue date range** limits which selected events are imported; selected events hidden by a filter are not imported. The whole import can be undone once.
+- Calendar update buttons open a before/after review. Uncheck fields you want to keep as newsletter copy. Applying records the source version so kept copy does not repeatedly appear as an upstream change.
+- Event **Actions → Use as featured** copies content, image, and button. The event stays in Upcoming Events. Replacing a featured event asks first and supports Undo.
+- In readiness, choose **Fix** to jump to the field. Practice-content warnings persist until practice events are removed or replaced with real events.
+- Use the optional **Calendar date (for sorting)** to keep the year when planning ahead. The separate display date remains editable.
+- **Templates → Saved issues** supports up to 30 named local issues. **Save current issue** makes a new entry; **Update** replaces a chosen entry. Opening another issue saves a recovery point and supports Undo. These entries stay in this browser; export JSON for sharing or a separate backup.
+- A previous link check is cleared when enabled destinations change. Run Check Links again after editing URLs.
+
+### Resize the editor sidebar
+
+In desktop split view, drag the three-dot divider between the editor and preview. Its width is saved for this browser. The editor can be 340–760 px wide, with a smaller maximum when needed to leave room for the preview. Double-click the divider to reset to 420 px.
+
+Keyboard: focus the divider with Tab, then use Left/Right arrows (16 px), Shift+Left/Right (48 px), Home/End (minimum/maximum), or Enter (reset). Escape cancels an active drag. Compact windows retain the full-width Edit/Preview switch instead of the divider.
+
+### Preview and tab shortcuts
+
+The preview controls sit on the right of the email: choose Desktop/Fit width or Mobile, then toggle Email dark mode independently. These controls change only the preview. On narrow screens they use monitor, phone and moon icons.
+
+Search Calendar by title, location or description. **Clear filters** resets both search and dates. In Events, **Expand all** becomes **Collapse all** when every card is open. Featured, Announcement and Quick Links keep their content while switched off; switch them back on to edit it.
+
+The resize divider has a smaller grip and no measurement label. Double-click or press Enter to restore its default width.
+
+### Simpler Calendar and phone preview
+
+Calendar opens with search and event selection. **Select all** selects only the unimported events currently shown. Date ranges, academic-year practice and source details are under **More options**. A reset action appears when a hidden date/year filter is active.
+
+On phones, the preview uses the available width without a device selector. Use the moon next to Edit/Preview to simulate email dark mode. Desktop keeps the device toggle and dark-mode control on the right.
+
+The Guide is now a larger illustrated walkthrough. Its shortcuts open Calendar, starter layouts or readiness directly.
+
+The top toolbar has Undo and Redo for the last major change (such as imports, sorting, removing content or opening another issue). These are recovery controls for major actions; text fields keep their normal editing undo. Redo clears when you make a new edit. Revision History retains older saved versions.

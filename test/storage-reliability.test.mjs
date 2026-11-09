@@ -1,9 +1,9 @@
+import { loadBuilderHTML } from './helpers/load-builder.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
-const core = fs.readFileSync(new URL('../newsletter-core.js', import.meta.url),'utf8');
-const html = fs.readFileSync(new URL('../index.html', import.meta.url),'utf8').replace('<script src="newsletter-core.js"></script>',`<script>${core}</script>`);
+const html=loadBuilderHTML();
 async function fixture(){
   const dom=new JSDOM(html,{url:'https://isolated.invalid/',runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){
     w.matchMedia=()=>({matches:false,addEventListener(){}});
