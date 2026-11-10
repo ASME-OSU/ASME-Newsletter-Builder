@@ -14,7 +14,7 @@
     "ql1-title", "ql1-sub", "ql1-btn", "ql1-url", "ql2-title", "ql2-sub", "ql2-btn", "ql2-url",
     "ql3-title", "ql3-sub", "ql3-btn", "ql3-url", "issue-bar-text", "footer-name", "footer-addr",
     "s-logo", "s-logo-light", "s-website", "s-ig-url", "s-ig-handle", "s-li-url", "s-gm-url", "s-unsub",
-    "s-subject", "s-preheader", "email-width", "s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"
+    "s-subject", "s-preheader", "s-mirror-link", "email-width", "s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"
   ];
 
   function asString(value, fallback) {
@@ -47,6 +47,35 @@
     } catch (error) {
       return "";
     }
+  }
+
+  function usefulDescription(title,description){
+    function key(value){return asString(value).trim().replace(/^ASME(?: OSU)?[\s:–—-]+/i,'').replace(/\s+/g,' ').replace(/[.!?]+$/,'').toLowerCase();}
+    return key(description)&&key(description)!==key(title)?asString(description).trim():'';
+  }
+  function isGenericCalendarUrl(value){
+    var url;try{url=new URL(value);}catch(error){return false;}
+    if(!['calendar.google.com','www.google.com','google.com'].includes(url.hostname.toLowerCase())||!/^\/calendar(?:\/|$)/.test(url.pathname))return false;
+    return !url.searchParams.has('eid')&&!/\/(?:event|eventedit)(?:\/|$)/.test(url.pathname)&&url.searchParams.get('action')!=='TEMPLATE';
+  }
+  function eventLinkLabel(event){var label=asString(event.linkText).trim();return isGenericCalendarUrl(event.linkUrl)&&(!label||/^(?:view event|learn more)$/i.test(label))?'See calendar':label||'Learn More';}
+  function eventWeekday(event){var iso=normalizeDateISO(event.dateISO);return iso&&!/\b(?:sun(?:day)?|mon(?:day)?|tue(?:sday|s)?|wed(?:nesday)?|thu(?:rsday|rs|r)?|fri(?:day)?|sat(?:urday)?)\b/i.test(asString(event.date))?new Date(iso+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'short',timeZone:'UTC'}):'';}
+  function dateConsistency(value,canonical,referenceYear){
+    var raw=asString(value),dates=Array.from(raw.matchAll(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b/gi));
+    if(dates.length!==1||/\d(?:st|nd|rd|th)?\s*(?:[–—-]|to)\s*\d/i.test(raw))return null;
+    var iso=normalizeDateISO(canonical),years=Array.from(new Set(raw.match(/\b[12]\d{3}\b/g)||[]));
+    var year=years.length===1?Number(years[0]):iso?Number(iso.slice(0,4)):Number(referenceYear);
+    if(!Number.isInteger(year)||year<1000||year>2999||years.length>1)return null;
+    var months=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'],month=months.indexOf(dates[0][1].slice(0,3).toLowerCase())+1;
+    var displayed=normalizeDateISO(year+'-'+String(month).padStart(2,'0')+'-'+dates[0][2].padStart(2,'0'));if(!displayed)return null;
+    var weekdays=raw.match(/\b(?:sun(?:day)?|mon(?:day)?|tue(?:sday|s)?|wed(?:nesday)?|thu(?:rsday|rs|r)?|fri(?:day)?|sat(?:urday)?)\b/gi)||[];
+    var expected=new Date(displayed+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',timeZone:'UTC'});
+    return {dateISO:displayed,calendarMismatch:Boolean(iso&&iso!==displayed),weekdayMismatch:weekdays.length===1&&weekdays[0].slice(0,3).toLowerCase()!==expected.slice(0,3).toLowerCase(),expectedWeekday:expected};
+  }
+  function knownLogoSize(url){
+    if(url==='https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png')return {width:360,height:120};
+    if(url==='https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png')return {width:360,height:180};
+    return null;
   }
 
   function inferEventType(value, title) {
@@ -139,7 +168,8 @@
   function sanitizeFields(fields) {
     var input = fields && typeof fields === "object" ? fields : {};
     return FIELD_IDS.reduce(function (output, id) {
-      if (["s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"].indexOf(id)>=0) output[id]=normalizeDateISO(input[id]);
+      if(id==="s-mirror-link") output[id]=input[id]==="1"?"1":"";
+      else if (["s-send-date", "s-issue-from", "s-issue-through", "feat-dateISO"].indexOf(id)>=0) output[id]=normalizeDateISO(input[id]);
       else if (Object.prototype.hasOwnProperty.call(input, id)) output[id] = id==="footer-addr"?upgradeMailingAddress(input[id]):asString(input[id]);
       return output;
     }, {});
@@ -319,6 +349,12 @@
     escapeHtml: escapeHtml,
     escapeMultiline: escapeMultiline,
     safeUrl: safeUrl,
+    usefulDescription: usefulDescription,
+    isGenericCalendarUrl: isGenericCalendarUrl,
+    eventLinkLabel: eventLinkLabel,
+    eventWeekday: eventWeekday,
+    dateConsistency: dateConsistency,
+    knownLogoSize: knownLogoSize,
     inferEventType: inferEventType,
     splitEventDate: splitEventDate,
     normalizeEvent: normalizeEvent,

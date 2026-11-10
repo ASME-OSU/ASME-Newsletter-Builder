@@ -23,7 +23,7 @@ var ASME_ORG_DEFAULTS={
   "ql1-title":"Join ASME","ql1-sub":"Access events and opportunities.","ql1-btn":"Join Now","ql1-url":"https://org.osu.edu/asme/join/",
   "ql2-title":"Calendar","ql2-sub":"See all upcoming events.","ql2-btn":"See Events","ql2-url":"https://org.osu.edu/asme/calendar/",
   "ql3-title":"Sponsor Us","ql3-sub":"Reach ME students at OSU.","ql3-btn":"Partner","ql3-url":"https://org.osu.edu/asme/sponsor-asme/",
-  "footer-name":"Ohio State ASME","footer-addr":Core.CHAPTER_MAILING_ADDRESS,
+  "footer-name":"Ohio State ASME","footer-addr":Core.CHAPTER_MAILING_ADDRESS,"s-mirror-link":"",
   "s-logo":"https://img.mailinblue.com/11115816/images/content_library/original/6a5740d5d5fa2e1f36b1638d.png",
   "s-logo-light":"https://img.mailinblue.com/11115816/images/content_library/original/6a574002fc35afde1ddd649a.png",
   "s-website":"https://org.osu.edu/asme/","s-ig-url":"https://www.instagram.com/asmeohiostate/","s-ig-handle":"@asmeohiostate",
@@ -44,7 +44,7 @@ var EVENT_TYPES={
 };
 var THEMES={
   navy:{name:"Navy Dark",bg:"#071426",headerBg:"#0f3460",featuredBg:"#0f3460",footerBg:"#0f3460",bodyBg:"#0d1f38",cardBg:"#162d52",cardBorder:"rgba(255,255,255,0.08)",buttonBg:"#0f3460",accent:"#ba0c2f",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9aae",buttonText:"#ffffff"},
-  light:{name:"Light",bg:"#e8ecef",headerBg:"#ffffff",featuredBg:"#fff6f7",footerBg:"#f1f3f5",bodyBg:"#f7f8fa",cardBg:"#ffffff",cardBorder:"#d9dfe5",buttonBg:"#edf0f3",accent:"#ba0c2f",title:"#20262d",text:"#35414c",muted:"#4f5e6b",subtle:"#44525f",soft:"#63717e",faint:"#707d89",border:"#cfd6dd",tag:"#9f0a28",buttonText:"#ffffff"},
+  light:{name:"Light",bg:"#e8ecef",headerBg:"#ffffff",featuredBg:"#ffffff",footerBg:"#f1f3f5",bodyBg:"#ffffff",cardBg:"#ffffff",cardBorder:"#d9dfe5",buttonBg:"#edf0f3",accent:"#ba0c2f",title:"#20262d",text:"#35414c",muted:"#4f5e6b",subtle:"#44525f",soft:"#63717e",faint:"#596775",border:"#cfd6dd",tag:"#9f0a28",buttonText:"#ffffff"},
   slate:{name:"Slate",bg:"#0e1117",headerBg:"#1c2333",featuredBg:"#1c2333",footerBg:"#1c2333",bodyBg:"#161b27",cardBg:"#1e2a3a",cardBorder:"rgba(255,255,255,0.08)",buttonBg:"#1c2333",accent:"#ba0c2f",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9aae",buttonText:"#ffffff"},
   dark:{name:"Dark",bg:"#111111",headerBg:"#1a1a1a",featuredBg:"#1a1a1a",footerBg:"#1a1a1a",bodyBg:"#141414",cardBg:"#1f1f1f",cardBorder:"rgba(255,255,255,0.08)",buttonBg:"#1a1a1a",accent:"#ba0c2f",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9aae",buttonText:"#ffffff"},
   osu:{name:"OSU Red",bg:"#0a0a0a",headerBg:"#1a0000",featuredBg:"#1a0000",footerBg:"#1a0000",bodyBg:"#0f0000",cardBg:"#1c0000",cardBorder:"rgba(255,255,255,0.08)",buttonBg:"#1a0000",accent:"#ba0c2f",title:"#ffffff",text:"#d8e2ee",muted:"#a8c4e0",subtle:"#b8c5d4",soft:"#94a3b8",faint:"#94a3b8",border:"rgba(255,255,255,0.14)",tag:"#ff9aae",buttonText:"#ffffff"}
@@ -76,7 +76,7 @@ function getOrganizationDefaults(){
   }catch(error){return Object.assign({},ASME_ORG_DEFAULTS);}
 }
 function applyOrganizationDefaults(profile){
-  ORG_DEFAULT_FIELD_IDS.forEach(function(id){var el=document.getElementById(id);if(el&&Object.prototype.hasOwnProperty.call(profile,id))el.value=id==="footer-addr"?Core.upgradeMailingAddress(profile[id]):String(profile[id]||"");});
+  ORG_DEFAULT_FIELD_IDS.forEach(function(id){var el=document.getElementById(id);if(el&&Object.prototype.hasOwnProperty.call(profile,id)){if(el.type==="checkbox"){el.checked=profile[id]==="1";el.value="1";}else el.value=id==="footer-addr"?Core.upgradeMailingAddress(profile[id]):String(profile[id]||"");}});
 }
 function saveOrganizationDefaults(){
   var profile={};ORG_DEFAULT_FIELD_IDS.forEach(function(id){profile[id]=g(id);});
@@ -95,7 +95,7 @@ window.onload=function(){
   initializeSectionTabs();
   updateBuilderShortcutVisibility();
   document.getElementById("feat-title").value="Industry Night: Meet Top Engineering Employers";
-  document.getElementById("feat-date").value="Thursday, May 29th \u00b7 6:00\u20138:30 PM";
+  document.getElementById("feat-date").value="Friday, May 29th \u00b7 6:00\u20138:30 PM";
   document.getElementById("feat-location").value="Hitchcock Hall, Room 131";
   document.getElementById("feat-desc").value="Network with recruiters and engineers from Honda, Rolls-Royce, P&G, and more. Bring your resume and dress business casual. Pizza provided.";
   document.getElementById("feat-btn-text").value="RSVP Now";
@@ -122,7 +122,7 @@ window.onload=function(){
     var modal=document.querySelector(".modal-overlay.open");
     if(!modal)return;
     if(event.key==="Escape"){
-      if(modal.id==="info-modal")closeInfoDialog();else if(modal.id==="next-issue-modal")closeNextIssue();else if(modal.id==="chat-digest-modal")closeChatDigest();else closeChecklist();
+      if(modal.id==="info-modal")closeInfoDialog();else if(modal.id==="prepare-issue-modal")closePrepareIssue();else if(modal.id==="next-issue-modal")closeNextIssue();else if(modal.id==="chat-digest-modal")closeChatDigest();else closeChecklist();
       return;
     }
     if(event.key==="Tab"){
@@ -408,7 +408,7 @@ function renderEventList(){
         '<div class="field"><label>Date</label><input value="'+escHtml(ev.date)+'" data-field="date" oninput="updateEvent('+ev.id+',\'date\',this.value)" onchange="sortAfterEventEdit()" placeholder="MAY 28"/></div>'+
         '<div class="field"><label>Time</label><input value="'+escHtml(ev.time)+'" data-field="time" oninput="updateEvent('+ev.id+',\'time\',this.value)" onchange="sortAfterEventEdit()" placeholder="6:00 PM"/></div>'+
       '</div>'+
-      '<div class="field"><label>Calendar date (for sorting)</label><input type="date" data-field="dateISO" value="'+escHtml(ev.dateISO||'')+'" oninput="updateEvent('+ev.id+',\'dateISO\',this.value)" onchange="sortAfterEventEdit()"/><small>Optional. Keeps the year when planning ahead; the display date above stays editable.</small></div>'+
+      '<div class="field"><label>Calendar date (for sorting)</label><input type="date" data-field="dateISO" value="'+escHtml(ev.dateISO||'')+'" oninput="updateEvent('+ev.id+',\'dateISO\',this.value)" onchange="sortAfterEventEdit()"/><small>Optional. Used for sorting and issue-date checks.</small></div>'+
       '<div class="field"><label>Event Title</label><input value="'+escHtml(ev.title)+'" data-field="title" oninput="updateEvent('+ev.id+',\'title\',this.value)" onchange="sortAfterEventEdit(false)"/></div>'+
       '<div class="field"><label>Location</label><input value="'+escHtml(ev.location)+'" data-field="location" oninput="updateEvent('+ev.id+',\'location\',this.value)" placeholder="Hitchcock 035"/></div>'+
       '<div class="field"><label>Description</label><textarea data-field="description" oninput="updateEvent('+ev.id+',\'description\',this.value)">'+escHtml(ev.description)+'</textarea></div>'+
@@ -465,7 +465,7 @@ function expandAllEvents(){
 }
 
 
-function g(id){var el=document.getElementById(id);return el?el.value:"";}
+function g(id){var el=document.getElementById(id);return el?(el.type==="checkbox"?(el.checked?"1":""):el.value):"";}
 function escHtml(s){return Core.escapeHtml(s);}
 function emailText(s){return Core.escapeMultiline(s);}
 function emailUrl(s,options){return escHtml(Core.safeUrl(s,options));}
@@ -478,28 +478,6 @@ function getDateColor(a,theme){
 }
 function getAccentTextColor(a){return a==="gold"?"#071426":"#ffffff";}
 function getEventTypeLabel(type){return(EVENT_TYPES[type]||EVENT_TYPES.event).label;}
-
-function socialSVG(type){
-  var svgs={
-    instagram:'<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>',
-    linkedin:'<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
-    groupme:'<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485L2 22l2.343-.878C6.077 22.588 8.941 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.76 0-5.293-.894-7.354-2.397l-2.587.968.936-2.625A9.955 9.955 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm5-13H7a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2zm-2 4H7a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2z"/></svg>'
-  };
-  return svgs[type]||"";
-}
-
-function buildSocialIconsPreview(T){
-  var igUrl=Core.safeUrl(g("s-ig-url")), liUrl=Core.safeUrl(g("s-li-url")), gmUrl=Core.safeUrl(g("s-gm-url"));
-  var icons=[];
-  if(igUrl) icons.push({url:igUrl,label:"Instagram",type:"instagram",color:"#ba0c2f"});
-  if(liUrl) icons.push({url:liUrl,label:"LinkedIn",type:"linkedin",color:"#0077b5"});
-  if(gmUrl) icons.push({url:gmUrl,label:"GroupMe",type:"groupme",color:"#00aff0"});
-  if(!icons.length) return '<div style="font-family:Arial,sans-serif;font-size:11px;color:'+T.subtle+';margin-bottom:8px;">Follow us on social media</div>';
-  var iconHtml=icons.map(function(ic){
-    return '<a href="'+escHtml(ic.url)+'" style="display:inline-flex;align-items:center;gap:6px;background:'+ic.color+';color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:6px 14px 6px 10px;border-radius:999px;text-decoration:none;margin:0 6px 8px 0;">'+socialSVG(ic.type)+ic.label+'</a>';
-  }).join("");
-  return '<div style="margin-bottom:10px;">'+iconHtml+'</div>';
-}
 
 var draftSignature="",draftState=null,undoState=null,redoState=null,historyRestoring=false;
 function documentChanged(){
@@ -552,9 +530,8 @@ function renderPreview(){
   syncContentControls();
   var T=THEMES[activeTheme];
   document.getElementById("preview-panel").style.setProperty("--email-width",getEmailWidth()+"px");
-  var logoUrl=getPreviewLogoUrl(),igHandle=g("s-ig-handle"),igUrl=Core.safeUrl(g("s-ig-url")),issueBar=g("issue-bar-text");
+  var logoUrl=getPreviewLogoUrl(),issueBar=g("issue-bar-text");
   var annTitle=g("ann-title"),annQuote=g("ann-quote"),annAuthor=g("ann-author");
-  var footerName=g("footer-name"),footerAddr=g("footer-addr");
   var featTitle=g("feat-title"),featDate=g("feat-date"),featLoc=g("feat-location");
   var featDesc=g("feat-desc"),featBtnText=g("feat-btn-text");
   var featImgUrl=Core.safeUrl(g("feat-img-url")),featImgAlt=g("feat-img-alt");
@@ -574,7 +551,7 @@ function renderPreview(){
   var eventsHTML=events.length===0?'<div class="empty-state">No events yet \u2014 add one in the Events tab</div>':
     events.map(function(ev){
       var bar=getAccentColor(ev.accent),dc=getDateColor(ev.accent);
-      var dateParts=Core.splitEventDate(ev.date),typeLabel=getEventTypeLabel(ev.eventType);
+      var dateParts=Core.splitEventDate(ev.date),typeLabel=getEventTypeLabel(ev.eventType),weekday=Core.eventWeekday(ev),description=Core.usefulDescription(ev.title,ev.description),linkLabel=Core.eventLinkLabel(ev);
       var meta=[ev.time,ev.location].filter(Boolean).join(" \u00b7 ");
       var imgUrl=Core.safeUrl(ev.imgUrl),linkUrl=Core.safeUrl(ev.linkUrl);
       var dateHTML=dateParts.day?
@@ -583,11 +560,11 @@ function renderPreview(){
       return '<div class="pv-event" style="background:'+T.cardBg+';border:1px solid '+T.cardBorder+';overflow:hidden;">'+
         (ev.showImg&&imgUrl?'<img class="pv-event-img" src="'+escHtml(imgUrl)+'" alt="'+escHtml(ev.imgAlt)+'" onload="recordImageLoad(this,true)" onerror="recordImageLoad(this,false);this.style.display=\'none\'"/>':'')+
         '<div class="pv-event-body"><div class="pv-event-type" style="background:'+bar+';color:'+getAccentTextColor(ev.accent)+';">'+escHtml(typeLabel)+'</div>'+
-        '<div class="pv-event-layout"><div class="pv-event-date-block">'+dateHTML+'</div><div class="pv-event-content">'+
+        '<div class="pv-event-layout"><div class="pv-event-date-block">'+dateHTML+(weekday?'<div class="pv-event-weekday" style="color:'+T.muted+';">'+escHtml(weekday)+'</div>':'')+'</div><div class="pv-event-content">'+
         '<div class="pv-event-title" style="color:'+T.title+';">'+escHtml(ev.title)+'</div>'+
         (meta?'<div class="pv-event-meta" style="color:'+T.muted+';">'+escHtml(meta)+'</div>':'')+
-        '<div class="pv-event-desc" style="color:'+T.subtle+';">'+escHtml(ev.description)+'</div>'+
-        (ev.showLink&&linkUrl?'<div style="margin-top:10px;"><a href="'+escHtml(linkUrl)+'" style="display:inline-block;background:'+getAccentColor(ev.accent)+';color:'+getAccentTextColor(ev.accent)+';font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:7px 16px;border-radius:999px;text-decoration:none;">'+escHtml(ev.linkText||'Learn More')+'</a></div>':'')+
+        (description?'<div class="pv-event-desc" style="color:'+T.subtle+';">'+escHtml(description)+'</div>':'')+
+        (ev.showLink&&linkUrl?'<div style="margin-top:10px;">'+emailButtonHTML(linkUrl,linkLabel,bar,getAccentTextColor(ev.accent),linkLabel+' — '+ev.title)+'</div>':'')+
         '</div></div></div></div>';
     }).join("");
 
@@ -597,15 +574,12 @@ function renderPreview(){
     '<div><div class="pv-ann-quote" style="color:'+T.text+';">'+escHtml(annQuote)+'</div>'+
     (annAuthor.trim()?'<div class="pv-ann-author" style="color:'+T.soft+';">\u2014 <strong style="color:'+T.title+';">'+escHtml(annAuthor)+'</strong></div>':'')+'</div></div></div>':"";
 
-  var qlHTML=showLinks?
-    '<div class="pv-quicklinks">'+[1,2,3].map(function(n){
-      return '<div class="pv-ql" style="background:'+T.cardBg+';border:1px solid '+T.cardBorder+';"><div class="pv-ql-title" style="color:'+T.title+';">'+escHtml(g("ql"+n+"-title"))+'</div>'+
-        '<div class="pv-ql-sub" style="color:'+T.subtle+';">'+escHtml(g("ql"+n+"-sub"))+'</div>'+
-        '<span class="pv-ql-btn" style="background:'+T.buttonBg+';color:'+T.title+';border-color:'+T.border+';">'+escHtml(g("ql"+n+"-btn"))+'</span></div>';
-    }).join("")+'</div>':"";
+  var previewFields=collectState().fields;
+  var qlHTML=showLinks?renderActionCardsHTML(previewFields,true):'';
 
-  document.getElementById("preview-inner").innerHTML=
-    '<div class="pv-header" style="background:'+T.headerBg+';"><div class="pv-topbar" style="background:'+T.accent+';"></div>'+
+  document.getElementById("preview-inner").innerHTML=stabilizeEmailColors(
+    (g('s-mirror-link')==='1'?'<div class="pv-mirror" style="color:'+T.muted+';background:'+T.bg+';">View in browser</div>':'')+
+    '<div class="pv-header email-logo-surface" style="background:'+T.headerBg+';"><div class="pv-topbar" style="background:'+T.accent+';"></div>'+
     '<div class="pv-logo-wrap">'+(logoUrl?'<img src="'+escHtml(logoUrl)+'" alt="ASME OSU" onload="recordImageLoad(this,true)" onerror="recordImageLoad(this,false);this.style.display=\'none\'"/>'
       :'<div style="font-family:Georgia,serif;color:'+T.title+';font-size:22px;">ASME at OSU</div>')+
     '</div><div class="pv-issue" style="background:'+T.accent+';">'+escHtml(issueBar)+'</div></div>'+
@@ -614,10 +588,7 @@ function renderPreview(){
     '<div class="pv-section-title" style="color:'+T.title+';border-bottom-color:'+T.border+';">Upcoming Events</div>'+
     eventsHTML+annHTML+qlHTML+
     '</div>'+
-    '<div class="pv-footer" style="background:'+T.footerBg+';"><div class="pv-footer-name" style="color:'+T.title+';">'+escHtml(footerName)+'</div>'+
-    '<div class="pv-footer-addr" style="color:'+T.subtle+';">'+Core.escapeMultiline(footerAddr)+'</div>'+
-    buildSocialIconsPreview(T)+
-    '<div class="pv-footer-unsub" style="color:'+T.faint+';">You\'re receiving this because you signed up for ASME OSU updates. <span style="color:'+T.muted+';">Unsubscribe</span></div></div>';
+    renderNewsletterFooterHTML(previewFields,true));
   renderLiveTools();
 }
 
@@ -709,7 +680,7 @@ function renderTemplateList(){
 function setFields(fields){
   Object.keys(fields).forEach(function(id){
     var el=document.getElementById(id);
-    if(el) el.value=fields[id];
+    if(el){if(el.type==="checkbox"){el.checked=fields[id]==="1";el.value="1";}else el.value=fields[id];}
   });
 }
 
@@ -743,7 +714,7 @@ function loadBuiltInTemplate(key){
         "s-preheader":"Your biweekly update from ASME at The Ohio State University.",
         "issue-bar-text":"Biweekly Newsletter · May 2026",
         "feat-title":"Industry Night: Meet Top Engineering Employers",
-        "feat-date":"Thursday, May 29th · 6:00–8:30 PM",
+        "feat-date":"Friday, May 29th · 6:00–8:30 PM",
         "feat-location":"Hitchcock Hall, Room 131",
         "feat-desc":"Network with recruiters and engineers from Honda, Rolls-Royce, P&G, and more. Bring your resume and dress business casual. Pizza provided.",
         "feat-btn-text":"RSVP Now",

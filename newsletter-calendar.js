@@ -131,17 +131,17 @@ function renderCalendarList(){
   updateCalendarSyncButton();
   var eligible=calendarEvents.filter(function(event){return !findImportedEventForCalendar(event);});
   var selected=eligible.filter(function(event){return calendarSelected.has(event.id);});
-  var batchButton=document.getElementById("calendar-import-selected");batchButton.disabled=!selected.length;batchButton.textContent="Import selected"+(selected.length?" ("+selected.length+")":"");
+  var batchButton=document.getElementById("calendar-import-selected");batchButton.disabled=!selected.length;batchButton.className="btn btn-ghost btn-sm";batchButton.textContent="Import selected"+(selected.length?" ("+selected.length+")":"");
   updateCalendarSelectionControls();
   if(!calendarEvents.length){list.innerHTML='<div class="empty-state">No events match this calendar view. Try clearing the filters.</div>';return;}
   list.innerHTML=calendarEvents.map(function(event,index){
     var parts=calendarDateParts(event);
     var imported=findImportedEventForCalendar(event),needsUpdate=imported&&calendarImportNeedsUpdate(imported,event);
     var meta=[parts.time,event.location].filter(Boolean).join(" · ");
-    return '<div class="calendar-event '+(imported?'imported':'')+'">'+
-      (!imported?'<label class="calendar-select"><input type="checkbox" aria-label="Select '+escHtml(event.title)+'" '+(calendarSelected.has(event.id)?'checked ':'')+'onchange="selectCalendarEvent('+index+',this.checked)"> Select for import</label>':'')+
-      '<div class="calendar-event-date">'+escHtml(parts.date)+'</div>'+
-      '<div class="calendar-event-title">'+escHtml(event.title)+'</div>'+
+    return '<div class="calendar-event '+(imported?'imported':'')+'"><div class="calendar-event-head">'+
+      (!imported?'<label class="calendar-select"><input type="checkbox" aria-label="Select '+escHtml(event.title)+'" '+(calendarSelected.has(event.id)?'checked ':'')+'onchange="selectCalendarEvent('+index+',this.checked)"> <span class="calendar-select-label">Select for import</span></label>':'')+
+      '<div class="calendar-event-heading"><div class="calendar-event-date">'+escHtml(parts.date)+'</div>'+
+      '<div class="calendar-event-title">'+escHtml(event.title)+'</div></div></div>'+
       (meta?'<div class="calendar-event-meta">'+escHtml(meta)+'</div>':'')+
       (event.description?'<div class="calendar-event-desc">'+escHtml(event.description.slice(0,320))+(event.description.length>320?'…':'')+'</div>':'')+
       '<button class="btn '+(imported&&!needsUpdate?'btn-ghost':'btn-blue')+'" '+(imported&&!needsUpdate?'disabled':needsUpdate?'onclick="reviewCalendarUpdates('+index+')"':'onclick="importCalendarEvent('+index+')"')+'>'+(needsUpdate?'Update Imported Event':imported?'Synced':'Import Event')+'</button>'+
@@ -153,7 +153,7 @@ function selectCalendarEvent(index,checked){var event=calendarEvents[index];if(!
 function updateCalendarSelectionControls(){
   var eligible=calendarEvents.filter(function(event){return !findImportedEventForCalendar(event);});
   var count=eligible.filter(function(event){return calendarSelected.has(event.id);}).length;
-  var button=document.getElementById("calendar-import-selected");button.disabled=!count;button.textContent="Import selected"+(count?" ("+count+")":"");
+  var button=document.getElementById("calendar-import-selected");button.disabled=!count;button.className="btn btn-ghost btn-sm";button.textContent="Import selected"+(count?" ("+count+")":"");
   var all=document.getElementById("calendar-select-all");all.disabled=!eligible.length;all.checked=eligible.length>0&&count===eligible.length;all.indeterminate=count>0&&count<eligible.length;
   document.getElementById("calendar-clear-selection").hidden=!calendarSelected.size;
 }

@@ -26,6 +26,26 @@
     if(state.showFeatured){var featured=day(f['feat-dateISO']);if(!featured)add('Confirm the featured event date','Add its calendar date to check it against this issue.','featured','feat-dateISO');else if(send&&featured<send)add('Featured event starts before the planned send date','Confirm whether this highlight is still appropriate.','featured','feat-dateISO');}
     return checks;
   }
+  function issueWindow(start){
+    var from=day(start);if(!from)throw Error('Choose a valid start date.');
+    return {from:from,through:addDays(from,13)};
+  }
+  function windowEvents(sources,start,zone){
+    var range=issueWindow(start);
+    return sources.map(function(source,index){return {source:source,event:Core.calendarEventToNewsletter(source,index,zone)};})
+      .filter(function(item){return item.event.dateISO<=range.through&&eventEnd(item.event)>=range.from;})
+      .sort(function(a,b){return Date.parse(a.source.start)-Date.parse(b.source.start);}).map(function(item){return item.source;});
+  }
+  function issueSuggestions(sources,start){
+    var range=issueWindow(start),from=new Date(range.from+'T12:00:00Z'),through=new Date(range.through+'T12:00:00Z');
+    function fmt(date,options){return date.toLocaleDateString('en-US',Object.assign({timeZone:'UTC'},options));}
+    var sameYear=from.getUTCFullYear()===through.getUTCFullYear(),sameMonth=sameYear&&from.getUTCMonth()===through.getUTCMonth();
+    var label=sameMonth?fmt(from,{month:'short',day:'numeric'})+'–'+through.getUTCDate()+', '+through.getUTCFullYear():fmt(from,{month:'short',day:'numeric',year:sameYear?undefined:'numeric'})+'–'+fmt(through,{month:'short',day:'numeric',year:'numeric'});
+    var titles=sources.slice().sort(function(a,b){return Number(/^ASME\b/i.test(b.title||''))-Number(/^ASME\b/i.test(a.title||''));}).map(function(e){return String(e.title||'Chapter event').replace(/\s+/g,' ').trim().replace(/^ASME(?: OSU)?[\s:–—-]+/i,'');});
+    var subject=titles.length?'ASME OSU: '+titles.slice(0,2).join(' + ')+(titles.length>2?' + '+(titles.length-2)+' more':''):'ASME OSU: Upcoming events · '+label;
+    if(subject.length>65){var suffix=titles.length>1?' + '+(titles.length-1)+' more':'';var limit=65-10-suffix.length;subject='ASME OSU: '+(titles[0].length>limit?titles[0].slice(0,limit-1).trimEnd()+'…':titles[0])+suffix;}
+    return {subject:subject,issueBar:'Biweekly Newsletter · '+label,from:range.from,through:range.through};
+  }
   function nextIssue(state,dates){
     var next=Core.sanitizeState(state),f=next.fields,send=day(dates.send),from=day(dates.from),through=day(dates.through);
     if(!send)throw Error('Choose a planned send date.');
@@ -54,7 +74,7 @@
   }
   // This compact fingerprint is for local copy-status feedback, not security.
   function fingerprint(html){var a=2166136261,b=5381;for(var i=0;i<html.length;i++){a=Math.imul(a^html.charCodeAt(i),16777619);b=Math.imul(b,33)^html.charCodeAt(i);}return html.length+':'+(a>>>0).toString(16)+':'+(b>>>0).toString(16);}
-  global.NewsletterWorkflows={day:day,chapterToday:chapterToday,addDays:addDays,eventEnd:eventEnd,imageHint:imageHint,planningChecks:planningChecks,nextIssue:nextIssue,digest:digest,fingerprint:fingerprint};
+  global.NewsletterWorkflows={issueWindow:issueWindow,windowEvents:windowEvents,issueSuggestions:issueSuggestions,day:day,chapterToday:chapterToday,addDays:addDays,eventEnd:eventEnd,imageHint:imageHint,planningChecks:planningChecks,nextIssue:nextIssue,digest:digest,fingerprint:fingerprint};
 })(typeof window!=='undefined'?window:globalThis);
 
 var htmlCopyRecord=null;
@@ -109,3 +129,68 @@ function openChatDigest(){
 }
 function closeChatDigest(){document.getElementById('chat-digest-modal').classList.remove('open');if(lastFocusedBeforeModal)lastFocusedBeforeModal.focus();}
 function copyChatDigest(){copyTextSafely(g('chat-digest-text'),function(){document.getElementById('chat-digest-status').textContent='Event digest copied. Paste and review it in your chat app; nothing was sent.';},function(){document.getElementById('chat-digest-status').textContent='Could not copy. Select the message text and copy it manually.';});}
+
+
+var prepareIssueSources=[],prepareIssueSelected=new Set(),prepareIssueBase='',prepareIssueGeneration=0,prepareIssueSuggested={subject:'',issueBar:''};
+async function openPrepareIssue(){
+  rememberWorkflowFocus();var generation=++prepareIssueGeneration;
+  prepareIssueBase=JSON.stringify(collectState());prepareIssueSources=[];prepareIssueSelected.clear();prepareIssueSuggested={subject:'',issueBar:''};
+  var today=NewsletterWorkflows.chapterToday(),saved=NewsletterWorkflows.day(g('s-send-date'));
+  document.getElementById('prepare-start').value=saved&&saved>=today?saved:today;
+  document.getElementById('prepare-subject').value='';document.getElementById('prepare-issue-bar').value='';
+  document.getElementById('prepare-keep-events').checked=false;
+  document.getElementById('prepare-issue-modal').classList.add('open');
+  document.getElementById('prepare-start').focus();
+  document.getElementById('prepare-events').textContent='Loading calendar events…';document.getElementById('prepare-apply').disabled=true;
+  if(!calendarCurrentFeed||calendarLoadPending)await loadCalendarEvents(false);
+  if(generation!==prepareIssueGeneration)return;
+  refreshPrepareIssue();
+}
+function closePrepareIssue(){prepareIssueGeneration++;document.getElementById('prepare-issue-modal').classList.remove('open');if(lastFocusedBeforeModal)lastFocusedBeforeModal.focus();}
+function refreshPrepareIssue(){
+  try{
+    prepareIssueSources=NewsletterWorkflows.windowEvents(calendarAllEvents,g('prepare-start'),calendarTimeZone);
+    prepareIssueSelected=new Set(prepareIssueSources.map(function(e){return e.id;}));
+    document.getElementById('prepare-events').innerHTML=prepareIssueSources.length?prepareIssueSources.map(function(source,index){
+      var info=calendarDateParts(source),imported=findImportedEventForCalendar(source);
+      return '<label class="prepare-event"><input type="checkbox" checked data-prepare-index="'+index+'" onchange="selectPrepareEvent('+index+',this.checked)"><span><strong>'+escHtml(source.title)+'</strong><small>'+escHtml(info.date+' · '+info.time)+(imported?' · Current newsletter copy kept':'')+'</small></span></label>';
+    }).join(''):'<p class="calendar-status">No events found in this two-week window. Choose another start date or refresh Calendar.</p>';
+    updatePrepareIssue();
+  }catch(error){document.getElementById('prepare-summary').textContent=error.message;document.getElementById('prepare-apply').disabled=true;}
+}
+function selectPrepareEvent(index,checked){var source=prepareIssueSources[index];if(!source)return;if(checked)prepareIssueSelected.add(source.id);else prepareIssueSelected.delete(source.id);updatePrepareIssue();}
+function updatePrepareIssue(){
+  var selected=prepareIssueSources.filter(function(e){return prepareIssueSelected.has(e.id);}),suggestion=NewsletterWorkflows.issueSuggestions(selected,g('prepare-start'));
+  var subject=document.getElementById('prepare-subject'),issue=document.getElementById('prepare-issue-bar');
+  if(!subject.value||subject.value===prepareIssueSuggested.subject)subject.value=suggestion.subject;
+  if(!issue.value||issue.value===prepareIssueSuggested.issueBar)issue.value=suggestion.issueBar;
+  prepareIssueSuggested=suggestion;
+  var from=Date.parse(suggestion.from+'T12:00:00Z'),through=Date.parse(suggestion.through+'T12:00:00Z'),feed=calendarCurrentFeed||{},coverageFrom=Date.parse(feed.windowStart),coverageThrough=Date.parse(feed.windowEnd);
+  var warning=calendarIsFictional?'Practice calendar: these are fictional events. ':(!calendarFeedLoaded?'Calendar could not be verified. ':Number.isFinite(coverageFrom)&&Number.isFinite(coverageThrough)&&(from<coverageFrom||through>=coverageThrough)?'Some dates are outside the saved calendar’s coverage. ':'');
+  document.getElementById('prepare-window').textContent=suggestion.issueBar.replace('Biweekly Newsletter · ','')+' · 14 days';
+  document.getElementById('prepare-summary').textContent=warning+selected.length+' event'+(selected.length===1?'':'s')+' selected. '+(document.getElementById('prepare-keep-events').checked?'Other current events stay.':'The current event list will be replaced.')+' Undo restores this draft.';
+  document.getElementById('prepare-summary').classList.toggle('copy-is-stale',Boolean(warning));
+  var button=document.getElementById('prepare-apply');button.textContent='Fill issue ('+selected.length+' event'+(selected.length===1?'':'s')+')';button.disabled=!selected.length;
+}
+function applyPreparedIssue(){
+  var summary=document.getElementById('prepare-summary');
+  if(JSON.stringify(collectState())!==prepareIssueBase){summary.textContent='The draft changed while this review was open. Close and reopen Auto-fill issue to use the latest draft.';return;}
+  var selected=prepareIssueSources.filter(function(e){return prepareIssueSelected.has(e.id);});if(!selected.length)return;
+  var subject=g('prepare-subject').trim(),issueBar=g('prepare-issue-bar').trim();
+  if(!subject||!issueBar){summary.textContent='Add a subject line and newsletter date before filling the issue.';document.getElementById(!subject?'prepare-subject':'prepare-issue-bar').focus();return;}
+  if(!backupCurrentDraft('Before preparing issue')){summary.textContent='Could not save a recovery copy. Export a draft backup or free browser storage before filling the issue.';return;}
+  try{
+    var state=Core.sanitizeState(collectState()),current=state.events,chosen=[],ids=new Set();
+    selected.forEach(function(source){var match=findImportedEventForCalendar(source),event=match?current.find(function(e){return e.id===match.id;}):null;
+      if(!event){var id=Core.nextEventId(current.concat(chosen),100);event=Core.calendarEventToNewsletter(Object.assign({},source,{url:calendarIsFictional?'':source.url||calendarSourceUrl,practice:calendarIsFictional||source.practice}),id,calendarTimeZone);}
+      if(!ids.has(event.id)){chosen.push(event);ids.add(event.id);}
+    });
+    if(document.getElementById('prepare-keep-events').checked)chosen=chosen.concat(current.filter(function(e){return !ids.has(e.id);}));
+    if(autoSortEvents)chosen=chosen.map(function(e,i){return{event:e,index:i};}).sort(function(a,b){var difference=eventDateValue(a.event)-eventDateValue(b.event);return Number.isNaN(difference)||difference===0?a.index-b.index:difference;}).map(function(item){return item.event;});
+    state.events=chosen;state.fields['s-subject']=subject;state.fields['issue-bar-text']=issueBar;
+    state.fields['s-send-date']=prepareIssueSuggested.from;state.fields['s-issue-from']=prepareIssueSuggested.from;state.fields['s-issue-through']=prepareIssueSuggested.through;
+    applyState(state);calendarSelected.clear();renderCalendarList();
+    document.getElementById('edit-feedback').hidden=false;document.getElementById('edit-feedback-text').textContent='Issue prepared with '+selected.length+' selected calendar event'+(selected.length===1?'':'s')+'. Review the other sections before copying.';
+    closePrepareIssue();setWorkspaceView('edit');switchTabByName('events');document.getElementById('event-count').focus();
+  }catch(error){summary.textContent='Could not prepare this issue: '+error.message;}
+}

@@ -61,7 +61,7 @@ function applyState(state){
   showFeatured=clean.showFeatured; showAnnounce=clean.showAnnounce; showLinks=clean.showLinks;
   showFeatImg=clean.showFeatImg; showFeatButton=clean.showFeatButton; activeTheme=clean.activeTheme;
   if(clean.fields) Object.keys(clean.fields).forEach(function(k){
-    var el=document.getElementById(k); if(el) el.value=clean.fields[k];
+    var el=document.getElementById(k); if(el){if(el.type==="checkbox"){el.checked=clean.fields[k]==="1";el.value="1";}else el.value=clean.fields[k];}
   });
   document.getElementById("email-width").value=["600","680","760"].indexOf(clean.fields["email-width"])>=0?clean.fields["email-width"]:"680";
   // Sync toggle buttons

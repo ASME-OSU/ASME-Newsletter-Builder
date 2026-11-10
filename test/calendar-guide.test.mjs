@@ -36,7 +36,7 @@ test('guide shortcuts open the relevant editor and phone dark toggle stays in sy
   w.flushDraftSave();const state=JSON.stringify(w.collectState());
   w.openInfoDialog();await new Promise(r=>setTimeout(r,5));
   assert.ok(d.querySelector('#info-modal img[src*="guide-workflow.svg"]'));
-  d.querySelector('#info-modal .guide-shortcuts button').click();
+  Array.from(d.querySelectorAll('#info-modal .guide-shortcuts button')).find(b=>b.textContent.includes('Browse Calendar')).click();
   assert.equal(d.getElementById('info-modal').classList.contains('open'),false);assert.equal(d.getElementById('tab-calendar').classList.contains('active'),true);assert.equal(d.activeElement.id,'calendar-search');
   d.getElementById('preview-dark-mobile').click();assert.equal(d.getElementById('preview-dark-btn').getAttribute('aria-pressed'),'true');
   d.getElementById('preview-dark-btn').click();assert.equal(d.getElementById('preview-dark-mobile').getAttribute('aria-pressed'),'false');

@@ -160,3 +160,82 @@ test('only the bundled old placeholder is upgraded in drafts and saved defaults'
   d.getElementById('footer-addr').value='<img src=x onerror=alert(1)>\n123 Main St, Columbus, OH 43210';w.render();assert.equal(d.querySelector('.pv-footer-addr img'),null);assert.match(w.generateHTML(),/&lt;img src=x onerror=alert\(1\)&gt;<br>/);
  }finally{w.close();}
 });
+
+function prepareFeed(){return{timeZone:'America/New_York',windowStart:'2098-12-01T00:00:00Z',windowEnd:'2099-03-01T00:00:00Z',events:[
+ {id:'prepare-a',title:'ASME Design Workshop',start:'2099-01-03T23:00:00Z',end:'2099-01-04T00:00:00Z',location:'Scott Lab',description:'Calendar description',url:'https://example.com/a'},
+ {id:'prepare-b',title:'ASME Industry Night',start:'2099-01-12T23:00:00Z',end:'2099-01-13T00:00:00Z',location:'Scott Lab',description:'Calendar copy',url:'https://example.com/b'},
+ {id:'prepare-c',title:'Later event',start:'2099-01-15T23:00:00Z',end:'2099-01-16T00:00:00Z'}]};}
+async function openPrepare(w,d){await w.openPrepareIssue();d.getElementById('prepare-start').value='2099-01-01';w.refreshPrepareIssue();}
+
+test('prefill windows include exactly fourteen chapter dates and overlapping multi-day events',async()=>{
+ const {w}=await setup();try{
+  const W=w.NewsletterWorkflows;
+  assert.equal(W.issueWindow('2026-12-25').through,'2027-01-07');
+  assert.equal(W.issueWindow('2028-02-20').through,'2028-03-04');
+  const sources=[
+   {id:'old',title:'Outside before',start:'2026-11-09T00:30:00Z',end:'2026-11-09T01:00:00Z'},
+   {id:'ongoing',title:'Ongoing',start:'2026-11-08T00:00:00Z',end:'2026-11-10T00:00:00Z',allDay:true},
+   {id:'first',title:'First day',start:'2026-11-09T12:00:00Z'},
+   {id:'last',title:'Last chapter day',start:'2026-11-23T03:00:00Z'},
+   {id:'outside',title:'Day fifteen',start:'2026-11-23T12:00:00Z'}];
+  assert.deepEqual(Array.from(W.windowEvents(sources,'2026-11-09','America/New_York'),e=>e.id),['ongoing','first','last']);
+  const suggestion=W.issueSuggestions([{title:'A very long event title '.repeat(8)},{title:'Other event'}],'2026-12-25');
+  assert.ok(suggestion.subject.length<=65);assert.match(suggestion.issueBar,/Dec 25, 2026–Jan 7, 2027/);
+  assert.equal(W.issueSuggestions([{title:'Veterans Day observed - no classes, offices closed'},{title:'ASME Friendsgiving'}],'2026-11-09').subject,'ASME OSU: Friendsgiving + 1 more');
+ }finally{w.close();}
+});
+
+test('prepare issue uses the full snapshot, preserves authored imports, fills metadata, and undoes once',async()=>{
+ const {w,d}=await setup();try{
+  w.applyState({...w.collectState(),events:[]});w.setCalendarFeed(prepareFeed());w.importCalendarEvent(0);
+  const id=w.events[0].id;w.updateEvent(id,'title','Officer-written workshop title');w.events[0].showImg=true;w.events[0].imgUrl='https://example.com/custom.png';w.events[0].imgAlt='Workshop';
+  w.events.push(w.Core.normalizeEvent(event(999,'2099-02-01'),999));w.render();
+  const before=JSON.stringify(w.Core.sanitizeState(w.collectState()));
+  d.getElementById('calendar-search').value='No matching results';w.renderCalendarList();
+  await openPrepare(w,d);
+  assert.equal(d.querySelectorAll('[data-prepare-index]').length,2,'ignores unrelated list/search filters');
+  w.selectPrepareEvent(1,false);
+  d.getElementById('prepare-subject').value='Officer custom subject';d.getElementById('prepare-issue-bar').value='January kickoff';
+  w.applyPreparedIssue();
+  assert.equal(w.events.length,1);assert.equal(w.events[0].id,id);assert.equal(w.events[0].title,'Officer-written workshop title');assert.equal(w.events[0].imgUrl,'https://example.com/custom.png');
+  assert.equal(d.getElementById('s-subject').value,'Officer custom subject');assert.equal(d.getElementById('issue-bar-text').value,'January kickoff');assert.equal(d.getElementById('s-issue-through').value,'2099-01-14');
+  assert.equal(d.getElementById('prepare-issue-modal').classList.contains('open'),false);assert.equal(d.activeElement.id,'event-count');
+  w.undoDraftChange();assert.equal(JSON.stringify(w.Core.sanitizeState(w.collectState())),before);
+ }finally{w.close();}
+});
+
+test('prefill can keep other events without duplicating matching imports, and custom suggestions survive selection changes',async()=>{
+ const {w,d}=await setup();try{
+  w.applyState({...w.collectState(),events:[event(999,'2099-02-01')]});w.setCalendarFeed(prepareFeed());w.importCalendarEvent(0);
+  await openPrepare(w,d);d.getElementById('prepare-keep-events').checked=true;
+  d.getElementById('prepare-subject').value='Keep this subject';d.getElementById('prepare-issue-bar').value='Keep this issue date';
+  w.selectPrepareEvent(1,false);w.selectPrepareEvent(1,true);
+  assert.equal(d.getElementById('prepare-subject').value,'Keep this subject');assert.equal(d.getElementById('prepare-issue-bar').value,'Keep this issue date');
+  w.applyPreparedIssue();assert.equal(w.events.length,3);assert.equal(w.events.filter(e=>e.sourceEventId==='prepare-a').length,1);assert.ok(w.events.find(e=>e.id===999));
+ }finally{w.close();}
+});
+
+test('prefill does not replace a changed draft or proceed without a recovery copy',async()=>{
+ const {w,d}=await setup();try{
+  w.setCalendarFeed(prepareFeed());await openPrepare(w,d);const before=JSON.stringify(w.collectState());
+  const backup=w.backupCurrentDraft;w.backupCurrentDraft=()=>false;w.applyPreparedIssue();assert.equal(JSON.stringify(w.collectState()),before);assert.match(d.getElementById('prepare-summary').textContent,/Could not save/);
+  w.backupCurrentDraft=backup;d.getElementById('s-subject').value='New edit made during review';w.applyPreparedIssue();assert.match(d.getElementById('prepare-summary').textContent,/draft changed/);assert.equal(d.getElementById('s-subject').value,'New edit made during review');
+  w.closePrepareIssue();w.setCalendarFeed({events:[]});await openPrepare(w,d);assert.equal(d.getElementById('prepare-apply').disabled,true);const emptyBefore=JSON.stringify(w.collectState());w.applyPreparedIssue();assert.equal(JSON.stringify(w.collectState()),emptyBefore);
+ }finally{w.close();}
+});
+
+test('prefill marks practice content and Escape closes its own dialog',async()=>{
+ const {w,d}=await setup();try{
+  w.calendarIsFictional=true;w.setCalendarFeed({...prepareFeed(),events:[{...prepareFeed().events[0],id:'fictional-prepare',practice:true}]});
+  await openPrepare(w,d);assert.match(d.getElementById('prepare-summary').textContent,/Practice calendar/);w.applyPreparedIssue();assert.equal(w.events[0].practice,true);
+  await openPrepare(w,d);d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(d.getElementById('prepare-issue-modal').classList.contains('open'),false);
+ }finally{w.close();}
+});
+
+test('closing prefill while a feed loads prevents a late result from reopening or filling the draft',async()=>{
+ const {w,d}=await setup();try{
+  w.calendarCurrentFeed=null;let resolveFeed;w.fetch=()=>new Promise(resolve=>{resolveFeed=resolve;});
+  const before=JSON.stringify(w.collectState()),pending=w.openPrepareIssue();w.closePrepareIssue();resolveFeed({ok:true,json:async()=>prepareFeed()});await pending;
+  assert.equal(d.getElementById('prepare-issue-modal').classList.contains('open'),false);assert.equal(JSON.stringify(w.collectState()),before);
+ }finally{w.close();}
+});

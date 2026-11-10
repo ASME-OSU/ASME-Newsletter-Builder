@@ -20,6 +20,14 @@
       issues.push({ ok: Boolean(ok), label: label, detail: detail || "", tab: tab || "events", field: target || "", eventId: eventId == null ? null : eventId });
     }
     function eventField(event, key) { return "event-" + event.id + "-" + key; }
+    var years=Array.from(new Set(field("issue-bar-text").match(/\b[12]\d{3}\b/g)||[]));
+    var from=global.NewsletterCore.normalizeDateISO(field("s-issue-from")),through=global.NewsletterCore.normalizeDateISO(field("s-issue-through"));
+    var referenceYear=(years.length>1||(from&&through&&from.slice(0,4)!==through.slice(0,4)))?null:global.NewsletterCore.normalizeDateISO(field("s-send-date"))?Number(field("s-send-date").slice(0,4)):years.length===1?Number(years[0]):null;
+    function checkDate(label,value,canonical,tab,target,eventId){
+      var result=global.NewsletterCore.dateConsistency(value,canonical,referenceYear);
+      if(result&&result.calendarMismatch)add(false,label+" display date differs from its calendar date","Review the displayed wording and calendar date.",tab,target,eventId);
+      else if(result&&result.weekdayMismatch)add(false,label+" weekday does not match its date","That date is a "+result.expectedWeekday+". Review the weekday, date and year.",tab,target,eventId);
+    }
     var activeLogo = context.activeLogo;
     add(Boolean(activeLogo), activeLogo ? "Logo URL looks valid" : "Logo URL is missing or invalid", activeLogo ? "" : "Use an https:// image URL in Settings.", "settings", "s-logo");
     var subject = field("s-subject"), preheader = field("s-preheader");
@@ -29,6 +37,7 @@
     if (preheader.length > 100) add(false, "Preheader may be too long", "Keep it near 100 characters so more inboxes show the full message.", "settings", "s-preheader");
     add(events.length > 0, events.length ? events.length + " event" + (events.length !== 1 ? "s" : "") + " added" : "No events added", events.length ? "" : "Add at least one event in the Events tab.", "events");
     events.forEach(function (event, index) {
+      checkDate("Event "+(index+1),event.date,event.dateISO,"events",eventField(event,"date"),event.id);
       var missing = ["title", "date"].find(function (key) { return !text(event[key]) || placeholder(event[key]); });
       var unfinished = missing || ["time", "location", "description"].find(function (key) { return placeholder(event[key]); });
       if (unfinished) add(false, "Event " + (index + 1) + " has missing or placeholder content", "Replace the placeholder " + unfinished + " with newsletter copy.", "events", eventField(event, unfinished), event.id);
@@ -48,6 +57,7 @@
     if (duplicates.length) add(false, "Possible duplicate events detected", "Review the warning badges in Events before sending.", "events", eventField(duplicates[0], "title"), duplicates[0].id);
     if (conflicts.length) add(false, "Possible schedule conflict detected", "Two or more events share the same date and start time.", "events", eventField(conflicts[0], "time"), conflicts[0].id);
     if (state.showFeatured) {
+      checkDate("Featured event",field("feat-date"),field("feat-dateISO"),"featured","feat-date");
       var title = field("feat-title");
       add(Boolean(title), "Featured event title " + (title ? "added" : "is missing"), title ? "" : "Complete the Featured tab or turn the section off.", "featured", "feat-title");
       ["feat-title", "feat-date", "feat-location", "feat-desc"].forEach(function (key) {

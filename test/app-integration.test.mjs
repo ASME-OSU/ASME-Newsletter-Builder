@@ -66,7 +66,7 @@ test("New Issue resets featured controls and image content while preserving defa
     assert.equal(window.localStorage.getItem("asme_nl_org_defaults"), defaults);
     assert.equal(window.localStorage.getItem("asme_nl_templates"), templates);
     for (const [id, value] of Object.entries(JSON.parse(defaults))) {
-      assert.equal(window.document.getElementById(id).value, value, id);
+      assert.equal(window.g(id), value, id);
     }
     const previous = JSON.parse(window.localStorage.getItem("asme_nl_previous_draft"));
     assert.equal(previous.state.fields["feat-img-url"], "https://example.com/outgoing.png");
@@ -268,7 +268,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.equal(window.document.querySelectorAll(".theme-chip").length, 2);
   assert.deepEqual(Array.from(window.document.querySelectorAll(".theme-chip"), (node) => node.textContent.trim()), ["Light", "Navy Dark"]);
   assert.equal(window.document.querySelector(".theme-chip.selected").textContent.trim(), "Light");
-  assert.equal(window.document.querySelector(".pv-body").style.background, "rgb(247, 248, 250)");
+  assert.equal(window.document.querySelector(".pv-body").style.backgroundColor, "rgb(255, 255, 255)");
   assert.equal(window.document.getElementById("email-width").value, "680");
   assert.match(window.generateHTML(), /class="container" style="width:680px;max-width:680px;"/);
   assert.equal(window.document.querySelector(".pv-feat-bar"), null);
@@ -401,7 +401,7 @@ test("builder loads, imports calendar events, avoids ID collisions, and escapes 
   assert.match(exported, /Engineering &lt;Design&gt; &amp; &quot;Build&quot;/);
   assert.match(exported, /First line<br>Second line/);
   assert.doesNotMatch(exported, /javascript:alert/);
-  assert.match(exported, /width="360" alt="ASME at The Ohio State University"/);
+  assert.match(exported, /width="360"(?: height="\d+")? alt="ASME at The Ohio State University"/);
   assert.match(exported, /font-size:45px/);
   assert.match(exported, />Info Session</);
   assert.doesNotMatch(exported, /<tr><td width="5" style="background:/);

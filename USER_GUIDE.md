@@ -164,3 +164,30 @@ The inbox preview’s subject and preview-text lines are shortcuts to their Sett
 Issue dates travel with draft JSON and saved issues. Copy-history feedback stays on this browser. None of these features schedule or send a campaign.
 
 The mailing address under Design is prefilled for ASME’s Scott Laboratory office (N147), including 201 W 19th Ave, Columbus, OH 43210. Edit it if necessary; line breaks are preserved in preview and exported email. Custom saved addresses are retained.
+
+
+## Quick prefill
+
+Open **Calendar → Auto-fill issue**, or the same action in **Tools**. Choose the start/send date; the builder picks the following 14 days, suggests a subject, and fills the newsletter date. Uncheck any events you do not want and edit the suggested text. The review warns before replacing your current event list; select **Keep other current events too** if needed. Choose **Fill issue**, then review Featured, Announcement, Links and readiness. Existing copy for matching calendar imports stays intact. Use the toolbar’s Undo to restore the previous issue in one step.
+
+### Auto-fill and export polish
+
+The scarlet **Auto-fill issue** button is in Calendar, Tools, and the Guide's **Start your issue** step. It opens a review; nothing is applied until you choose **Fill issue**.
+
+Readiness flags a displayed weekday that disagrees with a known date/year, and display dates that disagree with the saved calendar date. Review the wording rather than relying on automatic correction. Ambiguous dates without a reliable year are not guessed.
+
+Exports omit empty/title-only event descriptions and add weekday labels when a canonical date is available. Generic calendar links use **See calendar** unless you wrote a custom button label. Buttons have larger targets, contextual accessible names, and table-cell backgrounds/padding for email clients. Social links use labeled buttons without an external icon CDN.
+
+In **Settings → Organization defaults**, optionally enable **Include Brevo's “View in browser” link**. Leave it off if your Brevo campaign already adds a mirror link. This preference can be saved with organization defaults. The exported placeholder is `{{ mirror }}` ([Brevo documentation](https://help.brevo.com/hc/en-us/articles/5316043391122-Add-a-mirror-link-to-your-emails-View-in-Browser)).
+
+Browser previews and markup checks do not replace sending a test from Brevo to Gmail, Apple Mail, and desktop Outlook.
+
+Quick-link cards include matching icons, and the footer GroupMe button includes the actual GroupMe mark. The export uses sharp PNG copies hosted with the builder; button labels remain visible if a mail client blocks images.
+
+### Shared newsletter design
+
+All layouts now use the same white action cards with scarlet icons and a scarlet first action, followed by white outlined secondary actions. Card titles, supporting text, button labels and destinations remain editable in Links. Turning Quick links off still hides the entire row.
+
+The shared charcoal footer separates the editable chapter information from social and website links on desktop, then stacks them on phones. Social buttons retain their recognizable logos and colors. Subscription copy and the existing unsubscribe placeholder appear in a separate white strip. These components use the same HTML in the preview and export and are applied whenever an existing draft, saved issue, or built-in template is rendered. Other newsletter theme colors remain selectable.
+
+Outlook compatibility: the light layout uses white reading surfaces and outlined secondary buttons so switching back from dark mode restores readable contrast. Explicit background fallbacks preserve the charcoal footer, colored buttons, and logo backplate while other text and surfaces adapt together. A delivered Brevo test was checked in Outlook for Mac in dark mode and after selecting View in Light Mode. Gmail, Apple Mail, and Windows Outlook still require their own delivered-message checks.

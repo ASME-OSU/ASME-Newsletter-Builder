@@ -143,3 +143,10 @@ The Brevo copy dialog reports whether its HTML has changed since the last succes
 **Tools → Copy event digest** opens an editable plain-text message for review and manual pasting into a chat app. These message-only edits do not modify the draft. Unsafe links are omitted, practice content remains marked, and nothing is sent automatically.
 
 Image fields identify common Google Drive, Google Docs and Dropbox sharing-page URLs with inline guidance and readiness warnings. This is a URL-pattern hint, not proof that a remote image will or will not render; image loading and email tests remain separate checks.
+
+
+## Prepare an issue in one review
+
+Choose **Calendar → Auto-fill issue** (also in **Tools**). It suggests an editable subject based on event titles and a newsletter date covering 14 chapter-calendar dates, starting on the selected planned send date. Events overlapping that window are checked automatically, independently of the Calendar tab’s search and filters. Review the choices and edit the subject/date before choosing **Fill issue**.
+
+By default the checked events replace the current event list. **Keep other current events too** instead adds them without duplicating matching calendar imports. Existing authored copy and images are retained for matching imports. A recovery copy must succeed before applying, and one toolbar Undo restores the whole prior draft. Other newsletter sections stay unchanged and should be reviewed before export. This uses the saved Calendar snapshot, not a live Google query or an AI service, and does not send anything.
