@@ -555,14 +555,11 @@ body { font: 14px/1.5 var(--font-ui); }
   #preview-inner .footer-main { padding:26px 22px!important; }
   #preview-inner .footer-subscription { padding:16px 22px!important; }
 }
-#preview-panel.simulate-client-dark .action-card { background:#202832!important;border-color:#465260!important; }
-#preview-panel.simulate-client-dark .action-title { color:#fff!important; }
-#preview-panel.simulate-client-dark .action-description { color:#d3dae2!important; }
-#preview-panel.simulate-client-dark .footer-subscription { background:#151b22!important;border-top-color:#465260!important; }
-#preview-panel.simulate-client-dark .footer-subscription a { color:#d3dae2!important; }
-/* The editor's optional simulation can override the export's flat color fallbacks. */
-#preview-panel.simulate-client-dark #preview-inner [style] {
-  background-image:none!important;
-  box-shadow:none!important;
-  -webkit-text-fill-color:currentColor!important;
-}
+/* Approximate the delivered Outlook for Mac sample, retaining protected brand surfaces. */
+#preview-panel.simulate-client-dark .action-card { background:#1f1f1f!important;border-color:#d2d2d2!important; }
+#preview-panel.simulate-client-dark .action-title { color:#e2e4e8!important; }
+#preview-panel.simulate-client-dark .action-description { color:#aeb4bc!important; }
+#preview-panel.simulate-client-dark .footer-subscription { background:#1f1f1f!important;border-top-color:#d2d2d2!important; }
+#preview-panel.simulate-client-dark .footer-subscription a { color:#aeb4bc!important; }
+#preview-panel.simulate-client-dark .action-card .email-button td[bgcolor="#ffffff"] { background:#1f1f1f!important;border-color:#d2d2d2!important; }
+#preview-panel.simulate-client-dark .action-card .email-button td[bgcolor="#ffffff"] a { color:#e2e4e8!important; }

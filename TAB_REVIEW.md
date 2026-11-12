@@ -122,3 +122,10 @@ Validation: automated suite passes; desktop and 390px/320px browser layouts chec
 Outlook for Mac kept pale gray/pink backgrounds dark after switching to View in Light Mode, while restoring dark text. The light layout now uses white reading surfaces, white outlined secondary buttons, and a white subscription strip. Explicit background-color and legacy bgcolor fallbacks accompany painted surfaces. Flat inset shadows preserve dark brand surfaces and the logo backplate; adaptive reading surfaces and text remain paired, without foreground color locks.
 
 The final delivered Brevo sample was inspected in dark mode and after switching to View in Light Mode: card text, secondary buttons, the subscription strip, charcoal footer, branded social buttons, and logo stayed readable. Test deliveries went only to allen.2906@osu.edu. The QA campaign remains an unscheduled draft with distribution recipients unset. This does not establish Gmail, Apple Mail or Windows Outlook rendering. All 124 tests and HTML/asset/JavaScript checks pass. Changes remain local and unpublished.
+
+
+## November 12 preview and client follow-up
+
+Full-preview close now occupies a sticky left grid column with the same top alignment as the device rail; measured both at 24px while scrolled, with no horizontal overflow. The dark simulation uses the observed Outlook for Mac neutral reading surfaces, preserves logo/footer brand surfaces, and styles white secondary buttons for dark viewing. It is labeled as approximate.
+
+Delivered Gmail web testing found auto-detected blue address links against charcoal. An explicit Google Maps address link with #c9cdd3 text fixes this; a follow-up Gmail delivery confirmed computed rgb(201, 205, 211) and readable address text. Both test rounds were restricted to mlallenusa@gmail.com and allen.2906@osu.edu, with group recipients unset. Outlook for Mac was rechecked against the November 9 delivered sample in both modes; fresh Outlook delivery was still pending inbox synchronization at the time of this note. Windows Outlook and Gmail mobile remain unverified. All 124 checks pass.

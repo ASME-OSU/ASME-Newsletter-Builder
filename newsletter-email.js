@@ -64,6 +64,10 @@ function renderFooterSocialHTML(fields,preview){
     return '<tr><td style="padding:0 0 8px;">'+button.replace('class="email-button"','class="email-button footer-social-button"')+'</td></tr>';
   }).join('');
 }
+function footerAddressHTML(address){
+  var text=String(address||'').trim();if(!text)return '';
+  return '<a href="https://www.google.com/maps/search/?api=1&amp;query='+encodeURIComponent(text)+'" aria-label="Find chapter mailing address on Google Maps" style="color:#c9cdd3;text-decoration:none;">'+emailText(text)+'</a>';
+}
 function renderNewsletterFooterHTML(fields,preview){
   var website=Core.safeUrl(fields['s-website']),unsub=Core.safeUrl(fields['s-unsub'],{allowBrevo:true});
   return stabilizeEmailColors('<table class="newsletter-footer" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;table-layout:fixed;">'+
@@ -72,7 +76,7 @@ function renderNewsletterFooterHTML(fields,preview){
     '<td class="footer-col footer-org" width="58%" valign="top" style="padding:0 24px 0 0;">'+
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="34" style="margin:0 0 14px;"><tr><td height="3" bgcolor="#e63753" style="height:3px;background:#e63753;font-size:0;line-height:0;">&nbsp;</td></tr></table>'+
     '<p class="pv-footer-name" style="margin:0 0 14px;font-family:Arial,sans-serif;color:#ffffff;font-size:13px;line-height:1.5;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">'+emailText(fields['footer-name']||'')+'</p>'+
-    '<p class="pv-footer-addr" style="margin:0;font-family:Arial,sans-serif;color:#c9cdd3;font-size:13px;line-height:1.75;overflow-wrap:anywhere;word-break:break-word;">'+emailText(fields['footer-addr']||'')+'</p></td>'+
+    '<p class="pv-footer-addr" style="margin:0;font-family:Arial,sans-serif;color:#c9cdd3;font-size:13px;line-height:1.75;overflow-wrap:anywhere;word-break:break-word;">'+footerAddressHTML(fields['footer-addr'])+'</p></td>'+
     '<td class="footer-col footer-social" width="42%" valign="top" style="padding:0 0 0 24px;border-left:1px solid #464a51;">'+
     '<p style="margin:0 0 14px;font-family:Arial,sans-serif;color:#ffffff;font-size:12px;line-height:1.5;font-weight:700;letter-spacing:1.4px;">FOLLOW US</p>'+
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'+renderFooterSocialHTML(fields,preview)+'</table>'+

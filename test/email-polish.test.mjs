@@ -92,6 +92,9 @@ test('shared action cards and footer preserve configured content and match previ
   assert.equal(exported.querySelector('.footer-subscription').contains(exported.querySelector('a[href="{{ unsubscribe }}"]')),true);
   for(const key of ['s-ig-url','s-li-url','s-gm-url','s-website'])assert.ok(Array.from(exported.querySelectorAll('.newsletter-footer a')).some(a=>a.getAttribute('href')===state.fields[key]));
   assert.match(exported.querySelector('.pv-footer-addr').textContent,/Custom address/);
+  const addressLink=exported.querySelector('.pv-footer-addr a');
+  assert.equal(addressLink.style.color,'rgb(201, 205, 211)');
+  assert.equal(new URL(addressLink.href).searchParams.get('query'),state.fields['footer-addr']);
   assert.equal(JSON.stringify(w.collectState()),before,'rendering does not modify content or calendar state');
   for(const theme of Object.keys(w.THEMES)){
    const themed={...state,activeTheme:theme};const doc=new JSDOM(w.renderEmailHTML(themed)).window.document;
