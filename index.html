@@ -6,8 +6,8 @@
   <link rel="icon" type="image/png" href="assets/newsletter-builder-badge.png">
   <title>ASME OSU — Newsletter Builder</title>
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=4.12.4">
-  <link rel="stylesheet" href="assets/hub-theme.css?v=4.12.4">
+  <link rel="stylesheet" href="styles.css?v=4.12.5">
+  <link rel="stylesheet" href="assets/hub-theme.css?v=4.12.5">
 
 </head>
 <body>
@@ -292,7 +292,7 @@
     <div id="preview-panel">
       <div class="preview-content">
       <h2 class="sr-only">Newsletter preview</h2>
-      <button id="fullscreen-exit" onclick="toggleFullscreen()">Exit Full Preview</button>
+      <button id="fullscreen-exit" type="button" aria-label="Exit full preview" title="Exit full preview (Esc)" onclick="toggleFullscreen()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
 
       <div id="inbox-preview"><div class="inbox-from">Ohio State ASME</div><button id="inbox-subject" class="inbox-subject" type="button" aria-label="Edit email subject" title="Edit email subject" onclick="editInboxField('s-subject')">Add a subject line</button><button id="inbox-preheader" class="inbox-preheader" type="button" aria-label="Edit inbox preview" title="Edit inbox preview" onclick="editInboxField('s-preheader')">Add inbox preview text</button></div>
       <div id="preview-shell"><div id="preview-inner"></div></div>
@@ -305,23 +305,23 @@
     </div>
   </div>
 </div>
-<script src="newsletter-core.js?v=4.12.4"></script>
-<script src="newsletter-workflows.js?v=4.12.4"></script>
-<script src="newsletter-readiness.js?v=4.12.4"></script>
-<script src="newsletter-links.js?v=4.12.4"></script>
-<script src="newsletter-library.js?v=4.12.4"></script>
-<script src="newsletter-calendar.js?v=4.12.4"></script>
-<script src="newsletter-email.js?v=4.12.4"></script>
-<script src="newsletter-storage.js?v=4.12.4"></script>
-<script src="newsletter-layout.js?v=4.12.4"></script>
-<script src="newsletter-editor.js?v=4.12.4"></script>
+<script src="newsletter-core.js?v=4.12.5"></script>
+<script src="newsletter-workflows.js?v=4.12.5"></script>
+<script src="newsletter-readiness.js?v=4.12.5"></script>
+<script src="newsletter-links.js?v=4.12.5"></script>
+<script src="newsletter-library.js?v=4.12.5"></script>
+<script src="newsletter-calendar.js?v=4.12.5"></script>
+<script src="newsletter-email.js?v=4.12.5"></script>
+<script src="newsletter-storage.js?v=4.12.5"></script>
+<script src="newsletter-layout.js?v=4.12.5"></script>
+<script src="newsletter-editor.js?v=4.12.5"></script>
 
 <!-- INSTRUCTIONS MODAL -->
 <div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-subtitle">
   <div class="modal" tabindex="-1">
     <div class="info-heading"><h2 id="info-title" tabindex="-1"><svg class="guide-book-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6C9 3 5 3 2 4v15c4-1 7 0 10 2m0-15c3-3 7-3 10-2v15c-4-1-7 0-10 2V6z"/></svg><span>How to Use the Builder</span></h2><button type="button" class="info-dismiss" onclick="closeInfoDialog()">Close</button></div>
     <p class="modal-sub" id="info-subtitle">A new-officer guide to building, checking, and sending an ASME newsletter.</p>
-    <figure class="guide-overview"><img src="assets/guide-workflow.svg?v=4.12.4" alt="Choose calendar events, build your issue, then review and copy it to Brevo." width="960" height="210"></figure>
+    <figure class="guide-overview"><img src="assets/guide-workflow.svg?v=4.12.5" alt="Choose calendar events, build your issue, then review and copy it to Brevo." width="960" height="210"></figure>
     <ol class="info-steps">
 <li><span class="guide-step-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg></span><div><h3>Start your issue</h3><p>Use <strong>Calendar → Auto-fill issue</strong> for a suggested subject, newsletter date and two weeks of events. Review the selections, then choose <strong>Fill issue</strong>. You can also start with <strong>Templates</strong> or <strong>Tools → New Issue</strong>.</p></div></li>
 <li><span class="guide-step-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 11h18m-12 5 2 2 4-4"/></svg></span><div><h3>Choose your events</h3><p>Search <strong>Calendar</strong>, tick the events for this issue, then choose <strong>Import selected</strong>. <strong>Select all</strong> selects the events shown, excluding ones already imported. Date filters are under <strong>More filters &amp; tools</strong>.</p></div></li>

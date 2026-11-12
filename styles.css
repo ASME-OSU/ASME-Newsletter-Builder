@@ -183,11 +183,13 @@
 
     /* ── NEW FEATURE STYLES ── */
     /* Fullscreen preview */
-    #preview-panel.fullscreen { position:fixed; top:0; left:0; right:0; bottom:0; z-index:1000; padding:24px; overflow-y:auto; }
+    #preview-panel.fullscreen { position:fixed; top:0; left:0; right:0; bottom:0; z-index:1000; padding:64px 24px 24px; overflow-y:auto; }
     #fullscreen-btn { background:var(--surface); color:var(--ink); border:1px solid var(--border-strong); border-radius:7px; padding:9px 14px; font-size:13px; font-weight:700; font-family:var(--font-ui); cursor:pointer; white-space:nowrap; }
     #fullscreen-btn:hover { background:var(--surface-soft); }
-    #fullscreen-exit { display:none; position:sticky; top:0; margin:0 auto 14px; z-index:1001; background:var(--scarlet); color:#fff; border:none; border-radius:7px; padding:10px 18px; font-family:var(--font-ui); font-size:13px; font-weight:700; cursor:pointer; }
-    #preview-panel.fullscreen #fullscreen-exit { display:block; }
+    #fullscreen-exit { display:none; position:fixed; top:10px; left:10px; width:44px; height:44px; margin:0; z-index:1001; align-items:center; justify-content:center; background:var(--surface); color:var(--ink); border:1px solid var(--border-strong); border-radius:50%; padding:0; cursor:pointer; }
+    #fullscreen-exit:hover { background:var(--surface-soft); }
+    #fullscreen-exit:focus-visible { outline:2px solid var(--scarlet); outline-offset:2px; }
+    #preview-panel.fullscreen #fullscreen-exit { display:flex; }
 
     /* Autosave indicator */
     #save-indicator { font-family:var(--font-ui); font-size:11px; color:var(--ink-soft); align-self:center; white-space:nowrap; transition:color 0.3s; }
@@ -363,7 +365,7 @@
       .readiness-top { min-height:36px; }
       .draft-actions { grid-template-columns:1fr; }
       .preview-tools { align-items:flex-start; }
-      #preview-panel.fullscreen { padding:12px 10px; }
+      #preview-panel.fullscreen { padding:64px 10px 12px; }
     }
     @media (max-width:599px) {
       #topbar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; padding:8px 10px; }
