@@ -598,14 +598,14 @@ function renderLiveTools(){
   if(subjectCount){subjectCount.textContent=subject.length+" / 65 recommended";subjectCount.classList.toggle("warning",subject.length>65);}
   if(preheaderCount){preheaderCount.textContent=preheader.length+" / 100 recommended";preheaderCount.classList.toggle("warning",preheader.length>100);}
   var inboxSubject=document.getElementById("inbox-subject"),inboxPreheader=document.getElementById("inbox-preheader");
-  if(inboxSubject)inboxSubject.textContent=subject||"Add a subject line";
-  if(inboxPreheader)inboxPreheader.textContent=preheader||"Add inbox preview text";
+  if(inboxSubject){inboxSubject.textContent=subject||"ASME Newsletter · Events & updates";inboxSubject.title=subject?"Edit email subject":"Sample subject — click to add your subject";}
+  if(inboxPreheader){inboxPreheader.textContent=preheader||"See what’s coming up with Ohio State ASME.";inboxPreheader.title=preheader?"Edit inbox preview":"Sample preview text — click to add yours";}
   renderReadiness();syncWorkflowHints();
 }
 
 function setPreviewMode(mode){
   previewMode=mode==="mobile"?"mobile":"desktop";
-  var shell=document.getElementById("preview-shell");if(shell)shell.classList.toggle("preview-mobile",previewMode==="mobile");
+  ["preview-shell","inbox-preview"].forEach(function(id){var node=document.getElementById(id);if(node)node.classList.toggle("preview-mobile",previewMode==="mobile");});
   var desktop=document.getElementById("preview-desktop-btn"),mobile=document.getElementById("preview-mobile-btn");
   if(desktop)desktop.setAttribute("aria-pressed",String(previewMode==="desktop"));
   if(mobile)mobile.setAttribute("aria-pressed",String(previewMode==="mobile"));

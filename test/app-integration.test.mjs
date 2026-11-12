@@ -456,6 +456,13 @@ test("readiness, organization defaults, previews, event warnings, revisions, and
   assert.equal(window.document.getElementById("preview-desktop-btn").getAttribute("aria-pressed"), "true");
   assert.equal(window.document.getElementById("s-gm-url").value, "https://groupme.com/join_group/95825283/iaBgk5Ld");
 
+  window.document.getElementById("s-subject").value = "";
+  window.document.getElementById("s-preheader").value = "";
+  window.render();
+  assert.equal(window.document.getElementById("inbox-subject").textContent, "ASME Newsletter · Events & updates");
+  assert.equal(window.document.getElementById("s-subject").value, "");
+  assert.equal(window.document.getElementById("s-preheader").value, "");
+
   window.document.getElementById("s-subject").value = "ASME September Events";
   window.document.getElementById("s-preheader").value = "Workshops, meetings, and member opportunities.";
   window.render();
@@ -464,6 +471,10 @@ test("readiness, organization defaults, previews, event warnings, revisions, and
 
   window.setPreviewMode("mobile");
   assert.equal(window.document.getElementById("preview-shell").classList.contains("preview-mobile"), true);
+  assert.equal(window.document.getElementById("inbox-preview").classList.contains("preview-mobile"), true);
+  window.setPreviewMode("desktop");
+  assert.equal(window.document.getElementById("inbox-preview").classList.contains("preview-mobile"), false);
+  window.setPreviewMode("mobile");
   window.toggleDarkSimulation();
   assert.equal(window.document.getElementById("preview-panel").classList.contains("simulate-client-dark"), true);
   assert.equal(window.document.querySelector(".pv-logo-wrap img").src, window.document.getElementById("s-logo").value);

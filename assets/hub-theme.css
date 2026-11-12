@@ -563,3 +563,19 @@ body { font: 14px/1.5 var(--font-ui); }
 #preview-panel.simulate-client-dark .footer-subscription a { color:#aeb4bc!important; }
 #preview-panel.simulate-client-dark .action-card .email-button td[bgcolor="#ffffff"] { background:#1f1f1f!important;border-color:#d2d2d2!important; }
 #preview-panel.simulate-client-dark .action-card .email-button td[bgcolor="#ffffff"] a { color:#e2e4e8!important; }
+
+/* A sample inbox message shares the selected email viewport. */
+#inbox-preview { display:grid;grid-template-columns:36px minmax(0,1fr);align-items:start;gap:12px;padding:14px 16px;background:var(--surface);border-radius:12px; }
+#inbox-preview.preview-mobile { max-width:390px; }
+.inbox-avatar { display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin-top:3px;border-radius:50%;background:var(--scarlet);color:#fff;font:700 12px/1 var(--font-ui); }
+.inbox-message { min-width:0; }
+.inbox-sender-row { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+.inbox-from { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px; }
+.inbox-time { flex:none;color:var(--ink-soft);font:11px/1.4 var(--font-ui); }
+#inbox-preview .inbox-subject { margin:2px 0 0;font-size:13px;line-height:1.4; }
+#inbox-preview .inbox-preheader { margin:0;font-size:12px;line-height:1.4; }
+#preview-panel.simulate-client-dark .inbox-time { color:#b8c2cc; }
+#preview-panel.simulate-client-dark .pv-ann-author strong { color:#e2e4e8!important; }
+@media (max-width:599px) {
+  #inbox-preview,#inbox-preview.preview-mobile { max-width:none;padding:12px;gap:10px; }
+}
