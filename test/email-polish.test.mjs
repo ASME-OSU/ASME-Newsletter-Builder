@@ -58,11 +58,11 @@ test('email and preview use sharp hosted PNGs for matching quick links and the r
  const w=await setup();try{
   const doc=new JSDOM(w.generateHTML()).window.document;
   const images=Array.from(doc.querySelectorAll('img[src*="/email-icons/"]'));
-  assert.deepEqual(images.map(img=>img.src.split('/').pop()),['members.png','calendar.png','partnership.png','instagram.png','linkedin.png','groupme.png']);
+  assert.deepEqual(images.map(img=>new URL(img.src).pathname.split('/').pop()),['members.png','calendar.png','partnership.png','instagram.png','linkedin.png','groupme.png']);
   for(const img of images){
    assert.ok(img.src.startsWith('https://asme-osu.github.io/ASME-Newsletter-Builder/'));
    assert.equal(img.alt,'');assert.equal(img.getAttribute('height'),img.getAttribute('width'));
-   const file=fs.readFileSync(new URL('../assets/email-icons/'+img.src.split('/').pop(),import.meta.url));
+   const file=fs.readFileSync(new URL('../assets/email-icons/'+new URL(img.src).pathname.split('/').pop(),import.meta.url));
    assert.equal(file.subarray(1,4).toString(),'PNG');assert.equal(file.readUInt32BE(16),144);assert.equal(file.readUInt32BE(20),144);
   }
   assert.match(doc.querySelector('img[src$="groupme.png"]').closest('a').textContent,/GroupMe/);

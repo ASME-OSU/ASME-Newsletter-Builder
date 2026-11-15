@@ -21,7 +21,7 @@ function stabilizeEmailColors(html){
 // Exported email assets use public HTTPS URLs; the editor uses local copies for drafts.
 var EMAIL_ICON_BASE='https://asme-osu.github.io/ASME-Newsletter-Builder/assets/email-icons/';
 function emailIconHTML(name,size,preview){
-  return '<img src="'+(preview?'assets/email-icons/':EMAIL_ICON_BASE)+name+'.png" width="'+size+'" height="'+size+'" alt="" role="presentation" style="display:block;width:'+size+'px;height:'+size+'px;border:0;">';
+  return '<img src="'+(preview?'assets/email-icons/':EMAIL_ICON_BASE)+name+'.png'+(name==='partnership'?'?v=2':'')+'" width="'+size+'" height="'+size+'" alt="" role="presentation" style="display:block;width:'+size+'px;height:'+size+'px;border:0;">';
 }
 function quickLinkIconName(title,url){
   var copy=String(title||'').toLowerCase(),target=String(url||'').toLowerCase();

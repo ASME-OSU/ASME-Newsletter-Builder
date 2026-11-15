@@ -2,7 +2,9 @@
 
 `groupme.svg` preserves the white GroupMe smile/hashtag mark from the inline SVG on https://groupme.com/ (retrieved November 9, 2026), used on the blue GroupMe button. GroupMe retains its trademark rights.
 
-The other SVGs are original line artwork for this builder. Builder artwork and the GroupMe/Instagram marks are rendered at 144×144 from their SVGs, displayed at 48×48 in quick links (3× resolution) and 24×24 for the footer GroupMe mark. SVG sources are retained for future resizing; emails use PNGs with explicit dimensions and decorative empty alt text alongside visible labels.
+`partnership.svg` adapts Lucide’s `handshake` icon (https://github.com/lucide-icons/lucide/blob/main/icons/handshake.svg), retrieved November 14, 2026, with the builder’s scarlet stroke and badge background. Its ISC license is included in `LUCIDE-LICENSE.txt`.
+
+The remaining non-brand SVGs are original line artwork for this builder. Builder artwork and the GroupMe/Instagram marks are rendered at 144×144 from their SVGs, displayed at 48×48 in quick links (3× resolution) and 24×24 for the footer GroupMe mark. SVG sources are retained for future resizing; emails use PNGs with explicit dimensions and decorative empty alt text alongside visible labels.
 
 The editor loads local files; exported emails reference the same assets on the builder's GitHub Pages HTTPS host. Publish these assets with the code before sending an exported email. No data URIs or inline SVG are required by the email.
 
