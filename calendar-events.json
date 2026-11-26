@@ -1,26 +1,13 @@
 {
-  "generatedAt": "2026-11-23T21:18:41.533Z",
-  "checkedAt": "2026-11-26T15:11:26.773Z",
-  "windowStart": "2026-11-19T15:11:26.756Z",
+  "generatedAt": "2026-11-26T23:49:50.563Z",
+  "checkedAt": "2026-11-26T23:49:50.563Z",
+  "windowStart": "2026-11-19T23:49:50.535Z",
   "windowEnd": "2029-08-01T00:00:00.000Z",
   "calendarId": "c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba@group.calendar.google.com",
   "calendarName": "ASME Public",
   "timeZone": "America/New_York",
   "sourceUrl": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
   "events": [
-    {
-      "id": "cgqu1b7nqiesqn2bf0s1gg7jki_R20260924T213000@google.com::2026-11-19T22:30:00.000Z",
-      "recurring": true,
-      "recurrenceId": "2026-11-19T22:30:00.000Z",
-      "title": "ASME Friendsgiving",
-      "start": "2026-11-19T22:30:00.000Z",
-      "end": "2026-11-19T23:30:00.000Z",
-      "allDay": false,
-      "location": "Scott Laboratory E141",
-      "description": "Friendsgiving",
-      "url": "https://calendar.google.com/calendar/embed?src=c93730cdacb567b0f010d1367080e3028ec5c7657d9713b675ac9e5c437b9fba%40group.calendar.google.com&ctz=America%2FNew_York",
-      "updated": "2026-11-23T20:12:05.000Z"
-    },
     {
       "id": "58pheu7tqvdrjtnuoj7e3punhq@google.com::2026-11-25T00:00:00.000Z",
       "recurring": false,
